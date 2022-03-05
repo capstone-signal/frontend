@@ -1,2 +1,2 @@
 # frontend
-backend for capstone-signal project
+frontend for capstone-signal project
