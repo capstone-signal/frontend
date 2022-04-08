@@ -1,4 +1,4 @@
-import apiConfig from '../config/apiConfig'
+import { get } from './common'
 
 type RepositoryResponse = {
 	id: number
@@ -13,18 +13,25 @@ type CommitResponse = {
 	message: string
 }
 
+type PullRequestResponse = {
+	id: number
+	title: string
+	url: string
+}
+
 export async function getMyRepos(): Promise<RepositoryResponse[]> {
-	const response = await fetch(`${apiConfig.apiUrl}/github/repos`) // TODO : abstracting api call
-	if (!response.ok) {
-		throw new Error('failed to fetch repos')
-	}
-	return response.json()
+	const response = await get<RepositoryResponse[]>('/github/repo')
+	return response
 }
 
 export async function getCommits(repoId: number): Promise<CommitResponse[]> {
-	const response = await fetch(`${apiConfig.apiUrl}/github/commits/${repoId}`) // TODO : abstracting api call
-	if (!response.ok) {
-		throw new Error('failed to fetch repos')
-	}
-	return response.json()
+	const response = await get<CommitResponse[]>(`/github/repo/${repoId}/commit`)
+	return response
+}
+
+export async function getPullRequests(
+	repoId: number
+): Promise<PullRequestResponse[]> {
+	const response = await get<PullRequestResponse[]>(`/github/repo/${repoId}/pr`)
+	return response
 }
