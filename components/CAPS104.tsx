@@ -64,8 +64,6 @@ const CAPS104: React.FunctionComponent<Props> = () => {
 			)}
 			<br />
 			<br />
-			<br />
-			<br />
 			<CreateDiscussionForm />
 		</div>
 	)

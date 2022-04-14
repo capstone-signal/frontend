@@ -74,34 +74,28 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 	}
 	return (
 		<div className="create_discussion_form">
-			<form onSubmit={onCreateBtnClick}>
-				<textarea
-					className="textarea textarea-primary"
-					placeholder="Enter questions."
-					onChange={(e) => setQuestion(e.target.value)}
-				>
-					{question}
-				</textarea>
-
-				<select
-					className="select select-primary w-full max-w-xs"
-					onChange={handleChangeDiscussionType}
-				>
-					<option value="PR">PR</option>
-					<option value="DIRECT">DIRECT</option>
-					<option value="COMMIT">COMMIT</option>
-				</select>
-				{discussionType === 'DIRECT' && (
-					<>
-						<div className="btn btn-error" onClick={handleAddFile}>
-							Add Code
-						</div>
-					</>
-				)}
+			<form onSubmit={onCreateBtnClick} className="flex flex-col">
+				<div>
+					<select
+						className="select select-primary w-full max-w-xs"
+						onChange={handleChangeDiscussionType}
+					>
+						<option value="DIRECT">DIRECT</option>
+						<option value="PR">PR</option>
+						<option value="COMMIT">COMMIT</option>
+					</select>
+					{discussionType === 'DIRECT' && (
+						<>
+							<div className="btn btn-error ml-2" onClick={handleAddFile}>
+								Add Code
+							</div>
+						</>
+					)}
+				</div>
 				{codes.map((code, idx) => {
 					return (
 						<div key={idx}>
-							<input
+							{/*<input
 								type="text"
 								className="input input-bordered input-primary w-full max-w-xs"
 								onChange={(e) => {
@@ -110,9 +104,9 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 									setCodes(newCodes)
 								}}
 								value={code.filename}
-							/>
+							/>*/}
 							<textarea
-								className="textarea textarea-primary"
+								className="textarea textarea-primary mt-4"
 								value={code.content}
 								onChange={(e) => {
 									const newCodes = [...codes]
@@ -123,9 +117,20 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 						</div>
 					)
 				})}
-				<button type="submit" className="btn btn-secondary">
-					생성
-				</button>
+				<br />
+				<div>
+					<textarea
+						className="textarea textarea-primary w-[36rem] h-[12rem]"
+						placeholder="Enter questions."
+						onChange={(e) => setQuestion(e.target.value)}
+					>
+						{question}
+					</textarea>
+					<br />
+					<button type="submit" className="btn btn-secondary">
+						생성
+					</button>
+				</div>
 			</form>
 		</div>
 	)
