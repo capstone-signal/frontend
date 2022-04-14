@@ -1,6 +1,9 @@
 import React, { FunctionComponent } from 'react'
 
-const Header: FunctionComponent = () => (
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface HeaderProps {}
+
+const Header: FunctionComponent<HeaderProps> = () => (
 	<div className="navbar bg-base-100 border-b-2">
 		<div className="flex-1">
 			<a className="btn btn-ghost normal-case text-xl">HiDiscuss</a>

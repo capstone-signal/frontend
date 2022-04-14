@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-//import Image from 'next/image'
+import Layout from '../components/layout/layout'
+
 //import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
@@ -9,7 +10,9 @@ const Home: NextPage = () => {
 			<Head>
 				<title>Create Next App</title>
 			</Head>
-			<button className="btn btn-primary">hello</button>
+			<Layout>
+				<button className="btn btn-primary">hello</button>
+			</Layout>
 		</div>
 	)
 }

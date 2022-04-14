@@ -1,6 +1,9 @@
 import React, { FunctionComponent } from 'react'
 
-const Sidebar: FunctionComponent = () => (
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface SidebarProps {}
+
+const Sidebar: FunctionComponent<SidebarProps> = () => (
 	<div className="w-60 h-[32rem] bg-base-200 px-1">
 		<ul className="relative">
 			<li className="relative">
