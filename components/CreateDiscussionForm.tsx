@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { MarkdownEditor } from './MarkdownEditor'
 import {
 	createDiscussion,
 	DirectCode,
@@ -95,17 +96,15 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 				{codes.map((code, idx) => {
 					return (
 						<div key={idx}>
-							{/*<input
-								type="text"
-								className="input input-bordered input-primary w-full max-w-xs"
-								onChange={(e) => {
+							<MarkdownEditor
+								value={code.content}
+								onChange={(value) => {
 									const newCodes = [...codes]
-									newCodes[idx].filename = e.target.value
+									newCodes[idx].content = value
 									setCodes(newCodes)
 								}}
-								value={code.filename}
-							/>*/}
-							<textarea
+							/>
+							{/*<textarea
 								className="textarea textarea-primary mt-4"
 								value={code.content}
 								onChange={(e) => {
@@ -113,7 +112,7 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 									newCodes[idx].content = e.target.value
 									setCodes(newCodes)
 								}}
-							/>
+							/>*/}
 						</div>
 					)
 				})}

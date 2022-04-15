@@ -2,7 +2,6 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../../components/layout/layout'
 import CAPS104 from '../../components/CAPS104'
-//import styles from '../styles/Home.module.css'
 
 const createDiscussion: NextPage = () => {
 	return (
