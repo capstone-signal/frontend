@@ -8,6 +8,7 @@ type Props = Record<string, any>
 const CAPS104: React.FunctionComponent<Props> = () => {
 	const [selectedRepo, setSelectedRepo] = useState<number>(-1)
 	const query = useQuery('getMyRepo', getMyRepos)
+	console.log(query)
 	const commitsQuery = useQuery(
 		`${selectedRepo}`,
 		() => getCommits(selectedRepo),

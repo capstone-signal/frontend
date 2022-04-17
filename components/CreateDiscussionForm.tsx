@@ -100,19 +100,11 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 								value={code.content}
 								onChange={(value) => {
 									const newCodes = [...codes]
-									newCodes[idx].content = value
+									// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+									newCodes[idx].content = value!
 									setCodes(newCodes)
 								}}
 							/>
-							{/*<textarea
-								className="textarea textarea-primary mt-4"
-								value={code.content}
-								onChange={(e) => {
-									const newCodes = [...codes]
-									newCodes[idx].content = e.target.value
-									setCodes(newCodes)
-								}}
-							/>*/}
 						</div>
 					)
 				})}

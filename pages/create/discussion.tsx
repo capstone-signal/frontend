@@ -2,6 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../../components/layout/layout'
 import CAPS104 from '../../components/CAPS104'
+import LiveReviewCalendar from '../../components/LiveReviewCalendar'
 
 const createDiscussion: NextPage = () => {
 	return (
@@ -13,6 +14,7 @@ const createDiscussion: NextPage = () => {
 				<div className="m-3 min-h-[36rem]">
 					<div className="text-xl mb-2">Create a new discussion</div>
 					<CAPS104 />
+					<LiveReviewCalendar />
 				</div>
 			</Layout>
 		</div>
