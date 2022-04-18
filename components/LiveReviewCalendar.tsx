@@ -1,6 +1,6 @@
 import next from 'next'
 import { useState, useRef } from 'react'
-import { useQuery, useQueryClient } from 'react-query'
+import TimeSelectComponent from './TimeSelectComponent'
 
 type Props = Record<string, any>
 
@@ -30,13 +30,14 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = () => {
 				<div className="modal-box">
 					<div className="flex flex-row w-full border-solid border-2 rounded">
 						{dates.map((date, idx) => (
-							<div key={idx}>
-								<div className="date">{date}</div>
+							<div key={idx} className="w-1/4">
+								<div className="date text-center">{date}</div>
 								<div className="flex flex-col">
 									{hours.map((hour) => (
-										<div className="hour btn btn-ghost" key={hour}>
-											{hour}
-										</div>
+										<TimeSelectComponent key={hour} time={hour} />
+										//<div className="hour btn btn-ghost" key={hour}>
+										//	{hour}
+										//</div>
 									))}
 								</div>
 							</div>
