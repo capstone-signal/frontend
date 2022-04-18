@@ -1,15 +1,14 @@
 import React, { useState } from 'react'
-import { MarkdownEditor } from './createDiscussion/MarkdownEditor'
+import { MarkdownEditor } from './MarkdownEditor'
 import {
 	createDiscussion,
 	DirectCode,
 	LiveReviewAvailableTime
-} from '../api/Discussion'
-import MDEditor from '@uiw/react-md-editor'
+} from '../../api/Discussion'
 
 type Props = Record<string, any>
 
-const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
+const DirectCode: React.FunctionComponent<Props> = () => {
 	const [discussionType, setDiscussionType] = useState<
 		'DIRECT' | 'COMMIT' | 'PR'
 	>('DIRECT')
@@ -96,7 +95,7 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 				</div>
 				{codes.map((code, idx) => {
 					return (
-						<div key={idx} className="w-[40rem]">
+						<div key={idx}>
 							<MarkdownEditor
 								value={code.content}
 								onChange={(value) => {
@@ -128,4 +127,4 @@ const CreateDiscussionForm: React.FunctionComponent<Props> = () => {
 	)
 }
 
-export default CreateDiscussionForm
+export default DirectCode
