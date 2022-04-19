@@ -16,7 +16,6 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 	liveReviewAvailableTimes,
 	setLiveReviewAvailableTimes
 }) => {
-	console.log(liveReviewAvailableTimes)
 	const [select, setSelect] = useState<boolean>(false)
 	const Year = date.getFullYear()
 	const Month = date.getMonth() + 1
