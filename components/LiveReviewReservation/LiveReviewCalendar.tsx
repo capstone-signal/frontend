@@ -1,12 +1,17 @@
 import next from 'next'
 import { useState, useRef } from 'react'
+import { LiveReviewAvailableTime } from '../../api/Discussion'
 import TimeSelectComponent from './TimeSelectComponent'
 
-type Props = Record<string, any>
+type Props = {
+	liveReviewAvailableTimes: LiveReviewAvailableTime[]
+	setLiveReviewAvailableTimes: (value: LiveReviewAvailableTime[]) => void
+}
 
-const LiveReviewCalendar: React.FunctionComponent<Props> = () => {
-	const [selectedTime, setSelectedTime] = useState<number>(-1)
-
+const LiveReviewCalendar: React.FunctionComponent<Props> = ({
+	liveReviewAvailableTimes,
+	setLiveReviewAvailableTimes
+}) => {
 	const today = new Date()
 	const dateField: Date[] = [today, today, today, today]
 	for (let i = 1; i < 4; i++) {
@@ -34,10 +39,13 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = () => {
 								<div className="date text-center">{date}</div>
 								<div className="flex flex-col">
 									{hours.map((hour) => (
-										<TimeSelectComponent key={hour} time={hour} />
-										//<div className="hour btn btn-ghost" key={hour}>
-										//	{hour}
-										//</div>
+										<TimeSelectComponent
+											key={hour}
+											date={dateField[idx]}
+											time={hour}
+											liveReviewAvailableTimes={liveReviewAvailableTimes}
+											setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
+										/>
 									))}
 								</div>
 							</div>

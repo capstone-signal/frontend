@@ -3,9 +3,15 @@ import { useQuery, useQueryClient } from 'react-query'
 import { getCommits, getMyRepos, getPullRequests } from '../../api/Github'
 import CreateDiscussionForm from '../CreateDiscussionForm'
 
-type Props = Record<string, any>
+type Props = {
+	discussionType: 'DIRECT' | 'COMMIT' | 'PR'
+	setDiscussionType: (value: 'DIRECT' | 'COMMIT' | 'PR') => void
+}
 
-const PRorCommit: React.FunctionComponent<Props> = () => {
+const PRorCommit: React.FunctionComponent<Props> = ({
+	discussionType,
+	setDiscussionType
+}) => {
 	const [selectedRepo, setSelectedRepo] = useState<number>(-1)
 	const query = useQuery('getMyRepo', getMyRepos)
 	console.log(query)
@@ -23,9 +29,10 @@ const PRorCommit: React.FunctionComponent<Props> = () => {
 			enabled: selectedRepo > 0
 		}
 	)
-
+	//console.log(commitsQuery)
+	//console.log(prQuery)
 	return (
-		<div>
+		<div className="flex flex-col">
 			<select
 				className="select select-primary w-full max-w-xs"
 				onChange={(e) => setSelectedRepo(parseInt(e.target.value))}
@@ -40,6 +47,22 @@ const PRorCommit: React.FunctionComponent<Props> = () => {
 				))}
 			</select>
 			{selectedRepo > -1 && (
+				<div>
+					<div
+						className="btn btn-ghost border-2 border-solid"
+						onClick={() => setDiscussionType('COMMIT')}
+					>
+						Get my Commits
+					</div>
+					<div
+						className="btn btn-ghost border-2 border-solid"
+						onClick={() => setDiscussionType('PR')}
+					>
+						Get my pull Requests
+					</div>
+				</div>
+			)}
+			{discussionType === 'COMMIT' && (
 				<select className="select select-primary w-full max-w-xs">
 					<option disabled selected>
 						Get my Commits
@@ -51,7 +74,7 @@ const PRorCommit: React.FunctionComponent<Props> = () => {
 					))}
 				</select>
 			)}
-			{selectedRepo > -1 && (
+			{discussionType === 'PR' && (
 				<select className="select select-primary w-full max-w-xs">
 					<option disabled selected>
 						Get my Pull Requests
