@@ -1,14 +1,14 @@
-import next from 'next'
-import { useState, useRef } from 'react'
 import { LiveReviewAvailableTime } from '../../api/Discussion'
 import TimeSelectComponent from './TimeSelectComponent'
 
 type Props = {
+	liveReviewRequired: boolean
 	liveReviewAvailableTimes: LiveReviewAvailableTime[]
 	setLiveReviewAvailableTimes: (value: LiveReviewAvailableTime[]) => void
 }
 
 const LiveReviewCalendar: React.FunctionComponent<Props> = ({
+	liveReviewRequired,
 	liveReviewAvailableTimes,
 	setLiveReviewAvailableTimes
 }) => {
@@ -28,9 +28,16 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 
 	return (
 		<div>
-			<a href="#liveReviewModal" className="btn modal-button">
-				Live Review Picker
-			</a>
+			{liveReviewRequired && (
+				<a href="#liveReviewModal" className="btn modal-button">
+					Live Review Picker
+				</a>
+			)}
+			{!liveReviewRequired && (
+				<a href="#liveReviewModal" className="btn modal-button btn-disabled">
+					Live Review Picker
+				</a>
+			)}
 			<div className="modal" id="liveReviewModal">
 				<div className="modal-box">
 					<div className="flex flex-row w-full border-solid border-2 rounded">
