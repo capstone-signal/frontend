@@ -6,14 +6,11 @@ interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
 	const [user, setUser] = useState<string>('')
-	console.log(user)
 	const signIn = () => {
 		setUser('temp_user')
-		console.log(user)
 	}
 	const signOut = () => {
 		setUser('')
-		console.log(user)
 	}
 	return (
 		<div className="navbar bg-base-100 border-b-2">

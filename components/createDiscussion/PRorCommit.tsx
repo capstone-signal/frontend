@@ -14,7 +14,6 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 }) => {
 	const [selectedRepo, setSelectedRepo] = useState<number>(-1)
 	const query = useQuery('getMyRepo', getMyRepos)
-	console.log(query)
 	const commitsQuery = useQuery(
 		`${selectedRepo}`,
 		() => getCommits(selectedRepo),
@@ -29,8 +28,6 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 			enabled: selectedRepo > 0
 		}
 	)
-	//console.log(commitsQuery)
-	//console.log(prQuery)
 	return (
 		<div className="flex flex-col">
 			<select
