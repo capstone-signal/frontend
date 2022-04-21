@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { MarkdownEditor } from './MarkdownEditor'
 
 type Props = {
 	question: string
@@ -9,16 +10,17 @@ const QuestionContent: React.FunctionComponent<Props> = ({
 	question,
 	setQuestion
 }) => {
-	//const [question, setQuestion] = useState<string>('')
+	const handleChangeQuestion = (value: string | undefined) => {
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		setQuestion(value!)
+	}
 	return (
 		<div>
-			<textarea
-				className="textarea textarea-primary w-[36rem] h-[12rem]"
-				placeholder="Enter questions."
-				onChange={(e) => setQuestion(e.target.value)}
-			>
-				{question}
-			</textarea>
+			<div>질문 내용을 작성하세요</div>
+			<MarkdownEditor
+				value={question}
+				onChange={(value) => handleChangeQuestion(value)}
+			/>
 		</div>
 	)
 }

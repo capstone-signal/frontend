@@ -45,7 +45,6 @@ type DiscussionResponse = {
 export async function createDiscussion(
 	data: CreateDiscussionRequest
 ): Promise<DiscussionResponse> {
-	console.log(data)
 	// 호출하는 쪽에서 data 검증 필요
 	const response = await post<DiscussionResponse>('/discussion', data)
 	return response

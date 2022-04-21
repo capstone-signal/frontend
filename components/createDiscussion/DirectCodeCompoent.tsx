@@ -11,7 +11,6 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 	codes,
 	setCodes
 }) => {
-	console.log(codes)
 	const handleAddFile = () => {
 		setCodes([...codes, { filename: '', content: '' }])
 	}
@@ -22,10 +21,8 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 	}
 	const handleChangeCode = (value: string | undefined, idx: number) => {
 		const newCodes = [...codes]
-		console.log(newCodes)
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		newCodes[idx].content = value!
-		console.log(newCodes)
 		setCodes(newCodes)
 	}
 	return (
