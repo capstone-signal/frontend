@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@monaco-editor/react": "^4.4.2",
     "@types/next": "^9.0.0",
     "@uiw/react-markdown-preview": "^4.0.6",
     "@uiw/react-md-editor": "3.6.0",

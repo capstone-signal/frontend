@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import { MarkdownEditor } from './MarkdownEditor'
 import { DirectCode } from '../../api/Discussion'
+import { MonacoEditor } from './MonacoEditor'
 
 type Props = {
 	codes: DirectCode[]
@@ -11,8 +11,9 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 	codes,
 	setCodes
 }) => {
+	console.log(codes)
 	const handleAddFile = () => {
-		setCodes([...codes, { filename: '', content: '' }])
+		setCodes([...codes, { filename: '', content: '// write codes' }])
 	}
 	const handleDeleteFile = (index: number) => {
 		const newCodes = [...codes]
@@ -35,10 +36,13 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 			{codes.map((code, idx) => {
 				return (
 					<div key={idx} className="flex flex-row">
-						<MarkdownEditor
-							value={code.content}
-							onChange={(value) => handleChangeCode(value, idx)}
-						/>
+						<div className="border-solid border-2 w-full">
+							<MonacoEditor
+								code={code}
+								handleChangeCode={handleChangeCode}
+								idx={idx}
+							/>
+						</div>
 						<div
 							className="btn btn-error"
 							onClick={() => handleDeleteFile(idx)}
