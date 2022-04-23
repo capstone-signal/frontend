@@ -1,8 +1,8 @@
-import { CommonResponse, post } from './common'
+import { CommonResponse, get, post } from './common'
 
 export type LiveReviewAvailableTime = {
-	start: Date
-	end: Date
+	start: Date | string
+	end: Date | string
 }
 
 export enum DiscussionState {
@@ -29,7 +29,7 @@ type CreateDiscussionRequest = {
 	gitNodeId?: string
 }
 
-type DiscussionResponse = {
+export type DiscussionResponse = {
 	id: number
 	liveReviewRequired: boolean
 	liveReviewAvailableTimes: {
@@ -47,5 +47,29 @@ export async function createDiscussion(
 ): Promise<DiscussionResponse> {
 	// 호출하는 쪽에서 data 검증 필요
 	const response = await post<DiscussionResponse>('/discussion', data)
+	return response
+}
+
+export async function getDiscussionById(
+	id: number
+): Promise<DiscussionResponse> {
+	return {
+		id: 1,
+		createdAt: '2021-01-01T00:00:00.000Z',
+		lastModifiedAt: '2021-01-01T00:00:00.000Z',
+		liveReviewRequired: true,
+		liveReviewAvailableTimes: {
+			times: [
+				{
+					start: '2021-01-01T00:00:00.000Z', //new Date(),
+					end: '2021-01-01T00:00:00.000Z' //new Date()
+				}
+			]
+		},
+		priority: 1,
+		question: '질문입니다213',
+		state: DiscussionState.NOT_REVIED
+	}
+	const response = await get<DiscussionResponse>(`/discussion/${id}`)
 	return response
 }

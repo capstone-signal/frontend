@@ -1,8 +1,8 @@
 import apiConfig from '../config/apiConfig'
 
 export type CommonResponse = {
-	createdAt: Date
-	lastModifiedAt: Date
+	createdAt: Date | string
+	lastModifiedAt: Date | string
 }
 
 export function get<T>(url: string, opts: RequestInit = {}): Promise<T> {
