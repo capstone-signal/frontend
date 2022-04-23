@@ -5,7 +5,6 @@ import { user, isLoggedIn, signIn, signOut } from '../../api/User'
 interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
-	console.log(user)
 	return (
 		<div className="navbar bg-base-100 border-b-2">
 			<div className="flex-1">
