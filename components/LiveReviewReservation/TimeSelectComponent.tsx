@@ -1,58 +1,46 @@
-import next from 'next'
-import { useState, useRef } from 'react'
-import { LiveReviewAvailableTime } from '../../api/Discussion'
+import { useState } from 'react'
+import { getTimeRange, getTimeRangeString } from './TodayTo3Days'
 
 type Props = {
 	key: number
 	date: Date
-	time: number
-	liveReviewAvailableTimes: LiveReviewAvailableTime[]
-	setLiveReviewAvailableTimes: (value: LiveReviewAvailableTime[]) => void
+	hour: number
+	addAvailableTime: (value1: Date, value2: Date) => void
+	removeAvailableTime: (value: Date) => void
 }
 
 const LiveReviewCalendar: React.FunctionComponent<Props> = ({
-	time,
+	hour,
 	date,
-	liveReviewAvailableTimes,
-	setLiveReviewAvailableTimes
+	addAvailableTime,
+	removeAvailableTime
 }) => {
 	const [select, setSelect] = useState<boolean>(false)
-	const Year = date.getFullYear()
-	const Month = date.getMonth() + 1
-	const Day = date.getDate()
-	const start = new Date(Year, Month, Day, time, 0, 0)
-	const end = new Date(Year, Month, Day, time + 1, 0, 0)
+	const now = new Date()
+	const { startTime, endTime } = getTimeRange(date, hour)
+	const timeRangeString = getTimeRangeString(hour)
+
 	const clickTime = () => {
 		if (!select) {
-			setLiveReviewAvailableTimes([
-				...liveReviewAvailableTimes,
-				{ start: start, end: end }
-			])
+			addAvailableTime(startTime, endTime)
 		} else {
-			setLiveReviewAvailableTimes(
-				liveReviewAvailableTimes.filter(
-					(availableTime) => availableTime.start.getTime() !== start.getTime()
-				)
-			)
+			removeAvailableTime(startTime)
 		}
 		setSelect(!select)
 	}
-	const nowtime = time < 10 ? '0' + time : time
-	const nextTime = time < 9 ? '0' + (time + 1) : time + 1
 
-	const contentTime = nowtime + ':00~' + nextTime + ':00'
 	return (
 		<div>
-			{select === false && (
-				<div className="btn btn-ghost" onClick={clickTime}>
-					{contentTime}
-				</div>
-			)}
-			{select === true && (
-				<div className="btn btn-primary" onClick={clickTime}>
-					{contentTime}
-				</div>
-			)}
+			<div
+				className={`btn w-full ${
+					startTime < now
+						? `btn-disabled`
+						: `${select ? 'btn-primary' : 'btn-ghost'}`
+				}`}
+				onClick={clickTime}
+			>
+				{timeRangeString}
+			</div>
 		</div>
 	)
 }

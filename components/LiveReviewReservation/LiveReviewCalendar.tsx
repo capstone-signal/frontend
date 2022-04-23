@@ -13,6 +13,19 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 	liveReviewAvailableTimes,
 	setLiveReviewAvailableTimes
 }) => {
+	const addAvailableTime = (start: Date, end: Date) => {
+		setLiveReviewAvailableTimes([
+			...liveReviewAvailableTimes,
+			{ start: start, end: end }
+		])
+	}
+	const removeAvailableTime = (start: Date) => {
+		setLiveReviewAvailableTimes(
+			liveReviewAvailableTimes.filter(
+				(availableTime) => availableTime.start.getTime() !== start.getTime()
+			)
+		)
+	}
 	return (
 		<div>
 			{liveReviewRequired && (
@@ -38,9 +51,9 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 										<TimeSelectComponent
 											key={hour}
 											date={date}
-											time={hour}
-											liveReviewAvailableTimes={liveReviewAvailableTimes}
-											setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
+											hour={hour}
+											addAvailableTime={addAvailableTime}
+											removeAvailableTime={removeAvailableTime}
 										/>
 									))}
 								</div>
@@ -50,9 +63,6 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 					<div>
 						<a href="#" className="btn btn-primary">
 							Accept
-						</a>
-						<a href="#" className="btn">
-							Close
 						</a>
 					</div>
 				</div>

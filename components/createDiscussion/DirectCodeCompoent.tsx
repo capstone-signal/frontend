@@ -11,7 +11,6 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 	codes,
 	setCodes
 }) => {
-	console.log(codes)
 	const handleAddFile = () => {
 		setCodes([...codes, { filename: '', content: '// write codes' }])
 	}

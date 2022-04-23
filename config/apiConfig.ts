@@ -3,7 +3,7 @@ type ApiConfig = {
 }
 
 const apiConfig: ApiConfig = {
-	apiUrl: 'http://localhost:8080'
+	apiUrl: 'http://localhost/api'
 }
 
 export default apiConfig
