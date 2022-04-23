@@ -12,10 +12,11 @@ import SelectTagComponent from './SelectTagComponent'
 
 type Props = Record<string, any>
 
-const CAPS104: React.FunctionComponent<Props> = () => {
+const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	const [discussionType, setDiscussionType] = useState<
 		'DIRECT' | 'COMMIT' | 'PR'
 	>('DIRECT')
+	const [title, setTitle] = useState<string>('')
 	const [question, setQuestion] = useState<string>('')
 	const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
 	const [liveReviewRequired, setLiveReviewRequired] = useState<boolean>(false)
@@ -74,7 +75,14 @@ const CAPS104: React.FunctionComponent<Props> = () => {
 	return (
 		<div>
 			<form onSubmit={onCreateBtnClick} className="flex flex-col">
-				<div className="text-xl mb-2">Create a new discussion</div>
+				<div className="text-xl mb-2 ml-2">Create a new discussion</div>
+				<input
+					type="text"
+					placeholder="제목을 입력하세요"
+					className="input input-bordered w-full max-w-[40rem] m-2"
+					value={title}
+					onChange={(e) => setTitle(e.target.value)}
+				/>
 				<div className="m-2">
 					<div className="btn btn-ghost w-[12rem]" onClick={selectDirect}>
 						직접 코드 작성하기
@@ -124,4 +132,4 @@ const CAPS104: React.FunctionComponent<Props> = () => {
 	)
 }
 
-export default CAPS104
+export default CreateDiscussionComponent

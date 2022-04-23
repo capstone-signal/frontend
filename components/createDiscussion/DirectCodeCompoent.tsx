@@ -11,8 +11,13 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 	codes,
 	setCodes
 }) => {
+	const [fileNum, setFileNum] = useState<number>(1)
 	const handleAddFile = () => {
-		setCodes([...codes, { filename: '', content: '// write codes' }])
+		setCodes([
+			...codes,
+			{ filename: 'code_' + fileNum, content: '// write codes' }
+		])
+		setFileNum(fileNum + 1)
 	}
 	const handleDeleteFile = (index: number) => {
 		const newCodes = [...codes]
