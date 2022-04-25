@@ -1,4 +1,4 @@
-import { GetServerSidePropsContext, NextPage } from 'next'
+import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import Head from 'next/head'
 import { DiscussionResponse, getDiscussionById } from '../../api/Discussion'
 import DiscussionDetail from '../../components/DiscussionDetail/DiscussionDetail'
@@ -25,7 +25,9 @@ const DiscussionDetailPage: NextPage<Props> = ({ discussion }) => {
 	)
 }
 
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+export const getServerSideProps: GetServerSideProps<Props> = async (
+	ctx: GetServerSidePropsContext
+) => {
 	const discussionId = parseInt(ctx.params?.id as string)
 	if (isNaN(discussionId)) {
 		return {
