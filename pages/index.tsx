@@ -1,7 +1,7 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Layout from '../components/layout/layout'
-import CAPS104 from '../components/CAPS104'
+import Link from 'next/link'
 //import styles from '../styles/Home.module.css'
 
 const Home: NextPage = () => {
@@ -12,7 +12,9 @@ const Home: NextPage = () => {
 			</Head>
 			<Layout>
 				<button className="btn btn-primary">hello</button>
-				<CAPS104 />
+				<Link href="/create/discussion" passHref>
+					<button className="btn btn-secondary">create a discussion</button>
+				</Link>
 			</Layout>
 		</div>
 	)

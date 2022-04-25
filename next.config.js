@@ -1,9 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  experimental: {
-    outputStandalone: true,
-  }
+	reactStrictMode: true,
+	experimental: {
+		outputStandalone: true
+	}
 }
 
-module.exports = nextConfig
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const removeImports = require('next-remove-imports')()
+
+module.exports = removeImports(nextConfig)
