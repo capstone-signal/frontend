@@ -84,10 +84,20 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 					onChange={(e) => setTitle(e.target.value)}
 				/>
 				<div className="m-2">
-					<div className="btn btn-ghost w-[12rem]" onClick={selectDirect}>
+					<div
+						className={`btn w-[12rem] ${
+							discussionType == 'DIRECT' ? 'btn-accent' : 'btn-ghost'
+						}`}
+						onClick={selectDirect}
+					>
 						직접 코드 작성하기
 					</div>
-					<div className="btn btn-ghost w-[15rem]" onClick={selectPRorCommit}>
+					<div
+						className={`btn w-[15rem] ml-2 ${
+							discussionType != 'DIRECT' ? 'btn-accent' : 'btn-ghost'
+						}`}
+						onClick={selectPRorCommit}
+					>
 						GitHub에서 코드 가져오기
 					</div>
 				</div>

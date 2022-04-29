@@ -10,17 +10,20 @@ type Props = {
 	code: DirectCode
 	handleChangeCode: (value: string, idx: number) => void
 	idx: number
+	language: string
 }
 
 export const MonacoEditor: React.FunctionComponent<Props> = ({
 	code,
 	handleChangeCode,
-	idx
+	idx,
+	language
 }) => {
 	return (
 		<Editor
 			height="15rem"
 			defaultLanguage="javascript"
+			language={language}
 			value={code.content}
 			// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 			onChange={(value) => handleChangeCode(value!, idx)}
