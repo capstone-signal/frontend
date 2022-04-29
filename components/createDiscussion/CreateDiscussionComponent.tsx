@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import DirectCodeCompoent from './DirectCodeCompoent'
+import DirectCodeCompoent from './DirectCodeComponent'
 import PRorCommit from './PRorCommit'
 import {
 	createDiscussion,

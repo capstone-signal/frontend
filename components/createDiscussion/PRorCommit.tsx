@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useQueryClient } from 'react-query'
 import { getCommits, getMyRepos, getPullRequests } from '../../api/Github'
-import CreateDiscussionForm from '../CreateDiscussionForm'
 
 type Props = {
 	discussionType: 'DIRECT' | 'COMMIT' | 'PR'
