@@ -1,23 +1,28 @@
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import Head from 'next/head'
-import { DiscussionResponse, getDiscussionById } from '../../api/Discussion'
+import {
+	DiscussionCodeResponse,
+	DiscussionResponse,
+	getDiscussionById
+} from '../../api/Discussion'
 import DiscussionDetail from '../../components/DiscussionDetail/DiscussionDetail'
 import ReviewList from '../../components/DiscussionDetail/ReviewList'
 import Layout from '../../components/layout/layout'
 
 type Props = {
 	discussion: DiscussionResponse
+	codes: DiscussionCodeResponse[]
 }
 
-const DiscussionDetailPage: NextPage<Props> = ({ discussion }) => {
+const DiscussionDetailPage: NextPage<Props> = ({ discussion, codes }) => {
 	return (
 		<div>
 			<Head>
-				<title>{discussion.question}</title>
+				<title>{discussion.title}</title>
 			</Head>
 			<Layout>
 				<div className="m-3 min-h-[36rem]">
-					<DiscussionDetail discussion={discussion} />
+					<DiscussionDetail discussion={discussion} codes={codes} />
 					<ReviewList discussion={discussion} />
 				</div>
 			</Layout>
@@ -47,10 +52,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 			}
 		}
 	}
-
 	return {
 		props: {
-			discussion
+			discussion: discussion.discussion,
+			codes: discussion.codes
 		}
 	}
 }

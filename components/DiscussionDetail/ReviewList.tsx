@@ -1,30 +1,36 @@
 import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { DiscussionResponse } from '../../api/Discussion'
+import { getReviewByDiscussionId } from '../../api/Review'
 import Spinner from '../Common/Spinner'
+import ReviewDetail from './Review'
 
 type Props = {
 	discussion: DiscussionResponse
 }
 const ReviewList: React.FC<Props> = ({ discussion }) => {
 	// get reviews using page query
-	const [page, setPage] = useState<number>(1)
-	const { data, error, isLoading } = useQuery(['reviews', discussion.id], () =>
-		getReviews(discussion.id)
-	)
+	const [page, setPage] = useState<number>(0)
+	const { isLoading, isError, error, data, isFetching, isPreviousData } =
+		useQuery(
+			['reviews', page, discussion.id],
+			() => getReviewByDiscussionId(discussion.id, page),
+			{
+				keepPreviousData: true
+			}
+		)
+
+	if (isLoading) return <Spinner />
+	if (isError) return <div>Error</div>
+
 	// infinite scroll
 	return (
-		<div>
-			<h2>Reviews</h2>
-			{isLoading && <Spinner />}
-			{/* {error && <p>Error: {error.message}</p>} */}
-			{/* {data && data.map(review => <ReviewDetail review={review} />)} */}
+		<div className="border-t-2 my-10">
+			{data?.content.map((review) => {
+				return <ReviewDetail review={review} key={review.id} />
+			})}
 		</div>
 	)
 }
 
 export default ReviewList
-
-function getReviews(id: number): any {
-	throw new Error('Function not implemented.')
-}
