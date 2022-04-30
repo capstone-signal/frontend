@@ -1,4 +1,6 @@
 import { CommonResponse, get, post } from './common'
+import { TagResponse } from './Tag'
+import { UserResponse } from './User'
 
 export type LiveReviewAvailableTime = {
 	start: Date | string
@@ -29,6 +31,11 @@ type CreateDiscussionRequest = {
 	gitNodeId?: string
 }
 
+export type DiscussionDetailResponse = {
+	codes: DiscussionCodeResponse[]
+	discussion: DiscussionResponse
+}
+
 export type DiscussionResponse = {
 	id: number
 	liveReviewRequired: boolean
@@ -36,10 +43,18 @@ export type DiscussionResponse = {
 		times: LiveReviewAvailableTime[]
 	}
 	priority: number
+	title: string
 	question: string
 	state: DiscussionState
-	//tags: TagResponse[]
-	//user: UserResponse
+	discussionResponseDto: any
+	tags: TagResponse[]
+	user: UserResponse
+} & CommonResponse
+
+export type DiscussionCodeResponse = {
+	id: number
+	filename: string
+	content: string
 } & CommonResponse
 
 export async function createDiscussion(
@@ -52,24 +67,7 @@ export async function createDiscussion(
 
 export async function getDiscussionById(
 	id: number
-): Promise<DiscussionResponse> {
-	return {
-		id: 1,
-		createdAt: '2021-01-01T00:00:00.000Z',
-		lastModifiedAt: '2021-01-01T00:00:00.000Z',
-		liveReviewRequired: true,
-		liveReviewAvailableTimes: {
-			times: [
-				{
-					start: '2021-01-01T00:00:00.000Z', //new Date(),
-					end: '2021-01-01T00:00:00.000Z' //new Date()
-				}
-			]
-		},
-		priority: 1,
-		question: '질문입니다213',
-		state: DiscussionState.NOT_REVIED
-	}
-	const response = await get<DiscussionResponse>(`/discussion/${id}`)
+): Promise<DiscussionDetailResponse> {
+	const response = await get<DiscussionDetailResponse>(`/discussion/${id}`)
 	return response
 }

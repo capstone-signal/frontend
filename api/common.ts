@@ -5,6 +5,15 @@ export type CommonResponse = {
 	lastModifiedAt: Date | string
 }
 
+export type Pageable = {
+	sort: Record<string, any>
+	offset: number
+	pageNumber: number
+	pageSize: number
+	paged: boolean
+	unpaged: boolean
+}
+
 export function get<T>(url: string, opts: RequestInit = {}): Promise<T> {
 	return fetch(getApiUrl(url), {
 		...opts,

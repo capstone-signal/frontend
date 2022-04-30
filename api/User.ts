@@ -4,6 +4,13 @@ export const user = {
 	isLoggedIn: false
 }
 
+export type UserResponse = {
+	accessToken: string
+	email: string
+	name: string
+	point: number
+}
+
 export type userState = {
 	id: number
 	email: string
