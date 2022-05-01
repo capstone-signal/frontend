@@ -1,15 +1,17 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 
 type Props = {
 	index: number
 	tagName: string
+	letterCase: 'uppercase' | 'lowercase' | 'normal-case'
 	selectedTagIds: number[]
 	setSelectedTagIds: (value: number[]) => void
 }
 
-const TagButton: React.FunctionComponent<Props> = ({
+const FilterTagButton: React.FunctionComponent<Props> = ({
 	index,
 	tagName,
+	letterCase,
 	selectedTagIds,
 	setSelectedTagIds
 }) => {
@@ -23,19 +25,15 @@ const TagButton: React.FunctionComponent<Props> = ({
 		setSelect(!select)
 	}
 	return (
-		<>
-			{select === false && (
-				<div className="btn btn-outline btn-primary m-1" onClick={clickTag}>
-					{tagName}
-				</div>
-			)}
-			{select === true && (
-				<div className="btn btn-primary m-1 box-border" onClick={clickTag}>
-					{tagName}
-				</div>
-			)}
-		</>
+		<div
+			className={`btn btn-small m-1 rounded-3xl h-[2.5rem] min-h-[2.5rem] ${letterCase} ${
+				select ? `btn-success` : `btn-outline`
+			}`}
+			onClick={clickTag}
+		>
+			{tagName}
+		</div>
 	)
 }
 
-export default TagButton
+export default FilterTagButton
