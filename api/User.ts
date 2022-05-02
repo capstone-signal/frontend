@@ -1,8 +1,6 @@
 import { CommonResponse } from './common'
+import jwt_decode from "jwt-decode";
 
-export const user = {
-	isLoggedIn: false
-}
 
 export type userState = {
 	id: number
@@ -13,15 +11,36 @@ export type userState = {
 	point: number
 } & CommonResponse
 
-export function isLoggedIn() {
-	if (user.isLoggedIn) return true
-	else return false
+
+export function getCook(cookiename:String)
+{
+	if(typeof window !== 'object') return;
+	var cookiestring=RegExp(cookiename+"=[^;]+").exec(document.cookie);
+	if(cookiestring == null)
+		return null;
+  	return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
 }
 
-export function signIn() {
-	user.isLoggedIn = true
+export function isLoggedIn() {
+	var accessToken = getCook('accessToken');
+	var refreshToken = getCook('refreshToken');
+
+	var accessTokenDecoded = null;
+	var refreshTokenDecoded = null;
+	if(accessToken != null)
+		accessTokenDecoded = jwt_decode(accessToken) as any;
+	if(refreshToken != null)
+		refreshTokenDecoded = jwt_decode(refreshToken) as any;
+
+	if(refreshTokenDecoded == null){
+		return false;
+	}
+	return true
 }
+
+
 
 export function signOut() {
-	user.isLoggedIn = false
+	document.cookie = "accessToken" + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
+	document.cookie = "refreshToken" + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;';
 }

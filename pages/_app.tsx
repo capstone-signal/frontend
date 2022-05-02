@@ -2,6 +2,13 @@ import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { useState } from 'react'
 import { Hydrate, QueryClient, QueryClientProvider } from 'react-query'
+import {
+	RecoilRoot,
+	atom,
+	selector,
+	useRecoilState,
+	useRecoilValue,
+  } from 'recoil';
 
 function MyApp({ Component, pageProps }: AppProps) {
 	const [queryClient, setQueryClient] = useState<QueryClient>(
@@ -14,6 +21,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 				<Component {...pageProps}></Component>
 			</Hydrate>
 		</QueryClientProvider>
+		
 	)
 }
 
