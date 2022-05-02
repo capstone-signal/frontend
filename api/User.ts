@@ -21,7 +21,7 @@ export function getCook(cookiename:String)
   	return decodeURIComponent(!!cookiestring ? cookiestring.toString().replace(/^[^=]+./,"") : "");
 }
 
-export function isLoggedIn() {
+export function isLogined() {
 	var accessToken = getCook('accessToken');
 	var refreshToken = getCook('refreshToken');
 
