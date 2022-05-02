@@ -6,6 +6,7 @@ type Props = {
 	discussions: {
 		id: number
 		title: string
+		reviewee: string
 		question: string
 		state: DiscussionState
 		//tags: TagResponse[]
@@ -13,15 +14,7 @@ type Props = {
 	}[]
 }
 
-const DiscussionList: React.FunctionComponent<Props> = () => {
-	const discussions = [
-		{
-			id: 1,
-			title: '1번 discussion',
-			question: 'OOO에 대한 질문이 있습니다.',
-			state: 0
-		}
-	]
+const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 	return (
 		<div>
 			{discussions.map((discussion, index) => (

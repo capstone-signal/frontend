@@ -3,26 +3,25 @@ import FilterTagButton from './FilterTagButton'
 type Props = {
 	tags: string[]
 	letterCase: 'uppercase' | 'lowercase' | 'normal-case'
-	selectedFilterIds: number[]
-	setSelectedFilterIds: (value: number[]) => void
+	selectedFilters: string[]
+	setSelectedFilters: (value: string[]) => void
 }
 
 const SelectFilterComponent: React.FunctionComponent<Props> = ({
 	tags,
 	letterCase,
-	selectedFilterIds,
-	setSelectedFilterIds
+	selectedFilters,
+	setSelectedFilters
 }) => {
 	return (
 		<div className="w-5/6">
 			{tags.map((tag, index) => (
 				<div key={index} className="inline">
 					<FilterTagButton
-						index={index}
 						tagName={tag}
 						letterCase={letterCase}
-						selectedTagIds={selectedFilterIds}
-						setSelectedTagIds={setSelectedFilterIds}
+						selectedFilters={selectedFilters}
+						setSelectedFilters={setSelectedFilters}
 					/>
 				</div>
 			))}

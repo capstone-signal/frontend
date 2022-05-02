@@ -1,12 +1,13 @@
 import { useState } from 'react'
+import Link from 'next/link'
 import SelectFilterComponent from './SelectStateComponent'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface FilterProps {}
 
 const ListFilter: React.FunctionComponent<FilterProps> = () => {
-	const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
-	const [selectedStateIds, setSelectedStateIds] = useState<number[]>([])
+	const [selectedTags, setSelectedTags] = useState<string[]>([])
+	const [selectedStates, setSelectedStates] = useState<string[]>([])
 	const [searchFilter, setSearchFilter] = useState<string>('')
 	const languageTags = [
 		'react',
@@ -35,15 +36,15 @@ const ListFilter: React.FunctionComponent<FilterProps> = () => {
 	]
 	const stateTags = ['Not reviewed', 'Reviewing', 'Completed']
 	return (
-		<div className="border-2 border-solid border-gray-400 rounded-xl p-3">
+		<div className="border-2 border-solid border-gray-400 rounded-xl p-3 mb-4">
 			<div className="text-xl mb-2 font-bold">검색 필터</div>
 			<div className="flex flex-row mb-2">
 				<div className="text-xl text-center w-[6.5rem] mt-2">Tags</div>
 				<SelectFilterComponent
 					tags={languageTags}
 					letterCase={'uppercase'}
-					selectedFilterIds={selectedTagIds}
-					setSelectedFilterIds={setSelectedTagIds}
+					selectedFilters={selectedTags}
+					setSelectedFilters={setSelectedTags}
 				/>
 			</div>
 			<div className="flex flex-row mb-2">
@@ -51,8 +52,8 @@ const ListFilter: React.FunctionComponent<FilterProps> = () => {
 				<SelectFilterComponent
 					tags={stateTags}
 					letterCase={'normal-case'}
-					selectedFilterIds={selectedStateIds}
-					setSelectedFilterIds={setSelectedStateIds}
+					selectedFilters={selectedStates}
+					setSelectedFilters={setSelectedStates}
 				/>
 			</div>
 			<div className="flex flex-row justify-between">
@@ -66,7 +67,12 @@ const ListFilter: React.FunctionComponent<FilterProps> = () => {
 						onChange={(e) => setSearchFilter(e.target.value)}
 					/>
 				</div>
-				<div className="btn btn-accent">설정 완료</div>
+				<Link
+					href={`/list?page=1&state=${selectedStates}&tags=${selectedTags}&search=${searchFilter}`}
+					passHref
+				>
+					<button className="btn btn-accent">설정 완료</button>
+				</Link>
 			</div>
 		</div>
 	)

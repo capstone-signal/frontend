@@ -1,26 +1,24 @@
 import { useState } from 'react'
 
 type Props = {
-	index: number
 	tagName: string
 	letterCase: 'uppercase' | 'lowercase' | 'normal-case'
-	selectedTagIds: number[]
-	setSelectedTagIds: (value: number[]) => void
+	selectedFilters: string[]
+	setSelectedFilters: (value: string[]) => void
 }
 
 const FilterTagButton: React.FunctionComponent<Props> = ({
-	index,
 	tagName,
 	letterCase,
-	selectedTagIds,
-	setSelectedTagIds
+	selectedFilters,
+	setSelectedFilters
 }) => {
 	const [select, setSelect] = useState<boolean>(false)
 	const clickTag = () => {
 		if (!select) {
-			setSelectedTagIds([...selectedTagIds, index])
+			setSelectedFilters([...selectedFilters, tagName])
 		} else {
-			setSelectedTagIds(selectedTagIds.filter((tag) => tag !== index))
+			setSelectedFilters(selectedFilters.filter((tag) => tag !== tagName))
 		}
 		setSelect(!select)
 	}
