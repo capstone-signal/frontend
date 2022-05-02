@@ -32,7 +32,7 @@ export function isLoggedIn() {
 	if(refreshToken != null)
 		refreshTokenDecoded = jwt_decode(refreshToken) as any;
 
-	if(refreshTokenDecoded == null){
+	if(refreshTokenDecoded == null || accessToken == null){
 		return false;
 	}
 	return true
