@@ -1,11 +1,10 @@
-import React, { useEffect,useState, FunctionComponent } from 'react'
+import React, { useEffect, useState, FunctionComponent } from 'react'
 import Link from 'next/link'
-import { isLogined,signOut } from '../../api/User'
+import { isLogined, signOut } from '../../api/User'
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
-	
 	return (
 		<div className="navbar bg-base-100 border-b-2">
 			<div className="flex-1">
@@ -30,10 +29,11 @@ const Header: FunctionComponent<HeaderProps> = () => {
 						</ul>
 					</div>
 				) : (
-					<Link href='http://localhost:8080/oauth2/authorization/github' passHref>
-						<button className="btn btn-primary">
-							sign in
-						</button>
+					<Link
+						href="http://localhost:8080/oauth2/authorization/github"
+						passHref
+					>
+						<button className="btn btn-primary">sign in</button>
 					</Link>
 				)}
 			</div>
