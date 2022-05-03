@@ -1,8 +1,8 @@
 import apiConfig from '../config/apiConfig'
 
 export type CommonResponse = {
-	createdAt: Date | string
-	lastModifiedAt: Date | string
+	createdAt: Date
+	lastModifiedAt: Date
 }
 
 export type Pageable = {
@@ -12,6 +12,12 @@ export type Pageable = {
 	pageSize: number
 	paged: boolean
 	unpaged: boolean
+}
+
+export type PageResponse = {
+	totalPages: number
+	totalElements: number
+	last: boolean
 }
 
 export function get<T>(url: string, opts: RequestInit = {}): Promise<T> {
@@ -54,5 +60,12 @@ export function post<T>(
 }
 
 function getApiUrl(url: string): string {
-	return `${apiConfig.apiUrl}${url}`
+	try {
+		// check browser environment
+		window && document
+		return `${apiConfig.apiUrl}${url}`
+	} catch (e) {
+		// server side
+		return `${apiConfig.fullApiUrl}${url}`
+	}
 }

@@ -3,8 +3,8 @@ import { TagResponse } from './Tag'
 import { UserResponse } from './User'
 
 export type LiveReviewAvailableTime = {
-	start: Date | string
-	end: Date | string
+	start: Date
+	end: Date
 }
 
 export enum DiscussionState {

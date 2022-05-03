@@ -1,4 +1,4 @@
-import { CommonResponse, get, post } from './common'
+import { CommonResponse, get, PageResponse, post } from './common'
 import { DiscussionCodeResponse } from './Discussion'
 import { UserResponse } from './User'
 
@@ -14,17 +14,14 @@ export type ReviewResponse = {
 
 export type ReviewPageResponse = {
 	content: ReviewResponse[]
-	totalPages: number
-	totalElements: number
-	last: boolean
-}
+} & PageResponse
 
 export type CommentReviewDiffResponse = {
 	codeAfter: string
 	codeLocate: string
 	comment: string
 	discussionCode: DiscussionCodeResponse
- } & CommonResponse
+} & CommonResponse
 
 export type LiveReviewDiffResponse = {
 	codeAfter: string
@@ -38,6 +35,10 @@ export type ThreadResponse = {
 	user?: UserResponse
 	review?: ReviewResponse
 } & CommonResponse
+
+export type ThreadPageResponse = {
+	content: ThreadResponse[]
+} & PageResponse
 
 export async function getReviewByDiscussionId(
 	discussionId: number,
@@ -57,5 +58,15 @@ export async function createThread(
 	const response = await post<ThreadResponse>(`/review/${reviewId}/thread`, {
 		content
 	})
+	return response
+}
+
+export async function getThreadByReviewId(
+	reviewId: number,
+	page: number
+): Promise<ThreadPageResponse> {
+	const response = await get<ThreadPageResponse>(
+		`/review/${reviewId}/thread?page=${page}`
+	)
 	return response
 }
