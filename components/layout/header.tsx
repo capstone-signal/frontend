@@ -1,6 +1,6 @@
 import React, { useEffect, useState, FunctionComponent } from 'react'
 import Link from 'next/link'
-import { isLogined, signOut } from '../../api/User'
+import { isLogin, signOut } from '../../api/User'
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HeaderProps {}
 
@@ -13,7 +13,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
 				</Link>
 			</div>
 			<div className="navbar-end">
-				{isLogined() ? (
+				{isLogin() ? (
 					<div className="dropdown dropdown-end">
 						<button className="btn btn-ghost btn-circle">
 							<div className="indicator">
@@ -22,17 +22,14 @@ const Header: FunctionComponent<HeaderProps> = () => {
 						</button>
 						<ul className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-36 mt-4">
 							<li>
-								<Link href="/">
+								<Link passHref href="/">
 									<button onClick={signOut}>Sign Out</button>
 								</Link>
 							</li>
 						</ul>
 					</div>
 				) : (
-					<Link
-						href="http://localhost:8080/oauth2/authorization/github"
-						passHref
-					>
+					<Link href="/api/oauth2/authorization/github" passHref>
 						<button className="btn btn-primary">sign in</button>
 					</Link>
 				)}

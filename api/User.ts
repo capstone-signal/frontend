@@ -19,7 +19,7 @@ export function getCook(cookiename: string) {
 	)
 }
 
-export function isLogined() {
+export function isLogin() {
 	const accessToken = getCook('accessToken')
 	const refreshToken = getCook('refreshToken')
 
