@@ -35,22 +35,12 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 ) => {
 	const discussionId = parseInt(ctx.params?.id as string)
 	if (isNaN(discussionId)) {
-		return {
-			redirect: {
-				permanet: false,
-				destination: '/500'
-			}
-		}
+		throw new Error('Invalid discussion id')
 	}
 
 	const discussion = await getDiscussionById(discussionId)
 	if (!discussion) {
-		return {
-			redirect: {
-				permanet: false,
-				destination: '/404'
-			}
-		}
+		throw new Error('Discussion not found')
 	}
 	return {
 		props: {
