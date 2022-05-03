@@ -5,15 +5,15 @@ import {
 import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import dayjs from 'dayjs'
 import '@uiw/react-markdown-preview/markdown.css'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import dynamic from 'next/dynamic'
-import Editor from '@monaco-editor/react'
 
 type Props = {
 	discussion: DiscussionResponse
 	codes: DiscussionCodeResponse[]
 }
 
+dayjs.locale('ko')
 const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	() => import('@uiw/react-markdown-preview'),
 	{
@@ -21,15 +21,26 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	}
 )
 
-const markdownViewerStyle: React.CSSProperties = {
+const questionMarkdownViewerStyle: React.CSSProperties = {
 	padding: '2rem',
 	backgroundColor: 'transparent',
 	border: '1px solid #eaeaea',
 	borderRadius: '6px'
 }
+
+const codeMarkdownViewerStyle: React.CSSProperties & Record<string, any> = {
+	padding: '2rem',
+	backgroundColor: '#000',
+	height: '32rem',
+	overflow: 'scroll',
+	scrollbarWidth: 'none',
+	msOverflowStyle: 'none',
+	'&::WebkitScrollbar': {
+		display: 'none'
+	}
+}
 const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 	const [selectedCode, setSelectedCode] = useState<number>(0)
-
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
 	}
@@ -46,7 +57,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						<span className="text ml-3">{discussion.user.name}</span>
 					</div>
 					<span className="text mr-6 created_at">
-						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm')}
+						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
 					</span>
 				</div>
 				<div className="tags">
@@ -60,46 +71,44 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 			<div className="dd_question">
 				<MarkdownViewer
 					source={discussion.question}
-					style={markdownViewerStyle}
+					style={questionMarkdownViewerStyle}
 				/>
 			</div>
-			<div className="dd_codes flex flex-row mt-10 mx-6">
-				<div className="files_nav basis-1/6">
+			<div className="dd_codes flex flex-row mt-10 mr-6">
+				<div className="files_nav basis-1/6 w-1/4">
 					<div className="files_nav_header">
-						<div className="alert alert-info shadow-lg rounded-none text-2xl">
+						<div className="p-4 text-xl border-2 rounded-tl-2xl border-gray-600">
 							Files
 						</div>
-						<div>
+						<ul className="menu menu-compact max-h-[32rem] overflow-y-scroll">
 							{codes.map((code, idx) => {
 								return (
-									<div
+									<li
 										className={`pl-4 py-4 cursor-pointer ${
-											idx === selectedCode ? 'bg-primary' : ''
+											idx === selectedCode
+												? 'bg-primary-focus'
+												: 'hover:bg-neutral'
 										}`}
 										key={code.id}
 										onClick={() => handleClickCode(idx)}
 									>
 										{code.filename}
-									</div>
+									</li>
 								)
 							})}
-						</div>
+						</ul>
 					</div>
 				</div>
-				<div className="codes basis-5/6">
+				<div className="codes basis-5/6 w-3/4">
 					<div className="codes_header flex flex-row">
-						<div className="alert alert-info shadow-lg rounded-none text-2xl basis-1/5">
+						<div className="p-4 text-2xl border-2 text-xl basis-1/5 rounded-tr-2xl border-gray-600">
 							Codes
 						</div>
 					</div>
 					<div className="selected_code">
-						<Editor
-							height="15rem"
-							value={codes[selectedCode].content}
-							theme="vs-dark"
-							options={{
-								readOnly: true
-							}}
+						<MarkdownViewer
+							source={`\`\`\`\n ${codes[selectedCode].content} \n\`\`\``} /* TODO : language 추가*/
+							style={codeMarkdownViewerStyle}
 						/>
 					</div>
 				</div>
