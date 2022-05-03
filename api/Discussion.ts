@@ -15,6 +15,16 @@ export type DirectCode = {
 	filename: string
 }
 
+export type DiscussionBox = {
+	id: number
+	title: string
+	user_name: string
+	question: string
+	state: DiscussionState
+	//tags: TagResponse[]
+	//user: UserResponse
+}
+
 type CreateDiscussionRequest = {
 	discussionType: 'PR' | 'COMMIT' | 'DIRECT'
 	question: string
