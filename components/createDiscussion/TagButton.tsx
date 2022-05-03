@@ -7,7 +7,7 @@ type Props = {
 	setSelectedTagIds: (value: number[]) => void
 }
 
-const SelectTagComponent: React.FunctionComponent<Props> = ({
+const TagButton: React.FunctionComponent<Props> = ({
 	index,
 	tagName,
 	selectedTagIds,
@@ -32,4 +32,4 @@ const SelectTagComponent: React.FunctionComponent<Props> = ({
 	)
 }
 
-export default SelectTagComponent
+export default TagButton
