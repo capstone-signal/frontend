@@ -30,7 +30,7 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 	return (
 		<div className="flex flex-col">
 			<select
-				className="select select-primary w-full max-w-xs"
+				className="select select-primary w-full max-w-xs mb-2"
 				onChange={(e) => setSelectedRepo(parseInt(e.target.value))}
 			>
 				<option disabled selected>

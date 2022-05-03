@@ -23,18 +23,12 @@ const TagButton: React.FunctionComponent<Props> = ({
 		setSelect(!select)
 	}
 	return (
-		<>
-			{select === false && (
-				<div className="btn btn-outline btn-primary m-1" onClick={clickTag}>
-					{tagName}
-				</div>
-			)}
-			{select === true && (
-				<div className="btn btn-primary m-1 box-border" onClick={clickTag}>
-					{tagName}
-				</div>
-			)}
-		</>
+		<div
+			className={`btn btn-primary m-1 ${select ? '' : 'btn-outline'}`}
+			onClick={clickTag}
+		>
+			{tagName}
+		</div>
 	)
 }
 
