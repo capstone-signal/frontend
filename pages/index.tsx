@@ -1,8 +1,9 @@
 import type { NextPage } from 'next'
+import Image from 'next/image'
 import Head from 'next/head'
 import Layout from '../components/layout/layout'
 import Link from 'next/link'
-//import styles from '../styles/Home.module.css'
+import LandingImage from '../public/landing_image.png'
 
 const Home: NextPage = () => {
 	return (
@@ -11,10 +12,20 @@ const Home: NextPage = () => {
 				<title>Create Next App</title>
 			</Head>
 			<Layout>
-				<button className="btn btn-primary">hello</button>
-				<Link href="/create/discussion" passHref>
-					<button className="btn btn-secondary">create a discussion</button>
-				</Link>
+				<div className="p-4 flex flex-col justify-center">
+					<div className="w-[100%] rounded-2xl overflow-hidden mb-4">
+						<div className="absolute">
+							<p>Freely make a discussion</p>
+							<p>of your code!</p>
+						</div>
+						<Image
+							src={LandingImage}
+							alt="landing_img"
+							layout="intrinsic"
+							objectFit="cover"
+						/>
+					</div>
+				</div>
 			</Layout>
 		</div>
 	)
