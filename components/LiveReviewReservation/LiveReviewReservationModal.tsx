@@ -33,6 +33,7 @@ const LiveReviewReservationModal: React.FC<Props> = ({ discussion }) => {
 
 	const createReservation = async (reviewStartDateTime: Date) => {
 		if (loading) return
+		if (!confirm('예약을 진행하시겠습니까?')) return
 		setLoading(true)
 		try {
 			await createReviewReservation({
@@ -41,7 +42,8 @@ const LiveReviewReservationModal: React.FC<Props> = ({ discussion }) => {
 			})
 			alert('예약이 완료되었습니다.\n메일을 확인해주세요.')
 		} catch (e) {
-			console.log(e)
+			console.error(e)
+			alert('예약에 실패하였습니다.')
 		} finally {
 			setLoading(false)
 		}
@@ -49,8 +51,9 @@ const LiveReviewReservationModal: React.FC<Props> = ({ discussion }) => {
 
 	useEffect(() => {
 		const newAvailableDays: AvailableDays = {}
+		const now = new Date().getTime()
 		discussion.liveReviewAvailableTimes.times.forEach((availableTime) => {
-			if (availableTime.end < new Date()) return // filter out past time
+			if (new Date(availableTime.end).getTime() < now) return // filter out past time
 			const date = dayjs(availableTime.start).format('M/D(ddd)')
 			if (!newAvailableDays[date]) {
 				newAvailableDays[date] = [availableTime]
