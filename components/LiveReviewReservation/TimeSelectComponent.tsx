@@ -9,7 +9,7 @@ type Props = {
 	removeAvailableTime: (value: Date) => void
 }
 
-const LiveReviewCalendar: React.FunctionComponent<Props> = ({
+const TimeSelectComponent: React.FunctionComponent<Props> = ({
 	hour,
 	date,
 	addAvailableTime,
@@ -45,4 +45,4 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 	)
 }
 
-export default LiveReviewCalendar
+export default TimeSelectComponent
