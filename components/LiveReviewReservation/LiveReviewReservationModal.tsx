@@ -121,6 +121,11 @@ const LiveReviewReservationModal: React.FC<Props> = ({ discussion }) => {
 						</div>
 					)
 				})}
+				{Object.keys(availableDays).length === 0 && (
+					<div className="text-center w-full m-4">
+						예약 가능한 시간이 없습니다.
+					</div>
+				)}
 			</div>
 		</div>
 	)
