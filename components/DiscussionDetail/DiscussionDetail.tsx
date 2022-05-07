@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import '@uiw/react-markdown-preview/markdown.css'
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
+import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
 
 type Props = {
 	discussion: DiscussionResponse
@@ -114,14 +115,20 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 				</div>
 			</div>
 			<div className="dd_live_review_box flex justify-center">
-				<div
+				<a
+					href="#live_review_reservation"
 					className={`btn mt-6 ${
 						discussion.liveReviewRequired ? 'btn-primary' : 'btn-disabled'
 					}`}
 				>
 					라이브 리뷰 예약
-				</div>
+				</a>
 			</div>
+			{discussion.liveReviewRequired && (
+				<div className="modal" id="live_review_reservation">
+					<LiveReviewReservationModal discussion={discussion} />
+				</div>
+			)}
 		</div>
 	)
 }
