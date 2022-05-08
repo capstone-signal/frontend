@@ -13,6 +13,7 @@ export enum DiscussionState {
 export type DirectCode = {
 	content: string
 	filename: string
+	language: string
 }
 
 export type DiscussionBox = {
@@ -29,6 +30,7 @@ type CreateDiscussionRequest = {
 	discussionType: 'PR' | 'COMMIT' | 'DIRECT'
 	question: string
 	tagIds: number[]
+	title: string
 	usePriority: boolean
 	liveReviewRequired: boolean
 	liveReviewAvailableTimes?: {
@@ -56,6 +58,6 @@ export async function createDiscussion(
 	data: CreateDiscussionRequest
 ): Promise<DiscussionResponse> {
 	// 호출하는 쪽에서 data 검증 필요
-	const response = await post<DiscussionResponse>('/discussion', data)
+	const response = await post<DiscussionResponse>('/discussion/', data)
 	return response
 }
