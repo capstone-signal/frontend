@@ -6,7 +6,7 @@ interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
 	return (
-		<div className="navbar bg-base-100 border-b-2">
+		<div className="navbar bg-base-100 border-b-2 min-w-[65rem]">
 			<div className="flex-1">
 				<Link href="/">
 					<a className="btn btn-ghost normal-case text-xl">HiDiscuss</a>

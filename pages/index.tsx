@@ -2,8 +2,9 @@ import type { NextPage } from 'next'
 import Image from 'next/image'
 import Head from 'next/head'
 import Layout from '../components/layout/layout'
-import Link from 'next/link'
-import LandingImage from '../public/landing_image.png'
+import LandingImage1 from '../public/landing_image1.png'
+import LandingImage2 from '../public/landing_image2.png'
+import LandingImage3 from '../public/landing_image3.png'
 
 const Home: NextPage = () => {
 	return (
@@ -14,16 +15,33 @@ const Home: NextPage = () => {
 			<Layout>
 				<div className="p-4 flex flex-col justify-center">
 					<div className="w-[100%] rounded-2xl overflow-hidden mb-4">
-						<div className="absolute">
-							<p>Freely make a discussion</p>
-							<p>of your code!</p>
-						</div>
 						<Image
-							src={LandingImage}
+							src={LandingImage1}
 							alt="landing_img"
-							layout="intrinsic"
+							layout="responsive"
 							objectFit="cover"
+							className="flex"
 						/>
+					</div>
+					<div className="flex flex-row justify-between mb-2">
+						<div className="w-[calc(50%-0.5rem)] rounded-2xl overflow-hidden">
+							<Image
+								src={LandingImage2}
+								alt="landing_img"
+								layout="responsive"
+								objectFit="cover"
+								className="flex"
+							/>
+						</div>
+						<div className="w-[calc(50%-0.5rem)] rounded-2xl overflow-hidden">
+							<Image
+								src={LandingImage3}
+								alt="landing_img"
+								layout="responsive"
+								objectFit="cover"
+								className="flex"
+							/>
+						</div>
 					</div>
 				</div>
 			</Layout>

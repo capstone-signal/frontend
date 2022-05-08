@@ -10,9 +10,9 @@ interface LayoutProps {
 const Layout: FunctionComponent<LayoutProps> = (props) => (
 	<>
 		<Header />
-		<div className="flex flew-row justify-center">
+		<div className="flex flex-row justify-center w-full min-w-[65rem] bg-base-300">
 			<Sidebar />
-			<main className="w-full min-w-[50rem] max-w-[80rem]">
+			<main className="min-w-[50rem] max-w-[80rem] w-[calc(100%-15rem)]">
 				{props.children}
 			</main>
 		</div>

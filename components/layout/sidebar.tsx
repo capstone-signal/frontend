@@ -5,7 +5,7 @@ import Link from 'next/link'
 interface SidebarProps {}
 
 const Sidebar: FunctionComponent<SidebarProps> = () => (
-	<div className="w-[15rem] h-[32rem] bg-base-200 px-1">
+	<div className="w-[15rem] h-[32rem] bg-base-200 px-1 border-r-2 border-b-2 border-solid border-gray-300">
 		<ul className="relative">
 			<li className="relative">
 				<Link href="/">
