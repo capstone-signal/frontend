@@ -9,6 +9,7 @@ import {
 import QuestionContent from './QuestionContent'
 import LiveReviewCalendar from '../LiveReviewReservation/LiveReviewCalendar'
 import SelectTagComponent from './SelectTagComponent'
+import { mergeAvailableTimes } from '../../utils/mergeAvailableTimes'
 
 type Props = Record<string, any>
 
@@ -25,12 +26,18 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	>([])
 	const [codes, setCodes] = useState<DirectCode[]>([])
 	const validateCodes = () => {
-		throw new Error('not implemented')
+		return true
 	}
 
 	const reset = () => {
-		throw new Error('not implemented')
+		setTitle('')
+		setQuestion('')
+		setSelectedTagIds([])
+		setLiveReviewRequired(false)
+		setLiveReviewAvailableTimes([])
+		setCodes([])
 	}
+
 	const onCreateBtnClick = async (e: React.FormEvent) => {
 		e.preventDefault()
 		if (discussionType === 'DIRECT') {
@@ -42,15 +49,25 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 			// validate git info
 		}
 
+		let availableTimes: LiveReviewAvailableTime[] = []
+		if (liveReviewRequired) {
+			if (liveReviewAvailableTimes.length === 0) {
+				alert('select the available time.')
+				return
+			} else {
+				availableTimes = mergeAvailableTimes(liveReviewAvailableTimes)
+			}
+		}
 		// create discussion
 		try {
 			const discussion = await createDiscussion({
+				title,
 				discussionType,
 				question,
 				tagIds: selectedTagIds,
 				liveReviewRequired,
 				liveReviewAvailableTimes: {
-					times: liveReviewAvailableTimes
+					times: availableTimes
 				},
 				codes,
 				usePriority: false

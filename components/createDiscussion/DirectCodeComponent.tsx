@@ -7,33 +7,37 @@ type Props = {
 	setCodes: (value: DirectCode[]) => void
 }
 
+const languageGroup = [
+	'JavaScript',
+	'TypeScript',
+	'Java',
+	'Python',
+	'C',
+	'C#',
+	'C++',
+	'HTML',
+	'XML',
+	'PHP',
+	'JSON',
+	'Markdown',
+	'Powershell',
+	'Ruby',
+	'CSS',
+	'SCSS',
+	'SASS',
+	'R'
+]
+
 const DirectCodeComponent: React.FunctionComponent<Props> = ({
 	codes,
 	setCodes
 }) => {
-	const languageGroup = [
-		'JavaScript',
-		'TypeScript',
-		'Java',
-		'Python',
-		'C',
-		'C#',
-		'C++',
-		'HTML',
-		'XML',
-		'PHP',
-		'JSON',
-		'Markdown',
-		'Powershell',
-		'Ruby',
-		'CSS',
-		'SCSS',
-		'SASS',
-		'R'
-	]
 	const [language, setLanguage] = useState<string[]>([])
 	const handleAddFile = () => {
-		setCodes([...codes, { filename: '', content: '// write codes' }])
+		setCodes([
+			...codes,
+			{ filename: '', content: '// write codes', language: 'JavaScript' }
+		])
 	}
 	const handleDeleteFile = (index: number) => {
 		const newCodes = [...codes]
@@ -56,10 +60,10 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 		setCodes(newCodes)
 	}
 	const handleLanguage = (value: string | undefined, idx: number) => {
-		const newLanguage = [...language]
+		const newCodes = [...codes]
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		newLanguage[idx] = value!.toLowerCase()
-		setLanguage(newLanguage)
+		newCodes[idx].language = value!
+		setCodes(newCodes)
 	}
 	return (
 		<div className="create_discussion_form">
@@ -81,6 +85,7 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 							/>
 							<select
 								className="select select-bordered ml-2"
+								value={code.language}
 								onChange={(e) => handleLanguage(e.target.value, idx)}
 							>
 								{languageGroup.map((lang) => {
@@ -104,7 +109,7 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 									code={code}
 									handleChangeCode={handleChangeCode}
 									idx={idx}
-									language={language[idx]}
+									language={code.language}
 								/>
 							</div>
 						</div>
