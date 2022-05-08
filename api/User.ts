@@ -1,8 +1,5 @@
 import { CommonResponse } from './common'
-
-export const user = {
-	isLoggedIn: false
-}
+import jwt_decode from 'jwt-decode'
 
 export type UserResponse = {
 	accessToken: string
@@ -20,15 +17,32 @@ export type userState = {
 	point: number
 } & CommonResponse
 
-export function isLoggedIn() {
-	if (user.isLoggedIn) return true
-	else return false
+export function getCook(cookiename: string) {
+	if (typeof window !== 'object') return
+	const cookiestring = RegExp(cookiename + '=[^;]+').exec(document.cookie)
+	if (cookiestring == null) return null
+	return decodeURIComponent(
+		cookiestring ? cookiestring.toString().replace(/^[^=]+./, '') : ''
+	)
 }
 
-export function signIn() {
-	user.isLoggedIn = true
+export function isLogin() {
+	const accessToken = getCook('accessToken')
+	const refreshToken = getCook('refreshToken')
+
+	let accessTokenDecoded = null
+	let refreshTokenDecoded = null
+	if (accessToken != null) accessTokenDecoded = jwt_decode(accessToken) as any
+	if (refreshToken != null)
+		refreshTokenDecoded = jwt_decode(refreshToken) as any
+
+	if (refreshTokenDecoded == null || accessToken == null) {
+		return false
+	}
+	return true
 }
 
 export function signOut() {
-	user.isLoggedIn = false
+	document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;'
+	document.cookie = 'refreshToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;'
 }

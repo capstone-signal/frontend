@@ -7,7 +7,7 @@ type Props = {
 	setSelectedTagIds: (value: number[]) => void
 }
 
-const SelectTagComponent: React.FunctionComponent<Props> = ({
+const TagButton: React.FunctionComponent<Props> = ({
 	index,
 	tagName,
 	selectedTagIds,
@@ -23,19 +23,13 @@ const SelectTagComponent: React.FunctionComponent<Props> = ({
 		setSelect(!select)
 	}
 	return (
-		<>
-			{select === false && (
-				<div className="btn btn-outline btn-primary m-1" onClick={clickTag}>
-					{tagName}
-				</div>
-			)}
-			{select === true && (
-				<div className="btn btn-primary m-1 box-border" onClick={clickTag}>
-					{tagName}
-				</div>
-			)}
-		</>
+		<div
+			className={`btn btn-primary m-1 ${select ? '' : 'btn-outline'}`}
+			onClick={clickTag}
+		>
+			{tagName}
+		</div>
 	)
 }
 
-export default SelectTagComponent
+export default TagButton

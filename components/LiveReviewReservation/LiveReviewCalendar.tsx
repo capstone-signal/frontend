@@ -1,6 +1,6 @@
 import { LiveReviewAvailableTime } from '../../api/Discussion'
 import TimeSelectComponent from './TimeSelectComponent'
-import { DateField, Hours } from './TodayTo3Days'
+import { DateField, Hours } from '../../variables/TodayTo3DaysAndTime'
 
 type Props = {
 	liveReviewRequired: boolean

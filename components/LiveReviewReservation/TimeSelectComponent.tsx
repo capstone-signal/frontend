@@ -1,5 +1,8 @@
 import { useState } from 'react'
-import { getTimeRange, getTimeRangeString } from './TodayTo3Days'
+import {
+	getTimeRange,
+	getTimeRangeString
+} from '../../variables/TodayTo3DaysAndTime'
 
 type Props = {
 	key: number
