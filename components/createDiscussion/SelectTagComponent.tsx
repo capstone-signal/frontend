@@ -1,3 +1,6 @@
+import { useQuery } from 'react-query'
+import { getTags } from '../../api/Tag'
+import Spinner from '../Common/Spinner'
 import TagButton from './TagButton'
 
 type Props = {
@@ -9,39 +12,21 @@ const SelectTagComponent: React.FunctionComponent<Props> = ({
 	selectedTagIds,
 	setSelectedTagIds
 }) => {
-	const tags = [
-		'react',
-		'vue',
-		'nextjs',
-		'spring',
-		'express',
-		'django',
-		'flask',
-		'c',
-		'c++',
-		'python',
-		'java',
-		'javascript',
-		'typescript',
-		'kotlin',
-		'tensorflow',
-		'machine learning',
-		'web frontend',
-		'web backend',
-		'android',
-		'ios',
-		'swift',
-		'sql',
-		'nosql'
-	]
+	const { data: tags, isLoading, error } = useQuery('tags', () => getTags())
 
+	if (isLoading) {
+		return <Spinner />
+	}
+	if (error) {
+		return <Spinner />
+	}
 	return (
 		<div>
-			{tags.map((tag, index) => (
+			{tags?.map((tag, index) => (
 				<div key={index} className="inline">
 					<TagButton
 						index={index}
-						tagName={tag}
+						tagName={tag.name}
 						selectedTagIds={selectedTagIds}
 						setSelectedTagIds={setSelectedTagIds}
 					/>

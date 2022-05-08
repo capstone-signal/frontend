@@ -1,6 +1,13 @@
 import { CommonResponse } from './common'
 import jwt_decode from 'jwt-decode'
 
+export type UserResponse = {
+	accessToken: string
+	email: string
+	name: string
+	point: number
+}
+
 export type userState = {
 	id: number
 	email: string
