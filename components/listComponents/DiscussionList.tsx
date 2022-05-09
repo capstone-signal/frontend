@@ -1,28 +1,26 @@
-import { useState } from 'react'
-import { DiscussionState, LiveReviewAvailableTime } from '../../api/Discussion'
+import { DiscussionResponse } from '../../api/Discussion'
+import Spinner from '../Common/Spinner'
 import DiscussionBox from './DiscussionBox'
 
 type Props = {
-	discussions: {
-		id: number
-		title: string
-		reviewee: string
-		question: string
-		state: DiscussionState
-		//tags: TagResponse[]
-		//user: UserResponse
-	}[]
+	discussions: DiscussionResponse[] | undefined
 }
 
 const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 	return (
-		<div>
-			{discussions.map((discussion, index) => (
-				<div key={index}>
-					<DiscussionBox discussion={discussion} />
+		<>
+			{typeof discussions != undefined ? (
+				<div>
+					{discussions?.map((discussion, index) => (
+						<div key={index}>
+							<DiscussionBox discussion={discussion} />
+						</div>
+					))}
 				</div>
-			))}
-		</div>
+			) : (
+				<Spinner />
+			)}
+		</>
 	)
 }
 
