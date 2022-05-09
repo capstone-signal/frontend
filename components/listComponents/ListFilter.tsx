@@ -36,7 +36,7 @@ const ListFilter: React.FunctionComponent<FilterProps> = () => {
 	]
 	const stateTags = ['Not reviewed', 'Reviewing', 'Completed']
 	return (
-		<div className="border-2 border-solid border-gray-400 rounded-xl p-3 mb-4">
+		<div className="border-2 border-solid border-gray-400 rounded-xl p-3 mb-4 bg-base-200">
 			<div className="text-xl mb-2 font-bold">검색 필터</div>
 			<div className="flex flex-row mb-2">
 				<div className="text-xl text-center w-[6.5rem] mt-2">Tags</div>
