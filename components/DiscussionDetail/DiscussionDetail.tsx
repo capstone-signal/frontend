@@ -61,7 +61,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
 					</span>
 				</div>
-				<div className="tags">
+				<div className="tags mb-4">
 					{discussion.tags?.map((tag) => (
 						<div className="badge badge-info badge-lg mx-1" key={tag.id}>
 							{tag.name}
@@ -108,7 +108,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 					</div>
 					<div className="selected_code">
 						<MarkdownViewer
-							source={`\`\`\`\n ${codes[selectedCode].content} \n\`\`\``} /* TODO : language 추가*/
+							source={`\`\`\`\n ${codes[selectedCode]?.content} \n\`\`\``} /* TODO : language 추가*/
 							style={codeMarkdownViewerStyle}
 						/>
 					</div>

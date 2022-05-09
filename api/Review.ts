@@ -10,6 +10,7 @@ export type ReviewResponse = {
 	id: number
 	reviewType: 'COMMENT' | 'LIVE'
 	reviewer: UserResponse
+	threadList?: ThreadResponse[]
 } & CommonResponse
 
 export type ReviewPageResponse = {
@@ -33,7 +34,7 @@ export type ThreadResponse = {
 	id: number
 	content: string
 	user?: UserResponse
-	review?: ReviewResponse
+	//review?: ReviewResponse
 } & CommonResponse
 
 export type ThreadPageResponse = {

@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useQuery } from 'react-query'
 import { getThreadByReviewId, ReviewResponse } from '../../api/Review'
 import Spinner from '../Common/Spinner'
+import Thread from './Thread'
 import ThreadWriteForm from './ThreadWriteForm'
 
 type Props = {
@@ -10,14 +11,14 @@ type Props = {
 
 const ThreadList: React.FC<Props> = ({ review }) => {
 	const [isToggled, setToggled] = useState<boolean>(false)
-	const [page, setPage] = useState<number>(0)
-	const { data, error, isLoading } = useQuery(
-		[`thread${review.id}`, review.id],
-		() => getThreadByReviewId(review.id, page),
-		{
-			enabled: isToggled
-		}
-	)
+	// const [page, setPage] = useState<number>(0)
+	// const { data, error, isLoading } = useQuery(
+	// 	[`thread${review.id}`, review.id],
+	// 	() => getThreadByReviewId(review.id, page),
+	// 	{
+	// 		enabled: isToggled
+	// 	}
+	// )
 
 	const handleClickEnabledBtn = () => {
 		setToggled(true)
@@ -39,12 +40,11 @@ const ThreadList: React.FC<Props> = ({ review }) => {
 					<ThreadWriteForm reviewId={review.id} />
 				</div>
 			</div>
-			{isLoading && <Spinner />}
-			{error && <div>Error</div>}
 			<div className="p-6">
-				{data?.content.map((thread) => {
-					return <div key={thread.id}>{thread.content}</div>
-				})}
+				{isToggled &&
+					review.threadList?.map((thread) => {
+						return <Thread key={thread.id} thread={thread} />
+					})}
 			</div>
 		</div>
 	)
