@@ -30,7 +30,7 @@ export function get<T>(url: string, opts: RequestInit = {}): Promise<T> {
 		}
 	}).then((response) => {
 		if (!response.ok) {
-			throw new Error(`${response.status} ${response.statusText}`)
+			throw new Error(`${response.status} ${JSON.stringify(response.body)}`)
 		}
 		return response.json()
 	})
@@ -53,7 +53,7 @@ export function post<T>(
 		}
 	}).then((response) => {
 		if (!response.ok) {
-			throw new Error(`${response.status} ${response.statusText}`)
+			throw new Error(`${response.status} ${JSON.stringify(response.body)}}`)
 		}
 		return response.json()
 	})

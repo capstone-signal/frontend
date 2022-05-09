@@ -58,7 +58,6 @@ export type DiscussionResponse = {
 	title: string
 	question: string
 	state: DiscussionState
-	discussionResponseDto: any
 	tags: TagResponse[]
 	user: UserResponse
 } & CommonResponse
