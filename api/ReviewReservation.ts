@@ -35,3 +35,10 @@ export async function createReviewReservation(
 	const response = await post<ReviewReservationResponse>('/reservation', data)
 	return response
 }
+
+export async function getMyAvailableReservations(): Promise<
+	ReviewReservationResponse[]
+> {
+	const response = await get<ReviewReservationResponse[]>('/reservation/my')
+	return response
+}

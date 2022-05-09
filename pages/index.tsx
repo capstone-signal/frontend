@@ -5,12 +5,13 @@ import Layout from '../components/layout/layout'
 import LandingImage1 from '../public/landing_image1.png'
 import LandingImage2 from '../public/landing_image2.png'
 import LandingImage3 from '../public/landing_image3.png'
+import ReviewAvailable from '../components/LiveReviewReservation/ReviewAvailable'
 
 const Home: NextPage = () => {
 	return (
 		<div>
 			<Head>
-				<title>Create Next App</title>
+				<title>Hidiscuss</title>
 			</Head>
 			<Layout>
 				<div className="p-4 flex flex-col justify-center">
