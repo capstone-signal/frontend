@@ -1,4 +1,5 @@
 import { DiscussionResponse } from '../../api/Discussion'
+import Link from 'next/link'
 import Spinner from '../Common/Spinner'
 import DiscussionBox from './DiscussionBox'
 
@@ -12,9 +13,9 @@ const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 			{typeof discussions != undefined ? (
 				<div>
 					{discussions?.map((discussion, index) => (
-						<div key={index}>
+						<Link href={`/discussion/${discussion.id}`} passHref key={index}>
 							<DiscussionBox discussion={discussion} />
-						</div>
+						</Link>
 					))}
 				</div>
 			) : (

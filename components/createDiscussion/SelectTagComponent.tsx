@@ -25,7 +25,7 @@ const SelectTagComponent: React.FunctionComponent<Props> = ({
 			{tags?.map((tag, index) => (
 				<div key={index} className="inline">
 					<TagButton
-						index={index}
+						index={tag.id}
 						tagName={tag.name}
 						selectedTagIds={selectedTagIds}
 						setSelectedTagIds={setSelectedTagIds}
