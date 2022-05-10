@@ -2,12 +2,13 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 interface Props {
-	discussionAmount: number
+	discussionAmount: number | undefined
 }
 
 const Pagination: React.FunctionComponent<Props> = ({ discussionAmount }) => {
 	const router = useRouter()
-	const maxPageNumber = Math.ceil(discussionAmount / 5)
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const maxPageNumber = Math.ceil(discussionAmount! / 5)
 	const { page } = router.query
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const currentPage = parseInt(page! as string)

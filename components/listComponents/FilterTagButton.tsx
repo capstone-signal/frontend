@@ -1,14 +1,15 @@
 import { useState } from 'react'
+import { TagResponse } from '../../api/Tag'
 
 type Props = {
-	tagName: string
+	tag: TagResponse
 	letterCase: 'uppercase' | 'lowercase' | 'normal-case'
-	selectedFilters: string[]
-	setSelectedFilters: (value: string[]) => void
+	selectedFilters: number[]
+	setSelectedFilters: (value: number[]) => void
 }
 
 const FilterTagButton: React.FunctionComponent<Props> = ({
-	tagName,
+	tag,
 	letterCase,
 	selectedFilters,
 	setSelectedFilters
@@ -16,9 +17,9 @@ const FilterTagButton: React.FunctionComponent<Props> = ({
 	const [select, setSelect] = useState<boolean>(false)
 	const clickTag = () => {
 		if (!select) {
-			setSelectedFilters([...selectedFilters, tagName])
+			setSelectedFilters([...selectedFilters, tag.id])
 		} else {
-			setSelectedFilters(selectedFilters.filter((tag) => tag !== tagName))
+			setSelectedFilters(selectedFilters.filter((key) => key !== tag.id))
 		}
 		setSelect(!select)
 	}
@@ -29,7 +30,7 @@ const FilterTagButton: React.FunctionComponent<Props> = ({
 			}`}
 			onClick={clickTag}
 		>
-			{tagName}
+			{tag.name}
 		</div>
 	)
 }

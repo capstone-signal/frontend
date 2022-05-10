@@ -1,24 +1,38 @@
 import { useState } from 'react'
+import { useQuery } from 'react-query'
+import { DiscussionFilter, getDiscussions } from '../../api/Discussion'
 import DiscussionList from './DiscussionList'
 import ListFilter from './ListFilter'
 import Pagination from './Pagination'
+import { useRouter } from 'next/router'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {}
 
 const ListComponent: React.FunctionComponent<Props> = () => {
-	const discussions = new Array(7).fill({
-		id: 1,
-		title: '1번 discussion',
-		reviewee: 'test_reviewee',
-		question: 'OOO에 대한 질문이 있습니다.',
-		state: 0
+	const router = useRouter()
+	const { page, tags, state, keyword, sort, onlyMine } = router.query
+	const [discussionFilter, setDiscussionFilter] = useState<DiscussionFilter>({
+		onlyMine: false,
+		tags: [],
+		keyword: '',
+		state: 'NOT_REVIEWED'
 	})
+	const {
+		data: discussions,
+		isLoading,
+		error
+	} = useQuery('discussions', () =>
+		getDiscussions({ page, tags, state, keyword, sort, onlyMine })
+	)
 	return (
 		<>
-			<ListFilter />
-			<DiscussionList discussions={discussions} />
-			<Pagination discussionAmount={discussions.length} />
+			<ListFilter
+				discussionFilter={discussionFilter}
+				setDiscussionFilter={setDiscussionFilter}
+			/>
+			<DiscussionList discussions={discussions?.content} />
+			<Pagination discussionAmount={discussions?.totalElements} />
 		</>
 	)
 }

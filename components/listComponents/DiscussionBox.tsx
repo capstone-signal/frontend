@@ -1,16 +1,7 @@
-import { useState } from 'react'
-import { DiscussionState, LiveReviewAvailableTime } from '../../api/Discussion'
+import { DiscussionResponse } from '../../api/Discussion'
 
 type Props = {
-	discussion: {
-		id: number
-		title: string
-		reviewee: string
-		question: string
-		state: DiscussionState
-		//tags: TagResponse[]
-		//user: UserResponse
-	}
+	discussion: DiscussionResponse
 }
 
 const DiscussionBox: React.FunctionComponent<Props> = ({ discussion }) => {
@@ -18,9 +9,14 @@ const DiscussionBox: React.FunctionComponent<Props> = ({ discussion }) => {
 		<div className="w-full bg-red-200 rounded-xl h-[7rem] p-3 mb-4">
 			<div className="flex flex-row justify-between">
 				<div className="font-bold">{discussion.title}</div>
-				<div className="w-">{discussion.reviewee}</div>
+				<div className="w-">{discussion.user.name}</div>
 			</div>
 			<div>{discussion.question}</div>
+			<div className="flex flex-row">
+				{discussion.tags.map((tag, index) => (
+					<div key={index}>{tag.name}</div>
+				))}
+			</div>
 		</div>
 	)
 }
