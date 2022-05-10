@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useQuery, useQueryClient } from 'react-query'
+import { useQuery } from 'react-query'
 import { getCommits, getMyRepos, getPullRequests } from '../../api/Github'
 
 type Props = {
@@ -13,15 +13,11 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 }) => {
 	const [selectedRepo, setSelectedRepo] = useState<number>(-1)
 	const query = useQuery('getMyRepo', getMyRepos)
-	const commitsQuery = useQuery(
-		`${selectedRepo}`,
-		() => getCommits(selectedRepo),
-		{
-			enabled: selectedRepo > 0
-		}
-	)
+	const commitsQuery = useQuery('repoCommits', () => getCommits(selectedRepo), {
+		enabled: selectedRepo > 0
+	})
 	const prQuery = useQuery(
-		`${selectedRepo}`,
+		'repoPullRequests',
 		() => getPullRequests(selectedRepo),
 		{
 			enabled: selectedRepo > 0
