@@ -10,10 +10,12 @@ import QuestionContent from './QuestionContent'
 import LiveReviewCalendar from '../LiveReviewReservation/LiveReviewCalendar'
 import SelectTagComponent from './SelectTagComponent'
 import { mergeAvailableTimes } from '../../utils/mergeAvailableTimes'
+import { useRouter } from 'next/router'
 
 type Props = Record<string, any>
 
 const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
+	const router = useRouter()
 	const [discussionType, setDiscussionType] = useState<
 		'DIRECT' | 'COMMIT' | 'PR'
 	>('DIRECT')
@@ -72,6 +74,8 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 				codes,
 				usePriority: false
 			})
+			alert('create discussion success.')
+			router.push(`/discussion/${discussion.id}`)
 		} catch (e) {
 			console.error(e)
 			alert("can't create discussion.")
