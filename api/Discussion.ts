@@ -107,22 +107,20 @@ export async function getDiscussionById(
 }
 
 export async function getDiscussions(data: {
-	page: string | string[] | undefined
-	keyword: string | string[] | undefined
-	sort: string | string[] | undefined
-	state: string | string[] | undefined
-	tags: string | string[] | undefined
-	onlyMine: string | string[] | undefined
+	page?: string | string[]
+	tags?: string | string[]
+	state?: string | string[]
+	keyword?: string | string[]
+	sort?: string | string[]
+	onlyMine?: string | string[]
 }): Promise<DiscussionListResponse> {
-	let url = ''
-	if (data.page != undefined) url = url + `page=${data.page}&`
-	if (data.keyword != undefined) url = url + `keyword=${data.keyword}&`
-	if (data.sort != undefined) url = url + `sort=${data.sort}&`
-	if (data.state != undefined) url = url + `state=${data.state}&`
-	if (data.tags != undefined) url = url + `tags=${data.tags}&`
-	if (data.tags != undefined) url = url + `onlyMine=${data.onlyMine}`
-	else url = url + `onlyMine=false`
+	const url =
+		`page=${data.page ? data.page : ''}&` +
+		`tags=${data.tags ? data.tags : ''}&` +
+		`state=${data.state ? data.state : ''}&` +
+		`keyword=${data.keyword ? data.keyword : ''}&` +
+		`sort=${data.sort ? data.sort : ''}&` +
+		`onlyMine=${data.onlyMine ?? 'false'}`
 	const response = await get<DiscussionListResponse>(`/discussion/?${url}`)
-	console.log(url, response)
 	return response
 }

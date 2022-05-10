@@ -11,7 +11,7 @@ type Props = {}
 
 const ListComponent: React.FunctionComponent<Props> = () => {
 	const router = useRouter()
-	const { keyword, onlyMine, page, state, sort, tags } = router.query
+	const { page, tags, state, keyword, sort, onlyMine } = router.query
 	const [discussionFilter, setDiscussionFilter] = useState<DiscussionFilter>({
 		onlyMine: false,
 		tags: [],
@@ -23,7 +23,7 @@ const ListComponent: React.FunctionComponent<Props> = () => {
 		isLoading,
 		error
 	} = useQuery('discussions', () =>
-		getDiscussions({ keyword, onlyMine, page, state, sort, tags })
+		getDiscussions({ page, tags, state, keyword, sort, onlyMine })
 	)
 	return (
 		<>
