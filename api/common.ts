@@ -23,10 +23,12 @@ export type PageResponse = {
 export function get<T>(url: string, opts: RequestInit = {}): Promise<T> {
 	return fetch(getApiUrl(url), {
 		...opts,
+		credentials: 'include',
 		headers: {
 			...opts.headers,
 			'Content-Type': 'application/json',
-			Accept: 'application/json'
+			Accept: 'application/json',
+			cookie: typeof document !== 'undefined' ? document.cookie : ''
 		}
 	}).then((response) => {
 		if (!response.ok) {
@@ -46,10 +48,12 @@ export function post<T>(
 		...opts,
 		method: 'POST',
 		body: opts.body || JSON.stringify(body),
+		credentials: 'include',
 		headers: {
 			...opts.headers,
 			'Content-Type': isMultipart ? 'multipart/form-data' : 'application/json',
-			Accept: 'application/json'
+			Accept: 'application/json',
+			cookie: typeof document !== 'undefined' ? document.cookie : '',
 		}
 	}).then((response) => {
 		if (!response.ok) {

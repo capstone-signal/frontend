@@ -8,6 +8,8 @@ import '@uiw/react-markdown-preview/markdown.css'
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
+import { isLogin } from '../../api/User'
+import { useUserId } from '../../hooks/useUserId'
 
 type Props = {
 	discussion: DiscussionResponse
@@ -45,9 +47,17 @@ const codeMarkdownViewerStyle: React.CSSProperties & Record<string, any> = {
 	}
 }
 const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
+	const { userId, isLoggedIn } = useUserId()
 	const [selectedCode, setSelectedCode] = useState<number>(0)
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
+	}
+
+	const liveReviewAvailable = (discussion: DiscussionResponse) => {
+		const cond1 = discussion.liveReviewRequired
+		const cond2 = discussion.user.id !== userId
+		const cond3 = isLoggedIn
+		return cond1 && cond2 && cond3
 	}
 
 	return (
@@ -112,7 +122,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 					</div>
 					<div className="selected_code">
 						<MarkdownViewer
-							source={`\`\`\`\n ${codes[selectedCode]?.content} \n\`\`\``} /* TODO : language 추가*/
+							source={`\`\`\`${codes[selectedCode]?.language}\n ${codes[selectedCode]?.content} \n\`\`\``}
 							style={codeMarkdownViewerStyle}
 						/>
 						<TextDragTest content={codes[selectedCode]?.content} />
@@ -123,13 +133,13 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 				<a
 					href="#live_review_reservation"
 					className={`btn mt-6 ${
-						discussion.liveReviewRequired ? 'btn-primary' : 'btn-disabled'
+						liveReviewAvailable(discussion) ? 'btn-primary' : 'btn-disabled'
 					}`}
 				>
 					라이브 리뷰 예약
 				</a>
 			</div>
-			{discussion.liveReviewRequired && (
+			{liveReviewAvailable(discussion) && (
 				<div className="modal" id="live_review_reservation">
 					<LiveReviewReservationModal discussion={discussion} />
 				</div>
