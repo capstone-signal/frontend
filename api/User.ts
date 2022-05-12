@@ -2,6 +2,7 @@ import { CommonResponse } from './common'
 import jwt_decode from 'jwt-decode'
 
 export type UserResponse = {
+	id: number
 	accessToken: string
 	email: string
 	name: string
@@ -26,7 +27,7 @@ export function getCook(cookiename: string) {
 	)
 }
 
-export function isLogin() {
+export function isLogin(): number {
 	const accessToken = getCook('accessToken')
 	const refreshToken = getCook('refreshToken')
 
@@ -37,9 +38,9 @@ export function isLogin() {
 		refreshTokenDecoded = jwt_decode(refreshToken) as any
 
 	if (refreshTokenDecoded == null || accessToken == null) {
-		return false
+		return -1
 	}
-	return true
+	return parseInt(accessTokenDecoded['userId'], 10)
 }
 
 export function signOut() {
