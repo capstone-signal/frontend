@@ -16,8 +16,9 @@ const QuestionContent: React.FunctionComponent<Props> = ({
 	}
 	return (
 		<div>
-			<div>질문 내용을 작성하세요</div>
+			<div className="text-xl mb-2 ml-2">질문 내용을 작성하세요</div>
 			<MarkdownEditor
+				className="input input-bordered w-full max-w-[40rem] m-2"
 				value={question}
 				onChange={(value) => handleChangeQuestion(value)}
 			/>

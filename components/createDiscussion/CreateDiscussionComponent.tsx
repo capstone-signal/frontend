@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { useState } from 'react'
 import DirectCodeCompoent from './DirectCodeComponent'
 import PRorCommit from './PRorCommit'
 import {
@@ -18,10 +18,10 @@ const PutTitleAndQuestionComponent = ({title, setTitle, question, setQuestion}: 
 	
 	return (
 	<div>
-		<div className="text-xl mb-2 ml-2">Create a new discussion</div>
+		<div className="text-xl mb-2 ml-4">제목을 입력하세요</div>
 		<input
 			type="text"
-			placeholder="제목을 입력하세요"
+			placeholder="어떤 문제를 겪고 있는지 간결하게 소개해주세요"
 			className="input input-bordered w-full max-w-[40rem] m-2"
 			value={title}
 			onChange={(e) => setTitle(e.target.value)}
@@ -43,6 +43,7 @@ const PutDiscussionCodeComponent = ({discussionType, codes, setCodes, setDiscuss
 	
 	return (
 		<div className="m-2">
+			<div className="text-xl mb-2 ml-4">리뷰받을 코드를 어디에서 가져올까요?</div>
 			<div
 				className={`btn w-[12rem] ${
 					discussionType == 'DIRECT' ? 'btn-accent' : 'btn-ghost'
@@ -184,9 +185,11 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 					question={question}
 					setQuestion={setQuestion}
 				/>
-				<button onClick={onNextBtnClick} type="submit" className="btn btn-secondary">
-					다음 단계로 (1/4)
-				</button>
+				<div className="float-right mx-2">
+					<button onClick={onNextBtnClick} type="submit" className="btn btn-dark">
+						다음 단계로 (1/4)
+					</button>
+				</div>
 			</div> }
 		{ progress === 1 && 
 			<div>
@@ -196,24 +199,26 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 					setCodes={setCodes}
 					setDiscussionType={setDiscussionType}
 				/>
-				<button onClick={onNextBtnClick} type="submit" className="btn btn-secondary">
+				<button onClick={onNextBtnClick} type="submit" className="btn btn-dark">
 					다음 단계로 (2/4)
 				</button>
 			</div> }
 		{ progress === 2 &&
 			<div>
+				<div className="text-xl mb-2 ml-4">리뷰어와 더 원활하게 소통할 수 있는 Live Review는 어떠신가요?</div>
 				<ReceiveLiveReviewComponent
 					liveReviewRequired={liveReviewRequired}
 					setLiveReviewRequired={setLiveReviewRequired}
 					liveReviewAvailableTimes={liveReviewAvailableTimes}
 					setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
 				/>
-				<button onClick={onNextBtnClick} type="submit" className="btn btn-secondary">
+				<button onClick={onNextBtnClick} type="submit" className="btn btn-dark">
 					다음 단계로 (3/4)
 				</button>
 			</div> }
 		{ progress === 3 && 
 			<div>
+				<div className="text-xl mb-2 ml-4">Discussion을 표현할 수 있는 태그를 선택해주세요</div>
 				<SelectTagComponent
 					selectedTagIds={selectedTagIds}
 					setSelectedTagIds={setSelectedTagIds}
