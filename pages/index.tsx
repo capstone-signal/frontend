@@ -5,7 +5,11 @@ import Layout from '../components/layout/layout'
 import LandingImage1 from '../public/landing_image1.png'
 import LandingImage2 from '../public/landing_image2.png'
 import LandingImage3 from '../public/landing_image3.png'
-import ReviewAvailable from '../components/LiveReviewReservation/ReviewAvailable'
+import dynamic from 'next/dynamic'
+
+const TextDragTest = dynamic(() => import('../components/TextDragTest'), {
+	ssr: false
+})
 
 const Home: NextPage = () => {
 	return (
@@ -45,6 +49,7 @@ const Home: NextPage = () => {
 						</div>
 					</div>
 				</div>
+				{/*<TextDragTest />*/}
 			</Layout>
 		</div>
 	)

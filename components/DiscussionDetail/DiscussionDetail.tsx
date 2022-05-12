@@ -22,6 +22,10 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	}
 )
 
+const TextDragTest = dynamic(() => import('../../components/TextDragTest'), {
+	ssr: false
+})
+
 const questionMarkdownViewerStyle: React.CSSProperties = {
 	padding: '2rem',
 	backgroundColor: 'transparent',
@@ -111,6 +115,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 							source={`\`\`\`\n ${codes[selectedCode]?.content} \n\`\`\``} /* TODO : language 추가*/
 							style={codeMarkdownViewerStyle}
 						/>
+						<TextDragTest content={codes[selectedCode]?.content} />
 					</div>
 				</div>
 			</div>
