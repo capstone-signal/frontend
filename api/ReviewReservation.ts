@@ -38,12 +38,14 @@ export async function createReviewReservation(
 
 export async function getMyAvailableReservations(): Promise<
 	ReviewReservationResponse[]
-> {
+	> {
 	const response = await get<ReviewReservationResponse[]>('/reservation/my')
 	return response
 }
 
-export async function getReviewReservationById(): Promise<ReviewReservationResponse> {
-	const response = await get<ReviewReservationResponse>('/reservation/:id')
+export async function getReviewReservationById(
+	id: number
+): Promise<ReviewReservationResponse> {
+	const response = await get<ReviewReservationResponse>(`/reservation/${id}`)
 	return response
 }
