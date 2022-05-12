@@ -108,7 +108,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 					</div>
 					<div className="selected_code">
 						<MarkdownViewer
-							source={`\`\`\`\n ${codes[selectedCode]?.content} \n\`\`\``} /* TODO : language 추가*/
+							source={`\`\`\`${codes[selectedCode]?.language}\n ${codes[selectedCode]?.content} \n\`\`\``}
 							style={codeMarkdownViewerStyle}
 						/>
 					</div>
