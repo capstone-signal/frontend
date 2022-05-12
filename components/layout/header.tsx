@@ -2,17 +2,13 @@ import React, { useEffect, useState, FunctionComponent } from 'react'
 import Link from 'next/link'
 import { isLogin, signOut } from '../../api/User'
 import ReviewAvailable from '../LiveReviewReservation/ReviewAvailable'
+import { useUserId } from '../../hooks/useUserId'
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
-	const [loginState, setLoginState] = useState(false)
+	const { isLoggedIn } = useUserId()
 
-	useEffect(() => {
-		if (!window) return
-
-		setLoginState(isLogin())
-	}, [])
 	return (
 		<div className="navbar bg-base-100 border-b-2 min-w-[65rem]">
 			<div className="flex-1">
@@ -21,8 +17,8 @@ const Header: FunctionComponent<HeaderProps> = () => {
 				</Link>
 			</div>
 			<div className="navbar-end">
-				{loginState && <ReviewAvailable />}
-				{loginState ? (
+				{isLoggedIn && <ReviewAvailable />}
+				{isLoggedIn ? (
 					<div className="flex flex-row justify-center">
 						<Link href="/create/discussion" passHref>
 							<button className="btn bg-primary mr-2 normal-case">
