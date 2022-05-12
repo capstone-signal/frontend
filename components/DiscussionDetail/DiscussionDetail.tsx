@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic'
 import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
 import { isLogin } from '../../api/User'
 import { useUserId } from '../../hooks/useUserId'
+import CommentReviewStore from './CommentReivewStore'
+import { CommentReviewDiff } from '../../api/Review'
 
 type Props = {
 	discussion: DiscussionResponse
@@ -24,7 +26,7 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	}
 )
 
-const TextDragTest = dynamic(() => import('../../components/TextDragTest'), {
+const DiscussionCode = dynamic(() => import('./DiscussionCode'), {
 	ssr: false
 })
 
@@ -35,20 +37,10 @@ const questionMarkdownViewerStyle: React.CSSProperties = {
 	borderRadius: '6px'
 }
 
-const codeMarkdownViewerStyle: React.CSSProperties & Record<string, any> = {
-	padding: '2rem',
-	backgroundColor: '#000',
-	height: '32rem',
-	overflow: 'scroll',
-	scrollbarWidth: 'none',
-	msOverflowStyle: 'none',
-	'&::WebkitScrollbar': {
-		display: 'none'
-	}
-}
 const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 	const { userId, isLoggedIn } = useUserId()
 	const [selectedCode, setSelectedCode] = useState<number>(0)
+	const [newReviewList, setNewReviewList] = useState<CommentReviewDiff[]>([])
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
 	}
@@ -114,22 +106,22 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						</ul>
 					</div>
 				</div>
-				<div className="codes basis-5/6 w-3/4">
+				<div className="codes basis-1/2 w-1/2">
 					<div className="codes_header flex flex-row">
 						<div className="p-4 text-2xl border-2 text-xl basis-1/5 rounded-tr-2xl border-gray-600">
 							Codes
 						</div>
 					</div>
 					<div className="selected_code">
-						<MarkdownViewer
-							source={`\`\`\`${codes[selectedCode]?.language}\n ${codes[selectedCode]?.content} \n\`\`\``}
-							style={codeMarkdownViewerStyle}
-						/>
-						<TextDragTest
+						<DiscussionCode
 							language={codes[selectedCode]?.language}
 							content={codes[selectedCode]?.content}
+							setNewReviewList={setNewReviewList}
 						/>
 					</div>
+				</div>
+				<div className="codes basis-1/3 w-1/4">
+					<CommentReviewStore newReviewList={newReviewList} />
 				</div>
 			</div>
 			<div className="dd_live_review_box flex justify-center">

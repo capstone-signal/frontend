@@ -41,6 +41,18 @@ export type ThreadPageResponse = {
 	content: ThreadResponse[]
 } & PageResponse
 
+export type CommentReviewDiff = {
+	codeAfter: string
+	codeLocate: string
+	comment: string
+	discussionCode: {
+		content: string
+		filename: string
+		id: 0
+		language: string
+	}
+}
+
 export async function getReviewByDiscussionId(
 	discussionId: number,
 	page: number
