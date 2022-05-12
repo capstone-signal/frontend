@@ -125,7 +125,10 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 							source={`\`\`\`${codes[selectedCode]?.language}\n ${codes[selectedCode]?.content} \n\`\`\``}
 							style={codeMarkdownViewerStyle}
 						/>
-						<TextDragTest content={codes[selectedCode]?.content} />
+						<TextDragTest
+							language={codes[selectedCode]?.language}
+							content={codes[selectedCode]?.content}
+						/>
 					</div>
 				</div>
 			</div>
