@@ -66,6 +66,7 @@ export type DiscussionCodeResponse = {
 	id: number
 	filename: string
 	content: string
+	language: string
 } & CommonResponse
 
 export type DiscussionFilter = {
