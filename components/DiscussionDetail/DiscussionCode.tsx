@@ -5,6 +5,7 @@ import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import { useSelectionLocation } from '../../hooks/useSelectionLocation'
 import AddCommentReviewModal from './AddCommentReviewModal'
 import { CommentReviewDiff } from '../../api/Review'
+import { DiscussionCodeResponse } from '../../api/Discussion'
 
 const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	() => import('@uiw/react-markdown-preview'),
@@ -16,6 +17,8 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 interface Props {
 	language: string
 	content: string
+	discussionCode: DiscussionCodeResponse
+	newReviewList: CommentReviewDiff[]
 	setNewReviewList: (value: CommentReviewDiff[]) => void
 }
 
@@ -32,11 +35,11 @@ const codeMarkdownViewerStyle: React.CSSProperties & Record<string, any> = {
 }
 
 function ClickEndHandler(e: any) {
-	const { x, y } = useSelectionLocation(e)
+	const { x, y } = useSelectionLocation(e, 'code-block')
 	const addEl = document.getElementById('add-review')
 	addEl!.style.left = x + 'px'
-	addEl!.style.top = y + 10 + 'px'
-	addEl!.style.display = 'block'
+	addEl!.style.top = y + 'px'
+	addEl!.style.display = 'flex'
 	addEl!.style.position = 'absolute'
 }
 
@@ -49,12 +52,15 @@ function ButtonClear() {
 const DiscussionCode: React.FC<Props> = ({
 	language,
 	content,
+	discussionCode,
+	newReviewList,
 	setNewReviewList
 }) => {
 	const [reviewCode, setReviewCode] = useState<string>('')
 	const [newCode, setNewCode] = useState<string>('')
+	const [offSet, setOffSet] = useState<number[]>([0, 0])
 	const selection = window.getSelection()
-	const dragCode = () => {
+	const dragCode = (e: any) => {
 		if (
 			selection?.anchorNode == selection?.focusNode &&
 			selection?.anchorOffset != selection?.focusOffset
@@ -64,31 +70,44 @@ const DiscussionCode: React.FC<Props> = ({
 			const selectedCodes = selection?.toString()
 			setReviewCode(selectedCodes!)
 			//console.log(reviewCode)
-			//console.log(selection?.anchorNode, selection?.anchorOffset)
-			//console.log(selection?.focusNode, selection?.focusOffset)
+			setOffSet([selection!.anchorOffset, selection!.focusOffset])
 		}
+	}
+	const handleReviewAdd = (newCode: string, comment: string) => {
+		const newReview = {
+			codeAfter: newCode,
+			codeLocate: offSet,
+			comment: comment,
+			discussionCode: discussionCode
+		}
+		setNewReviewList([...newReviewList, newReview])
 	}
 	return (
 		<>
-			<div onMouseUp={dragCode} onMouseDown={ButtonClear}>
+			<div id="code-block" onMouseUp={dragCode} onMouseDown={ButtonClear}>
 				<MarkdownViewer
 					source={`\`\`\`${language}\n ${content} \n\`\`\``}
 					style={codeMarkdownViewerStyle}
 				/>
 			</div>
-			<a href="#addCommentReview" id="add-review" className="hidden">
-				<button
-					onClick={() => {
-						ButtonClear()
-						setNewCode(reviewCode)
-					}}
-					className="btn"
-				>
-					+
-				</button>
-			</a>
-			<div className="modal" id="addCommentReview">
-				<AddCommentReviewModal newCode={newCode} setNewCode={setNewCode} />
+			<label
+				htmlFor="addCommentReview"
+				id="add-review"
+				onClick={() => {
+					ButtonClear()
+					setNewCode(reviewCode)
+				}}
+				className="btn modal-button hidden"
+			>
+				Add
+			</label>
+			<input type="checkbox" id="addCommentReview" className="modal-toggle" />
+			<div className="modal">
+				<AddCommentReviewModal
+					newCode={newCode}
+					setNewCode={setNewCode}
+					handleReviewAdd={handleReviewAdd}
+				/>
 			</div>
 		</>
 	)

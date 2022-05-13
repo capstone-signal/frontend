@@ -106,7 +106,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						</ul>
 					</div>
 				</div>
-				<div className="codes basis-1/2 w-1/2">
+				<div className="codes basis-5/6 w-3/4">
 					<div className="codes_header flex flex-row">
 						<div className="p-4 text-2xl border-2 text-xl basis-1/5 rounded-tr-2xl border-gray-600">
 							Codes
@@ -116,13 +116,13 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						<DiscussionCode
 							language={codes[selectedCode]?.language}
 							content={codes[selectedCode]?.content}
+							discussionCode={codes[selectedCode]}
+							newReviewList={newReviewList}
 							setNewReviewList={setNewReviewList}
 						/>
 					</div>
 				</div>
-				<div className="codes basis-1/3 w-1/4">
-					<CommentReviewStore newReviewList={newReviewList} />
-				</div>
+				<CommentReviewStore newReviewList={newReviewList} />
 			</div>
 			<div className="dd_live_review_box flex justify-center">
 				<a

@@ -43,14 +43,9 @@ export type ThreadPageResponse = {
 
 export type CommentReviewDiff = {
 	codeAfter: string
-	codeLocate: string
+	codeLocate: number[]
 	comment: string
-	discussionCode: {
-		content: string
-		filename: string
-		id: 0
-		language: string
-	}
+	discussionCode: DiscussionCodeResponse
 }
 
 export async function getReviewByDiscussionId(
