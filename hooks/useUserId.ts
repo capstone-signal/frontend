@@ -3,6 +3,7 @@ import { isLogin } from '../api/User'
 
 export const useUserId = () => {
 	const [userId, setUserId] = useState<number | null>(null)
+	const [init, setInit] = useState<boolean>(false)
 
 	useEffect(() => {
 		if (!window) {
@@ -12,10 +13,12 @@ export const useUserId = () => {
 		if (userId > 0) {
 			setUserId(userId)
 		}
+		setInit(true)
 	}, [])
 
 	return {
 		userId,
-		isLoggedIn: userId !== null
+		isLoggedIn: userId !== null,
+		init
 	}
 }
