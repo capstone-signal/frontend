@@ -72,50 +72,52 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 					Add Code
 				</div>
 			</div>
-			{codes.map((code, idx) => {
-				return (
-					<div key={idx} className="flex flex-col">
-						<div className="flex flex-row items-center">
-							<input
-								type="text"
-								placeholder="File명을 입력하세요"
-								className="input input-bordered w-full max-w-[10rem] mt-2 mb-2"
-								value={code.filename}
-								onChange={(e) => handleChangeName(e.target.value, idx)}
-							/>
-							<select
-								className="select select-bordered ml-2"
-								value={code.language}
-								onChange={(e) => handleLanguage(e.target.value, idx)}
-							>
-								{languageGroup.map((lang) => {
-									return (
-										<option key={lang} value={lang}>
-											{lang}
-										</option>
-									)
-								})}
-							</select>
-							<div
-								className="btn btn-error ml-2"
-								onClick={() => handleDeleteFile(idx)}
-							>
-								X
-							</div>
-						</div>
-						<div>
-							<div className="border-solid border-2 min-w-[20rem] w-[40rem]">
-								<MonacoEditor
-									code={code}
-									handleChangeCode={handleChangeCode}
-									idx={idx}
-									language={code.language}
+			<div>
+				{codes.map((code, idx) => {
+					return (
+						<div key={idx} className="flex flex-col">
+							<div className="flex flex-row items-center">
+								<input
+									type="text"
+									placeholder="File명을 입력하세요"
+									className="input input-bordered w-full max-w-[10rem] mt-2 mb-2"
+									value={code.filename}
+									onChange={(e) => handleChangeName(e.target.value, idx)}
 								/>
+								<select
+									className="select select-bordered ml-2"
+									value={code.language}
+									onChange={(e) => handleLanguage(e.target.value, idx)}
+								>
+									{languageGroup.map((lang) => {
+										return (
+											<option key={lang} value={lang}>
+												{lang}
+											</option>
+										)
+									})}
+								</select>
+								<div
+									className="btn btn-error ml-2"
+									onClick={() => handleDeleteFile(idx)}
+								>
+									X
+								</div>
+							</div>
+							<div>
+								<div className="border-solid border-2">
+									<MonacoEditor
+										code={code}
+										handleChangeCode={handleChangeCode}
+										idx={idx}
+										language={code.language}
+									/>
+								</div>
 							</div>
 						</div>
-					</div>
-				)
-			})}
+					)
+				})}
+			</div>
 		</div>
 	)
 }

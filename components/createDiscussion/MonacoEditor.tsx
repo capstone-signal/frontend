@@ -21,7 +21,7 @@ export const MonacoEditor: React.FunctionComponent<Props> = ({
 }) => {
 	return (
 		<Editor
-			height="15rem"
+			height="20rem"
 			defaultLanguage="javascript"
 			language={language}
 			value={code.content}

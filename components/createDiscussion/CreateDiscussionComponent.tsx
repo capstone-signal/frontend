@@ -1,102 +1,17 @@
 import React, { useState } from 'react'
-import DirectCodeCompoent from './DirectCodeComponent'
-import PRorCommit from './PRorCommit'
 import {
 	createDiscussion,
 	DirectCode,
 	LiveReviewAvailableTime
 } from '../../api/Discussion'
-import QuestionContent from './QuestionContent'
-import LiveReviewCalendar from '../LiveReviewReservation/LiveReviewCalendar'
 import SelectTagComponent from './SelectTagComponent'
 import { mergeAvailableTimes } from '../../utils/mergeAvailableTimes'
 import { useRouter } from 'next/router'
+import AddDiscussionCode from './AddDiscussionCode'
+import AddTitleAndQuestion from './AddTitleAndQuestion'
+import ReceiveLiveReview from './ReceiveLiveReview'
 
 type Props = Record<string, any>
-
-const PutTitleAndQuestionComponent = ({title, setTitle, question, setQuestion}: {title:any, setTitle:any, question:any, setQuestion:any}) => {
-	
-	return (
-	<div>
-		<div className="text-xl mb-2 ml-4">제목을 입력하세요</div>
-		<input
-			type="text"
-			placeholder="어떤 문제를 겪고 있는지 간결하게 소개해주세요"
-			className="input input-bordered w-full max-w-[40rem] m-2"
-			value={title}
-			onChange={(e) => setTitle(e.target.value)}
-		/>
-		<div className="m-2">
-			<QuestionContent question={question} setQuestion={setQuestion} />
-		</div>
-	</div>
-	)
-}
-
-const PutDiscussionCodeComponent = ({discussionType, codes, setCodes, setDiscussionType} : {discussionType:any, codes:any, setCodes:any, setDiscussionType:any}) => {
-	const selectDirect = () => {
-		setDiscussionType('DIRECT')
-	}
-	const selectPRorCommit = () => {
-		setDiscussionType('PR')
-	}
-	
-	return (
-		<div className="m-2">
-			<div className="text-xl mb-2 ml-4">리뷰받을 코드를 어디에서 가져올까요?</div>
-			<div
-				className={`btn w-[12rem] ${
-					discussionType == 'DIRECT' ? 'btn-accent' : 'btn-ghost'
-				}`}
-				onClick={selectDirect}
-			>
-				직접 코드 작성하기
-			</div>
-			<div
-				className={`btn w-[15rem] ml-2 ${
-					discussionType != 'DIRECT' ? 'btn-accent' : 'btn-ghost'
-				}`}
-				onClick={selectPRorCommit}
-			>
-				GitHub에서 코드 가져오기
-			</div>
-			<div className="m-2">
-				{discussionType === 'DIRECT' && (
-					<DirectCodeCompoent codes={codes} setCodes={setCodes} />
-				)}
-				{(discussionType === 'PR' || discussionType === 'COMMIT') && (
-					<PRorCommit
-						discussionType={discussionType}
-						setDiscussionType={setDiscussionType}
-					/>
-				)}
-			</div>
-		</div>
-	)
-}
-
-const ReceiveLiveReviewComponent = ({liveReviewRequired, setLiveReviewRequired, liveReviewAvailableTimes, setLiveReviewAvailableTimes} : {liveReviewRequired:any, setLiveReviewRequired:any, liveReviewAvailableTimes:any, setLiveReviewAvailableTimes:any}) => {
-
-	const clickLiveReviewCheck = () => {
-		setLiveReviewRequired(!liveReviewRequired)
-	}
-
-	return (
-		<div className="flex flex-row items-center m-2">
-			<input
-				type="checkbox"
-				className="checkbox mr-2"
-				onClick={clickLiveReviewCheck}
-			></input>
-			<p className="mr-2">Live Review</p>
-				<LiveReviewCalendar
-					liveReviewRequired={liveReviewRequired}
-					liveReviewAvailableTimes={liveReviewAvailableTimes}
-					setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
-			/>
-		</div>
-	)
-}
 
 const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	const router = useRouter()
@@ -111,37 +26,55 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 		LiveReviewAvailableTime[]
 	>([])
 	const [codes, setCodes] = useState<DirectCode[]>([])
-	const [availableTimes, setAvailableTimes] = useState<LiveReviewAvailableTime[]>([])
+	const [selectedRepo, setSelectedRepo] = useState<number>(-1)
+	const [selectedGitNode, setSelectedGitNode] = useState<string>('')
+	const [availableTimes, setAvailableTimes] = useState<
+		LiveReviewAvailableTime[]
+	>([])
 	const [progress, setProgress] = useState<number>(0)
 
-	const validateCodes = () => {
-		return true
-	}
-
-	const reset = () => {
-		setTitle('')
-		setQuestion('')
-		setSelectedTagIds([])
-		setLiveReviewRequired(false)
-		setLiveReviewAvailableTimes([])
-		setCodes([])
-		setProgress(0)
+	const onBeforeBtnClick = () => {
+		if (progress === 0) {
+			return
+		}
+		setProgress(progress - 1)
 	}
 
 	const onNextBtnClick = async (e: React.FormEvent) => {
 		e.preventDefault()
+
+		if (progress === 0 && (title === '' || question === '')) {
+			alert('제목과 질문 내용을 모두 작성해주세요.')
+			return
+		}
 		if (progress === 1 && discussionType === 'DIRECT') {
-			if (!validateCodes()) {
-				alert('enter the code.')
+			if (codes.length === 0) {
+				alert('코드를 입력해주세요.')
 				return
 			}
-		} else {
-			// validate git info
+			if (codes.some((code) => code.content === '')) {
+				alert('코드를 입력해주세요.')
+				return
+			}
+		}
+
+		if (
+			(progress === 1 && discussionType === 'PR') ||
+			discussionType === 'COMMIT'
+		) {
+			if (selectedRepo === -1) {
+				alert('저장소를 선택해주세요.')
+				return
+			}
+			if (selectedGitNode === '') {
+				alert('PR 또는 Commit을 선택해주세요.')
+				return
+			}
 		}
 
 		if (progress === 2 && liveReviewRequired) {
 			if (liveReviewAvailableTimes.length === 0) {
-				alert('select the available time.')
+				alert('가능한 시간대를 최소 1개 이상 입력해주세요.')
 				return
 			} else {
 				setAvailableTimes(mergeAvailableTimes(liveReviewAvailableTimes))
@@ -151,7 +84,10 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	}
 
 	const onCreateBtnClick = async (e: React.FormEvent) => {
-		// create discussion
+		if (selectedTagIds.length === 0) {
+			alert('태그를 선택해주세요.')
+			return
+		}
 		try {
 			const discussion = await createDiscussion({
 				title,
@@ -163,72 +99,96 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 					times: availableTimes
 				},
 				codes,
-				usePriority: false
+				usePriority: false,
+				gitRepositoryId: discussionType !== 'DIRECT' ? selectedRepo : undefined,
+				gitNodeId: discussionType !== 'DIRECT' ? selectedGitNode : undefined
 			})
-			alert('create discussion success.')
+			alert('생성이 완료되었습니다.')
 			router.push(`/discussion/${discussion.id}`)
 		} catch (e) {
 			console.error(e)
 			alert("can't create discussion.")
 		}
-		reset()
 	}
-	
 
 	return (
-		<>
-		{ progress === 0 && 
-			<div>
-				<PutTitleAndQuestionComponent
+		<div className="flex flex-col w-100 items-center h-full">
+			<ul className="steps mb-10">
+				{['질문 작성', '코드 작성', '라이브 리뷰', '태그 선택'].map(
+					(step, index) => (
+						<li
+							key={index}
+							className={`step ${progress >= index ? 'step-primary' : ''}`}
+						>
+							{step}
+						</li>
+					)
+				)}
+			</ul>
+			{progress === 0 && (
+				<AddTitleAndQuestion
 					title={title}
 					setTitle={setTitle}
 					question={question}
 					setQuestion={setQuestion}
 				/>
-				<div className="float-right mx-2">
-					<button onClick={onNextBtnClick} type="submit" className="btn btn-dark">
-						다음 단계로 (1/4)
-					</button>
-				</div>
-			</div> }
-		{ progress === 1 && 
-			<div>
-				<PutDiscussionCodeComponent
+			)}
+			{progress === 1 && (
+				<AddDiscussionCode
 					discussionType={discussionType}
 					codes={codes}
 					setCodes={setCodes}
 					setDiscussionType={setDiscussionType}
+					selectedRepo={selectedRepo}
+					setSelectedRepo={setSelectedRepo}
+					selectedGitNode={selectedGitNode}
+					setSelectedGitNode={setSelectedGitNode}
 				/>
-				<button onClick={onNextBtnClick} type="submit" className="btn btn-dark">
-					다음 단계로 (2/4)
-				</button>
-			</div> }
-		{ progress === 2 &&
-			<div>
-				<div className="text-xl mb-2 ml-4">리뷰어와 더 원활하게 소통할 수 있는 Live Review는 어떠신가요?</div>
-				<ReceiveLiveReviewComponent
+			)}
+			{progress === 2 && (
+				<ReceiveLiveReview
 					liveReviewRequired={liveReviewRequired}
 					setLiveReviewRequired={setLiveReviewRequired}
 					liveReviewAvailableTimes={liveReviewAvailableTimes}
 					setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
 				/>
-				<button onClick={onNextBtnClick} type="submit" className="btn btn-dark">
-					다음 단계로 (3/4)
-				</button>
-			</div> }
-		{ progress === 3 && 
-			<div>
-				<div className="text-xl mb-2 ml-4">Discussion을 표현할 수 있는 태그를 선택해주세요</div>
+			)}
+			{progress === 3 && (
 				<SelectTagComponent
 					selectedTagIds={selectedTagIds}
 					setSelectedTagIds={setSelectedTagIds}
 				/>
-				<button onClick={onCreateBtnClick} type="submit" className="btn btn-secondary">
-					Discussion 올리기
-				</button>
+			)}
+			<div className="flex mt-10">
+				{progress !== 0 && (
+					<button
+						onClick={onBeforeBtnClick}
+						type="submit"
+						className="btn btn-dark mr-6"
+					>
+						이전 단계로
+					</button>
+				)}
+				{progress !== 3 && (
+					<button
+						onClick={onNextBtnClick}
+						type="submit"
+						className="btn btn-dark"
+					>
+						다음 단계로 ({progress + 1}/4)
+					</button>
+				)}
+				{progress === 3 && (
+					<button
+						onClick={onCreateBtnClick}
+						type="submit"
+						className="btn btn-dark"
+					>
+						Discussion 생성
+					</button>
+				)}
 			</div>
-			}
-		</>
+		</div>
 	)
 }
 
