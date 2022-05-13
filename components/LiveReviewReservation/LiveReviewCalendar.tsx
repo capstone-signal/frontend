@@ -35,7 +35,7 @@ const LiveReviewCalendar: React.FunctionComponent<Props> = ({
 					liveReviewRequired ? '' : 'btn-disabled'
 				}`}
 			>
-				Live Review Picker
+				시간대 선택
 			</a>
 			<div className="modal" id="liveReviewModal">
 				<div className="modal-box">
