@@ -13,8 +13,10 @@ const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 			{typeof discussions != undefined ? (
 				<div>
 					{discussions?.map((discussion, index) => (
-						<Link href={`/discussion/${discussion.id}`} passHref key={index}>
-							<DiscussionBox discussion={discussion} />
+						<Link href={`/discussion/${discussion.id}`} key={index}>
+							<a>
+								<DiscussionBox discussion={discussion} />
+							</a>
 						</Link>
 					))}
 				</div>

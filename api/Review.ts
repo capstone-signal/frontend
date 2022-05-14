@@ -48,6 +48,11 @@ export type CommentReviewDiff = {
 	discussionCode: DiscussionCodeResponse
 }
 
+export type CommentReviewDiffList = {
+	diffList: CommentReviewDiff[]
+	discussionId: number
+}
+
 export async function getReviewByDiscussionId(
 	discussionId: number,
 	page: number
@@ -76,5 +81,15 @@ export async function getThreadByReviewId(
 	const response = await get<ThreadPageResponse>(
 		`/review/${reviewId}/thread?page=${page}`
 	)
+	return response
+}
+
+export async function createReview(
+	data: CommentReviewDiffList
+): Promise<ReviewResponse> {
+	data.diffList.forEach((d) => {
+		d.codeLocate = 'q'
+	})
+	const response = await post<ReviewResponse>(`/review?type=COMMENT`, data)
 	return response
 }

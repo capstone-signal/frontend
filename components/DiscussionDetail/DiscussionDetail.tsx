@@ -11,7 +11,7 @@ import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReser
 import { isLogin } from '../../api/User'
 import { useUserId } from '../../hooks/useUserId'
 import CommentReviewStore from './CommentReivewStore'
-import { CommentReviewDiff } from '../../api/Review'
+import { CommentReviewDiff, createReview } from '../../api/Review'
 
 type Props = {
 	discussion: DiscussionResponse
@@ -50,6 +50,14 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 		const cond2 = discussion.user.id !== userId
 		const cond3 = isLoggedIn
 		return cond1 && cond2 && cond3
+	}
+
+	const createNewReview = () => {
+		const data = {
+			diffList: newReviewList,
+			discussionId: discussion.id
+		}
+		createReview(data)
 	}
 
 	return (
@@ -122,7 +130,11 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						/>
 					</div>
 				</div>
-				<CommentReviewStore newReviewList={newReviewList} />
+				<CommentReviewStore
+					newReviewList={newReviewList}
+					setNewReviewList={setNewReviewList}
+					createNewReview={createNewReview}
+				/>
 			</div>
 			<div className="dd_live_review_box flex justify-center">
 				<a

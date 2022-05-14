@@ -35,7 +35,6 @@ const AddCommentReviewModal: React.FC<Props> = ({
 					onChange={(e) => setComment(e.target.value)}
 				/>
 				<div className="modal-action">
-					{/*<a href="#" className="btn" onClick={() => AddCommentReview()}>*/}
 					<label
 						htmlFor="addCommentReview"
 						className="btn"

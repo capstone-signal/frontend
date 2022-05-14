@@ -10,7 +10,7 @@ type Props = {
 }
 const ReviewList: React.FC<Props> = ({ discussion }) => {
 	// get reviews using page query
-	const [page, setPage] = useState<number>(2)
+	const [page, setPage] = useState<number>(1)
 	const { isLoading, isError, error, data, isFetching, isPreviousData } =
 		useQuery(
 			['reviews', page, discussion.id],
