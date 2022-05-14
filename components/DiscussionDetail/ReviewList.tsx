@@ -10,15 +10,14 @@ type Props = {
 }
 const ReviewList: React.FC<Props> = ({ discussion }) => {
 	// get reviews using page query
-	const [page, setPage] = useState<number>(2)
-	const { isLoading, isError, error, data, isFetching, isPreviousData } =
-		useQuery(
-			['reviews', page, discussion.id],
-			() => getReviewByDiscussionId(discussion.id, page),
-			{
-				keepPreviousData: false
-			}
-		)
+	const [page, setPage] = useState<number>(1)
+	const { isLoading, isError, data } = useQuery(
+		['reviews', page, discussion.id],
+		() => getReviewByDiscussionId(discussion.id, page),
+		{
+			keepPreviousData: false
+		}
+	)
 	const [availablePages, setAvailablePages] = useState<number[]>([])
 
 	useEffect(() => {
@@ -39,7 +38,6 @@ const ReviewList: React.FC<Props> = ({ discussion }) => {
 	if (isLoading) return <Spinner />
 	if (isError) return <div>Error</div>
 
-	// infinite scroll
 	return (
 		<div className="flex flex-col">
 			<div className="border-t-2 my-10">
