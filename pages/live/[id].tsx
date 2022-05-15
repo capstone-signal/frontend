@@ -32,6 +32,7 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 
 const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	const [init, setInit] = useState<boolean>(false)
+	const [isDefaultModalOpen, setDefaultModalOpen] = useState<boolean>(true)
 	const [leftTime, setLeftTime] = useState<string>('00:00')
 	const [selectedCode, setSelectedCode] = useState<number>(0)
 	const { userId, isLoggedIn } = useUserId()
@@ -76,6 +77,10 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 
 	useEffect(() => {
 		if (!window) return
+	}, [])
+
+	useEffect(() => {
+		if (!window) return
 		if (!init) return
 		if (!monacoRef.current) return
 		if (!editorRef.current) return
@@ -83,7 +88,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		const ydoc = new Y.Doc()
 		const provider = new WebsocketProvider(
 			'ws://localhost:1235',
-			review.id.toString(),
+			`${reservation.id}?discussionCode=${selectedCode}`,
 			ydoc
 		)
 		const ytext = ydoc.getText('test')
@@ -175,6 +180,30 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 						<label htmlFor="info-modal" className="btn btn-error">
 							닫기
 						</label>
+					</div>
+				</div>
+			</div>
+			<div className="init_modal">
+				<input
+					type="checkbox"
+					id="init-modal"
+					className="modal-toggle"
+					checked={isDefaultModalOpen}
+				/>
+				<div className="modal">
+					<div className="modal-box">
+						<div className="content">비속어 ㄴㄴ</div>
+						<div className="modal-action">
+							<label
+								htmlFor="init-modal"
+								className="btn btn-error"
+								onClick={() => {
+									setDefaultModalOpen(false)
+								}}
+							>
+								닫기
+							</label>
+						</div>
 					</div>
 				</div>
 			</div>
