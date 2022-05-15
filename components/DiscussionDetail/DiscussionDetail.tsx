@@ -52,12 +52,23 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 		return cond1 && cond2 && cond3
 	}
 
-	const createNewReview = () => {
+	const createNewReview = async () => {
 		const data = {
 			diffList: newReviewList,
 			discussionId: discussion.id
 		}
-		createReview(data)
+		if (newReviewList.length == 0) {
+			alert('리뷰 내용이 없습니다.')
+			return
+		}
+		try {
+			await createReview(data)
+			alert('리뷰 작성이 완료되었습니다.')
+			setNewReviewList([])
+		} catch (e) {
+			console.error(e)
+			alert("can't create review.")
+		}
 	}
 
 	return (
@@ -122,8 +133,6 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 					</div>
 					<div className="selected_code">
 						<DiscussionCode
-							language={codes[selectedCode]?.language}
-							content={codes[selectedCode]?.content}
 							discussionCode={codes[selectedCode]}
 							newReviewList={newReviewList}
 							setNewReviewList={setNewReviewList}

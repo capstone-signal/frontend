@@ -15,8 +15,6 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 )
 
 interface Props {
-	language: string
-	content: string
 	discussionCode: DiscussionCodeResponse
 	newReviewList: CommentReviewDiff[]
 	setNewReviewList: (value: CommentReviewDiff[]) => void
@@ -50,8 +48,6 @@ function ButtonClear() {
 }
 
 const DiscussionCode: React.FC<Props> = ({
-	language,
-	content,
 	discussionCode,
 	newReviewList,
 	setNewReviewList
@@ -69,7 +65,6 @@ const DiscussionCode: React.FC<Props> = ({
 			ClickEndHandler(clientRects)
 			const selectedCodes = selection?.toString()
 			setReviewCode(selectedCodes!)
-			//console.log(reviewCode)
 			setOffSet([selection!.anchorOffset, selection!.focusOffset])
 		}
 	}
@@ -86,7 +81,7 @@ const DiscussionCode: React.FC<Props> = ({
 		<>
 			<div id="code-block" onMouseUp={dragCode} onMouseDown={ButtonClear}>
 				<MarkdownViewer
-					source={`\`\`\`${language}\n ${content} \n\`\`\``}
+					source={`\`\`\`${discussionCode.language}\n ${discussionCode.content} \n\`\`\``}
 					style={codeMarkdownViewerStyle}
 				/>
 			</div>
@@ -105,6 +100,7 @@ const DiscussionCode: React.FC<Props> = ({
 			<div className="modal">
 				<AddCommentReviewModal
 					newCode={newCode}
+					language={discussionCode.language}
 					setNewCode={setNewCode}
 					handleReviewAdd={handleReviewAdd}
 				/>

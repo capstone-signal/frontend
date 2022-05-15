@@ -39,7 +39,7 @@ const CommentReviewStore: React.FC<Props> = ({
 										id={`${idx}`}
 									>
 										<div className="rounded-xl border-2 border-solid border-gray-300 w-[90%] pl-2 overflow-hidden whitespace-nowrap overflow-ellipsis">
-											{idx + 1}.{review.discussionCode.filename}:
+											{idx + 1}.&nbsp;{review.discussionCode.filename}:&nbsp;
 											{review.codeLocate[0]}-{review.codeLocate[1]}
 										</div>
 										<label
@@ -95,7 +95,10 @@ const CommentReviewStore: React.FC<Props> = ({
 									<label
 										htmlFor="upload_review"
 										className="btn btn-success"
-										onClick={createNewReview}
+										onClick={() => {
+											createNewReview()
+											setActivate(false)
+										}}
 									>
 										확인
 									</label>
