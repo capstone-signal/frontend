@@ -17,6 +17,7 @@ import dynamic from 'next/dynamic'
 import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import '@uiw/react-markdown-preview/markdown.css'
 import { useUserId } from '../../hooks/useUserId'
+import apiConfig from '../../config/apiConfig'
 
 type Props = {
 	reservation: ReviewReservationResponse
@@ -38,6 +39,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	const { userId, isLoggedIn } = useUserId()
 	const monacoRef = useRef<any>(null)
 	const editorRef = useRef<any>(null)
+	const binding = useRef<any>(null)
 	const handleEditorDidMount = (editor: any, monaco: any) => {
 		editorRef.current = editor
 		monacoRef.current = monaco
@@ -52,8 +54,11 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 
 	useEffect(() => {
 		// TODO : save code to server
+		if (!init) return
 		console.log('UPDATE')
-	}, [selectedCode])
+
+		const reviewDiff = review.liveDiffList[selectedCode]
+	}, [init, selectedCode])
 
 	useEffect(() => {
 		if (!window) return
@@ -77,17 +82,13 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 
 	useEffect(() => {
 		if (!window) return
-	}, [])
-
-	useEffect(() => {
-		if (!window) return
 		if (!init) return
 		if (!monacoRef.current) return
 		if (!editorRef.current) return
 
 		const ydoc = new Y.Doc()
 		const provider = new WebsocketProvider(
-			'ws://localhost:1235',
+			apiConfig.websocketUrl,
 			`${reservation.id}?discussionCode=${selectedCode}`,
 			ydoc
 		)
@@ -103,7 +104,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 				provider.awareness
 			)
 		})
-	}, [review.id, init])
+	}, [review.id, init, reservation.id, selectedCode])
 
 	return (
 		<div className="live_review flex flex-col w-screen h-screen">
