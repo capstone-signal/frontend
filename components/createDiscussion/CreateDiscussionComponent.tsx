@@ -1,16 +1,15 @@
-import { useState } from 'react'
-import DirectCodeCompoent from './DirectCodeComponent'
-import PRorCommit from './PRorCommit'
+import React, { useState } from 'react'
 import {
 	createDiscussion,
 	DirectCode,
 	LiveReviewAvailableTime
 } from '../../api/Discussion'
-import QuestionContent from './QuestionContent'
-import LiveReviewCalendar from '../LiveReviewReservation/LiveReviewCalendar'
 import SelectTagComponent from './SelectTagComponent'
 import { mergeAvailableTimes } from '../../utils/mergeAvailableTimes'
 import { useRouter } from 'next/router'
+import AddDiscussionCode from './AddDiscussionCode'
+import AddTitleAndQuestion from './AddTitleAndQuestion'
+import ReceiveLiveReview from './ReceiveLiveReview'
 
 type Props = Record<string, any>
 
@@ -27,40 +26,68 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 		LiveReviewAvailableTime[]
 	>([])
 	const [codes, setCodes] = useState<DirectCode[]>([])
-	const validateCodes = () => {
-		return true
+	const [selectedRepo, setSelectedRepo] = useState<number>(-1)
+	const [selectedGitNode, setSelectedGitNode] = useState<string>('')
+	const [availableTimes, setAvailableTimes] = useState<
+		LiveReviewAvailableTime[]
+	>([])
+	const [progress, setProgress] = useState<number>(0)
+
+	const onBeforeBtnClick = () => {
+		if (progress === 0) {
+			return
+		}
+		setProgress(progress - 1)
 	}
 
-	const reset = () => {
-		setTitle('')
-		setQuestion('')
-		setSelectedTagIds([])
-		setLiveReviewRequired(false)
-		setLiveReviewAvailableTimes([])
-		setCodes([])
+	const onNextBtnClick = async (e: React.FormEvent) => {
+		e.preventDefault()
+
+		if (progress === 0 && (title === '' || question === '')) {
+			alert('제목과 질문 내용을 모두 작성해주세요.')
+			return
+		}
+		if (progress === 1 && discussionType === 'DIRECT') {
+			if (codes.length === 0) {
+				alert('코드를 입력해주세요.')
+				return
+			}
+			if (codes.some((code) => code.content === '')) {
+				alert('코드를 입력해주세요.')
+				return
+			}
+		}
+
+		if (
+			(progress === 1 && discussionType === 'PR') ||
+			discussionType === 'COMMIT'
+		) {
+			if (selectedRepo === -1) {
+				alert('저장소를 선택해주세요.')
+				return
+			}
+			if (selectedGitNode === '') {
+				alert('PR 또는 Commit을 선택해주세요.')
+				return
+			}
+		}
+
+		if (progress === 2 && liveReviewRequired) {
+			if (liveReviewAvailableTimes.length === 0) {
+				alert('가능한 시간대를 최소 1개 이상 입력해주세요.')
+				return
+			} else {
+				setAvailableTimes(mergeAvailableTimes(liveReviewAvailableTimes))
+			}
+		}
+		setProgress(progress + 1)
 	}
 
 	const onCreateBtnClick = async (e: React.FormEvent) => {
-		e.preventDefault()
-		if (discussionType === 'DIRECT') {
-			if (!validateCodes()) {
-				alert('enter the code.')
-				return
-			}
-		} else {
-			// validate git info
+		if (selectedTagIds.length === 0) {
+			alert('태그를 선택해주세요.')
+			return
 		}
-
-		let availableTimes: LiveReviewAvailableTime[] = []
-		if (liveReviewRequired) {
-			if (liveReviewAvailableTimes.length === 0) {
-				alert('select the available time.')
-				return
-			} else {
-				availableTimes = mergeAvailableTimes(liveReviewAvailableTimes)
-			}
-		}
-		// create discussion
 		try {
 			const discussion = await createDiscussion({
 				title,
@@ -72,93 +99,95 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 					times: availableTimes
 				},
 				codes,
-				usePriority: false
+				usePriority: false,
+				gitRepositoryId: discussionType !== 'DIRECT' ? selectedRepo : undefined,
+				gitNodeId: discussionType !== 'DIRECT' ? selectedGitNode : undefined
 			})
-			alert('create discussion success.')
+			alert('생성이 완료되었습니다.')
 			router.push(`/discussion/${discussion.id}`)
 		} catch (e) {
 			console.error(e)
 			alert("can't create discussion.")
 		}
+	}
 
-		// reset
-		reset()
-	}
-	const selectDirect = () => {
-		setDiscussionType('DIRECT')
-	}
-	const selectPRorCommit = () => {
-		setDiscussionType('PR')
-	}
-	const clickLiveReviewCheck = () => {
-		setLiveReviewRequired(!liveReviewRequired)
-	}
 	return (
-		<div>
-			<form onSubmit={onCreateBtnClick} className="flex flex-col">
-				<div className="text-xl mb-2 ml-2">Create a new discussion</div>
-				<input
-					type="text"
-					placeholder="제목을 입력하세요"
-					className="input input-bordered w-full max-w-[40rem] m-2"
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
+		<div className="flex flex-col w-100 items-center h-full">
+			<ul className="steps mb-10">
+				{['질문 작성', '코드 작성', '라이브 리뷰', '태그 선택'].map(
+					(step, index) => (
+						<li
+							key={index}
+							className={`step ${progress >= index ? 'step-primary' : ''}`}
+						>
+							{step}
+						</li>
+					)
+				)}
+			</ul>
+			{progress === 0 && (
+				<AddTitleAndQuestion
+					title={title}
+					setTitle={setTitle}
+					question={question}
+					setQuestion={setQuestion}
 				/>
-				<div className="m-2">
-					<div
-						className={`btn w-[12rem] ${
-							discussionType == 'DIRECT' ? 'btn-accent' : 'btn-ghost'
-						}`}
-						onClick={selectDirect}
-					>
-						직접 코드 작성하기
-					</div>
-					<div
-						className={`btn w-[15rem] ml-2 ${
-							discussionType != 'DIRECT' ? 'btn-accent' : 'btn-ghost'
-						}`}
-						onClick={selectPRorCommit}
-					>
-						GitHub에서 코드 가져오기
-					</div>
-				</div>
-				<div className="m-2">
-					{discussionType === 'DIRECT' && (
-						<DirectCodeCompoent codes={codes} setCodes={setCodes} />
-					)}
-					{(discussionType === 'PR' || discussionType === 'COMMIT') && (
-						<PRorCommit
-							discussionType={discussionType}
-							setDiscussionType={setDiscussionType}
-						/>
-					)}
-				</div>
-				<div className="m-2">
-					<QuestionContent question={question} setQuestion={setQuestion} />
-				</div>
-				<div className="flex flex-row items-center m-2">
-					<input
-						type="checkbox"
-						className="checkbox mr-2"
-						onClick={clickLiveReviewCheck}
-					></input>
-					<p className="mr-2">Live Review</p>
-					<LiveReviewCalendar
-						liveReviewRequired={liveReviewRequired}
-						liveReviewAvailableTimes={liveReviewAvailableTimes}
-						setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
-					/>
-				</div>
+			)}
+			{progress === 1 && (
+				<AddDiscussionCode
+					discussionType={discussionType}
+					codes={codes}
+					setCodes={setCodes}
+					setDiscussionType={setDiscussionType}
+					selectedRepo={selectedRepo}
+					setSelectedRepo={setSelectedRepo}
+					selectedGitNode={selectedGitNode}
+					setSelectedGitNode={setSelectedGitNode}
+				/>
+			)}
+			{progress === 2 && (
+				<ReceiveLiveReview
+					liveReviewRequired={liveReviewRequired}
+					setLiveReviewRequired={setLiveReviewRequired}
+					liveReviewAvailableTimes={liveReviewAvailableTimes}
+					setLiveReviewAvailableTimes={setLiveReviewAvailableTimes}
+				/>
+			)}
+			{progress === 3 && (
 				<SelectTagComponent
 					selectedTagIds={selectedTagIds}
 					setSelectedTagIds={setSelectedTagIds}
 				/>
-				<div>
-					<button type="submit" className="btn btn-secondary">
-						생성
+			)}
+			<div className="flex mt-10">
+				{progress !== 0 && (
+					<button
+						onClick={onBeforeBtnClick}
+						type="submit"
+						className="btn btn-dark mr-6"
+					>
+						이전 단계로
 					</button>
-				</div>
-			</form>
+				)}
+				{progress !== 3 && (
+					<button
+						onClick={onNextBtnClick}
+						type="submit"
+						className="btn btn-dark"
+					>
+						다음 단계로 ({progress + 1}/4)
+					</button>
+				)}
+				{progress === 3 && (
+					<button
+						onClick={onCreateBtnClick}
+						type="submit"
+						className="btn btn-dark"
+					>
+						Discussion 생성
+					</button>
+				)}
+			</div>
 		</div>
 	)
 }

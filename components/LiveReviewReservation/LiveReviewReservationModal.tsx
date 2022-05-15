@@ -18,7 +18,7 @@ type Props = {
 	discussion: DiscussionResponse
 }
 
-const INTERVAL_TIME_IN_MILLISECONDS = 1000 * 60 * 5
+const INTERVAL_TIME_IN_MILLISECONDS = 1000 * 60 * 15
 const HOUR_IN_MILLISECONDS = 1000 * 60 * 60
 
 dayjs.locale('ko')

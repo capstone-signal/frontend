@@ -9,18 +9,8 @@ export type UserResponse = {
 	point: number
 }
 
-export type userState = {
-	id: number
-	email: string
-	username: string
-	access_token: string
-	refresh_token: string
-	point: number
-} & CommonResponse
-
-export function getCook(cookiename: string) {
-	if (typeof window !== 'object') return
-	const cookiestring = RegExp(cookiename + '=[^;]+').exec(document.cookie)
+export function extractCookie(cookies: string, key: string) {
+	const cookiestring = RegExp(key + '=[^;]+').exec(cookies)
 	if (cookiestring == null) return null
 	return decodeURIComponent(
 		cookiestring ? cookiestring.toString().replace(/^[^=]+./, '') : ''
@@ -28,8 +18,10 @@ export function getCook(cookiename: string) {
 }
 
 export function isLogin(): number {
-	const accessToken = getCook('accessToken')
-	const refreshToken = getCook('refreshToken')
+	if (typeof window !== 'object') return -1
+	const cookie = document.cookie
+	const accessToken = extractCookie(cookie, 'accessToken')
+	const refreshToken = extractCookie(cookie, 'refreshToken')
 
 	let accessTokenDecoded = null
 	let refreshTokenDecoded = null
