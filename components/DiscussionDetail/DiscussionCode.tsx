@@ -71,8 +71,15 @@ const DiscussionCode: React.FC<Props> = ({
 		}
 	}
 	const handleReviewAdd = (newCode: string, comment: string) => {
+		const codeAfter =
+			discussionCode.content.substring(0, Math.min(offSet[0], offSet[1])) +
+			newCode +
+			discussionCode.content.substring(
+				Math.max(offSet[0], offSet[1]),
+				discussionCode.content.length
+			)
 		const newReview = {
-			codeAfter: newCode,
+			codeAfter: codeAfter,
 			codeLocate: offSet,
 			comment: comment,
 			discussionCode: discussionCode
@@ -83,7 +90,7 @@ const DiscussionCode: React.FC<Props> = ({
 		<>
 			<div id="code-block" onMouseUp={dragCode} onMouseDown={ButtonClear}>
 				<MarkdownViewer
-					source={`\`\`\`${discussionCode.language}\n ${discussionCode.content} \n\`\`\``}
+					source={`\`\`\`${discussionCode.language}\n${discussionCode.content}\n\`\`\``}
 					style={codeMarkdownViewerStyle}
 				/>
 			</div>
