@@ -100,6 +100,20 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 		setProgress(progress + 1)
 	}
 
+	const generateQuestion = () => {
+		let question = ''
+		questions.forEach((q, index) => {
+			question += GuideLines.question[index]
+			if (index !== questions.length - 1) {
+				question += '\n'
+			}
+			question += q
+			question += '\n'
+			question += '---'
+		})
+		return question
+	}
+
 	const onCreateBtnClick = async (e: React.FormEvent) => {
 		if (selectedTagIds.length === 0) {
 			alert('태그를 선택해주세요.')
@@ -109,7 +123,7 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 			const discussion = await createDiscussion({
 				title,
 				discussionType,
-				question: '', // todo
+				question: generateQuestion(),
 				tagIds: selectedTagIds,
 				liveReviewRequired,
 				liveReviewAvailableTimes: {
