@@ -15,6 +15,7 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 )
 
 interface Props {
+	reviewee: number
 	discussionCode: DiscussionCodeResponse
 	newReviewList: CommentReviewDiff[]
 	setNewReviewList: (value: CommentReviewDiff[]) => void
@@ -48,6 +49,7 @@ function ButtonClear() {
 }
 
 const DiscussionCode: React.FC<Props> = ({
+	reviewee,
 	discussionCode,
 	newReviewList,
 	setNewReviewList
@@ -99,6 +101,7 @@ const DiscussionCode: React.FC<Props> = ({
 			<input type="checkbox" id="addCommentReview" className="modal-toggle" />
 			<div className="modal">
 				<AddCommentReviewModal
+					reviewee={reviewee}
 					newCode={newCode}
 					language={discussionCode.language}
 					setNewCode={setNewCode}

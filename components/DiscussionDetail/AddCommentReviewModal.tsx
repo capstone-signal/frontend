@@ -7,30 +7,28 @@ const Editor = dynamic(() => import('@monaco-editor/react'), {
 })
 
 interface Props {
+	reviewee: number
 	newCode: string
 	language: string
 	setNewCode: (value: string) => void
 	handleReviewAdd: (codeAfter: string, comment: string) => void
 }
 const AddCommentReviewModal: React.FC<Props> = ({
+	reviewee,
 	newCode,
 	language,
 	setNewCode,
 	handleReviewAdd
 }) => {
 	const [comment, setComment] = useState<string>('')
-	const { init, isLoggedIn } = useUserId()
+	const { isLoggedIn, userId } = useUserId()
+	const qualified = reviewee !== userId && isLoggedIn
 
-	useEffect(() => {
-		if (!init) {
-			return
-		}
-	}, [init])
 	return (
 		<div className="modal-box">
-			{isLoggedIn ? (
+			{qualified ? (
 				<div className="flex flex-col">
-					<div className="font-bold text-lg">Add a comment review</div>
+					<div className="font-bold text-lg mb-3">코드를 리뷰하세요!</div>
 					<Editor
 						height="10rem"
 						language={language}
@@ -41,33 +39,33 @@ const AddCommentReviewModal: React.FC<Props> = ({
 					<input
 						type="text"
 						placeholder="comment를 작성하세요"
-						className="input input-bordered w-full max-w-[40rem] m-2"
+						className="input input-bordered w-full max-w-[40rem] mt-3"
 						value={comment}
 						onChange={(e) => setComment(e.target.value)}
 					/>
-					<div className="modal-action">
+					<div className="modal-action mt-3">
 						<label
 							htmlFor="addCommentReview"
-							className="btn"
+							className="btn btn-success"
 							onClick={() => {
 								handleReviewAdd(newCode, comment)
 								setComment('')
 							}}
 						>
-							Add
+							추 가
 						</label>
 						<label
 							htmlFor="addCommentReview"
-							className="btn"
+							className="btn btn-error"
 							onClick={() => setComment('')}
 						>
-							Cancel
+							취 소
 						</label>
 					</div>
 				</div>
 			) : (
 				<>
-					<div>로그인이 필요한 서비스입니다.</div>
+					<div>권한이 없는 서비스입니다.</div>
 					<div className="modal-action">
 						<label htmlFor="addCommentReview" className="btn">
 							확인

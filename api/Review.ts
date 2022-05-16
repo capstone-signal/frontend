@@ -48,7 +48,7 @@ export type CommentReviewDiff = {
 	discussionCode: DiscussionCodeResponse
 }
 
-export type CommentReviewDiffList = {
+export type CreateCommentReviewRequest = {
 	diffList: CommentReviewDiff[]
 	discussionId: number
 }
@@ -85,7 +85,7 @@ export async function getThreadByReviewId(
 }
 
 export async function createReview(
-	data: CommentReviewDiffList
+	data: CreateCommentReviewRequest
 ): Promise<ReviewResponse> {
 	data.diffList.forEach((d) => {
 		d.codeLocate = 'q'

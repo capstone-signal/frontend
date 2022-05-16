@@ -133,6 +133,7 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 					</div>
 					<div className="selected_code">
 						<DiscussionCode
+							reviewee={discussion.user.id}
 							discussionCode={codes[selectedCode]}
 							newReviewList={newReviewList}
 							setNewReviewList={setNewReviewList}

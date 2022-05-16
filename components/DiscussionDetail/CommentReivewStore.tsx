@@ -21,7 +21,7 @@ const CommentReviewStore: React.FC<Props> = ({
 			{activate ? (
 				<div className="fixed bg-purple-500 right-[5vw] bottom-[10vh] h-[30rem] w-[20rem] rounded-2xl p-2">
 					<div className="flex flex-row justify-between items-center">
-						<div className="font-bold ml-2">New Review Storage</div>
+						<div className="font-bold ml-2">리뷰 스토리지</div>
 						<button
 							className="btn btn-sm btn-ghost p-2"
 							onClick={() => setActivate(false)}
@@ -79,9 +79,9 @@ const CommentReviewStore: React.FC<Props> = ({
 						</div>
 						<label
 							htmlFor="upload_review"
-							className="btn btn-success btn-sm mt-2 w-[10rem]"
+							className="btn btn-success btn-sm mt-2 w-[8rem]"
 						>
-							Upload Reviews
+							리뷰 업로드
 						</label>
 						<input
 							type="checkbox"
@@ -112,10 +112,10 @@ const CommentReviewStore: React.FC<Props> = ({
 				</div>
 			) : (
 				<button
-					className="btn fixed bg-purple-500 right-[5vw] bottom-[10vh] normal-case"
+					className="btn fixed bg-purple-500 right-[5vw] bottom-[10vh] normal-case w-[10rem]"
 					onClick={() => setActivate(true)}
 				>
-					Review Storage
+					리뷰 스토리지 ( {newReviewList.length} )
 				</button>
 			)}
 		</>
