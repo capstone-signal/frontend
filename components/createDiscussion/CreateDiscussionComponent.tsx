@@ -10,8 +10,20 @@ import { useRouter } from 'next/router'
 import AddDiscussionCode from './AddDiscussionCode'
 import AddTitleAndQuestion from './AddTitleAndQuestion'
 import ReceiveLiveReview from './ReceiveLiveReview'
+import GuideLineChecker from './GuideLineChecker'
 
 type Props = Record<string, any>
+
+const GuideLines = {
+	question: [
+		'코드가 어떤 작업을 수행하는지 간략하게 요약해서 설명해주세요.',
+		'코드가 잘 동작하지 않는다면, 무슨 문제가 있는지 설명해주세요.',
+		'코드를 잘 동작시키기 위해 어떤 시도를 했는지 설명해주세요.',
+		'질문을 작성해주세요.'
+	],
+	code: ['한 discussion에 올리는 코드는 300-400줄 규모로 유지해주세요.'],
+	tag: ['코드를 충분히 표현할 수 있는 태그를 달아주세요.']
+}
 
 const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	const router = useRouter()
@@ -19,7 +31,9 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 		'DIRECT' | 'COMMIT' | 'PR'
 	>('DIRECT')
 	const [title, setTitle] = useState<string>('')
-	const [question, setQuestion] = useState<string>('')
+	const [questions, setQuestions] = useState<string[]>(
+		new Array(GuideLines.question.length).fill('')
+	)
 	const [selectedTagIds, setSelectedTagIds] = useState<number[]>([])
 	const [liveReviewRequired, setLiveReviewRequired] = useState<boolean>(false)
 	const [liveReviewAvailableTimes, setLiveReviewAvailableTimes] = useState<
@@ -43,7 +57,10 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	const onNextBtnClick = async (e: React.FormEvent) => {
 		e.preventDefault()
 
-		if (progress === 0 && (title === '' || question === '')) {
+		if (
+			progress === 0 &&
+			(title === '' || questions[questions.length - 1] === '')
+		) {
 			alert('제목과 질문 내용을 모두 작성해주세요.')
 			return
 		}
@@ -92,7 +109,7 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 			const discussion = await createDiscussion({
 				title,
 				discussionType,
-				question,
+				question: '', // todo
 				tagIds: selectedTagIds,
 				liveReviewRequired,
 				liveReviewAvailableTimes: {
@@ -129,8 +146,9 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 				<AddTitleAndQuestion
 					title={title}
 					setTitle={setTitle}
-					question={question}
-					setQuestion={setQuestion}
+					questions={questions}
+					setQuestions={setQuestions}
+					questionTitles={GuideLines.question}
 				/>
 			)}
 			{progress === 1 && (
@@ -154,10 +172,22 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 				/>
 			)}
 			{progress === 3 && (
-				<SelectTagComponent
-					selectedTagIds={selectedTagIds}
-					setSelectedTagIds={setSelectedTagIds}
-				/>
+				<div>
+					<SelectTagComponent
+						selectedTagIds={selectedTagIds}
+						setSelectedTagIds={setSelectedTagIds}
+					/>
+					<GuideLineChecker
+						guideLines={GuideLines}
+						isSatisfieds={{
+							question: questions.map((q) => q !== ''),
+							code: [
+								codes.reduce((acc, code) => acc + code.content.length, 0) < 400
+							],
+							tag: [selectedTagIds.length > 0]
+						}}
+					/>
+				</div>
 			)}
 			<div className="flex mt-10">
 				{progress !== 0 && (
