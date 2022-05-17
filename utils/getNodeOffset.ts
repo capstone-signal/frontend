@@ -1,50 +1,58 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 export function getNodeOffset(
 	anchorNode: Node,
-	focusNode: Node,
-	anchorOffset: number,
-	focusOffset: number
+	anchorOffset: number
 ): {
-	startOffset: number
-	endOffset: number
+	NodeOffset: number
 } {
 	let nowCodeLine = anchorNode?.parentElement
-	if (!nowCodeLine?.className.includes('code-line') && nowCodeLine)
+	while (!nowCodeLine?.className.includes('code-line') && nowCodeLine)
 		nowCodeLine = nowCodeLine?.parentElement
 	const codeAll = nowCodeLine?.parentElement
 
-	if (codeAll?.children == undefined)
-		return { startOffset: anchorOffset, endOffset: focusOffset }
+	if (codeAll?.children == undefined) return { NodeOffset: 0 }
 	const codeLineArray = Array.from(codeAll?.children)
 
 	let i = 0
 	let lengthSum = 0
 	while (codeLineArray[i] != nowCodeLine) {
-		console.log(
-			codeLineArray[i].textContent,
-			codeLineArray[i].textContent!.length
-		)
 		lengthSum += codeLineArray[i].textContent!.length
 		i++
 	}
 
-	console.log(lengthSum)
-	//console.log(discussionCode.content.slice(0, lengthSum))
+	const nowCodeLineArray = Array.from(nowCodeLine.childNodes)
+	const { offset: nowCodeLineOffset } = codeLineSplit(
+		nowCodeLineArray,
+		anchorNode
+	)
+	const NodeOffset = lengthSum + nowCodeLineOffset
+	return { NodeOffset: NodeOffset + anchorOffset }
+}
 
-	console.log(nowCodeLine)
-	const nowCodeLineArray = Array.from(nowCodeLine.children)
-	i = 0
-	console.log(nowCodeLineArray)
-	while (nowCodeLineArray[i] != anchorNode) {
-		console.log(nowCodeLineArray[i])
-		//console.log(
-		//	nowCodeLineArray[i].textContent,
-		//	nowCodeLineArray[i].textContent!.length
-		//)
-		//lengthSum += nowCodeLineArray[i].textContent!.length
-		//i++
+function codeLineSplit(
+	nowCodeLineArray: ChildNode[],
+	anchorNode: Node
+): { offset: number; figureOut: boolean } {
+	let offset = 0
+	let figureOut = false
+	for (let i = 0; i < nowCodeLineArray.length; i++) {
+		if (nowCodeLineArray[i]) {
+			if (nowCodeLineArray[i].hasChildNodes()) {
+				const { offset: childOffset, figureOut: childFigureOut } =
+					codeLineSplit(Array.from(nowCodeLineArray[i].childNodes), anchorNode)
+				offset += childOffset
+				if (childFigureOut) {
+					figureOut = true
+					break
+				}
+			} else {
+				if (nowCodeLineArray[i] == anchorNode) {
+					figureOut = true
+					break
+				}
+				offset += nowCodeLineArray[i].textContent!.length
+			}
+		}
 	}
-	const startOffset = lengthSum
-	const endOffset = 0
-	return { startOffset, endOffset }
+	return { offset, figureOut }
 }

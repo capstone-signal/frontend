@@ -6,7 +6,7 @@ import { useSelectionLocation } from '../../hooks/useSelectionLocation'
 import AddCommentReviewModal from './AddCommentReviewModal'
 import { CommentReviewDiff } from '../../api/Review'
 import { DiscussionCodeResponse } from '../../api/Discussion'
-import { getNodeOffset } from '../../utils/getNodeOffSet'
+import { getNodeOffset } from '../../utils/getNodeOffset'
 
 const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	() => import('@uiw/react-markdown-preview'),
@@ -63,53 +63,15 @@ const DiscussionCode: React.FC<Props> = ({
 		// offset 찾아내기
 		if (selection === null) return
 		const { anchorNode, focusNode, anchorOffset, focusOffset } = selection
-		//const { startOffset, endOffset } = getNodeOffset(
-		//	anchorNode!,
-		//	focusNode!,
-		//	anchorOffset,
-		//	focusOffset
-		//)
-		let nowCodeLine = anchorNode?.parentElement
-		if (!nowCodeLine?.className.includes('code-line') && nowCodeLine)
-			nowCodeLine = nowCodeLine?.parentElement
-		const codeAll = nowCodeLine?.parentElement
+		const { NodeOffset: startOffset } = getNodeOffset(anchorNode!, anchorOffset)
+		const { NodeOffset: EndOffset } = getNodeOffset(focusNode!, focusOffset)
 
-		if (codeAll?.children == undefined) return
-		const codeLineArray = Array.from(codeAll?.children)
-
-		let i = 0
-		let lengthSum = 0
-		while (codeLineArray[i] != nowCodeLine) {
-			console.log(
-				codeLineArray[i].textContent,
-				codeLineArray[i].textContent!.length
-			)
-			lengthSum += codeLineArray[i].textContent!.length
-			i++
-		}
-
-		console.log(lengthSum)
-
-		console.log(nowCodeLine.childNodes)
-		const nowCodeLineArray = Array.from(nowCodeLine.children)
-		i = 0
-		console.log(nowCodeLineArray)
-		while (nowCodeLineArray[i] != anchorNode) {
-			//console.log(nowCodeLineArray[i])
-			//console.log(
-			//	nowCodeLineArray[i].textContent,
-			//	nowCodeLineArray[i].textContent!.length
-			//)
-			//lengthSum += nowCodeLineArray[i].textContent!.length
-			//i++
-		}
-		console.log(discussionCode.content.slice(0, startOffset))
-		if (anchorNode == focusNode && anchorOffset != focusOffset) {
+		if (anchorOffset != focusOffset) {
 			const clientRects = selection?.getRangeAt(0).getBoundingClientRect()
 			ClickEndHandler(clientRects)
 			const selectedCodes = selection?.toString()
 			setReviewCode(selectedCodes!)
-			setOffset([selection!.anchorOffset, selection!.focusOffset])
+			setOffset([startOffset, EndOffset])
 		}
 	}
 	const handleReviewAdd = (newCode: string, comment: string) => {
