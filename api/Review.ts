@@ -87,9 +87,6 @@ export async function getThreadByReviewId(
 export async function createReview(
 	data: CreateCommentReviewRequest
 ): Promise<ReviewResponse> {
-	data.diffList.forEach((d) => {
-		d.codeLocate = 'q'
-	})
 	const response = await post<ReviewResponse>(`/review?type=COMMENT`, data)
 	return response
 }
