@@ -10,6 +10,8 @@ import dynamic from 'next/dynamic'
 import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
 import { isLogin } from '../../api/User'
 import { useUserId } from '../../hooks/useUserId'
+import CommentReviewStore from './CommentReivewStore'
+import { CommentReviewDiff, createReview } from '../../api/Review'
 
 type Props = {
 	discussion: DiscussionResponse
@@ -24,6 +26,10 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	}
 )
 
+const DiscussionCode = dynamic(() => import('./DiscussionCode'), {
+	ssr: false
+})
+
 const questionMarkdownViewerStyle: React.CSSProperties = {
 	padding: '2rem',
 	backgroundColor: 'transparent',
@@ -31,20 +37,10 @@ const questionMarkdownViewerStyle: React.CSSProperties = {
 	borderRadius: '6px'
 }
 
-const codeMarkdownViewerStyle: React.CSSProperties & Record<string, any> = {
-	padding: '2rem',
-	backgroundColor: '#000',
-	height: '32rem',
-	overflow: 'scroll',
-	scrollbarWidth: 'none',
-	msOverflowStyle: 'none',
-	'&::WebkitScrollbar': {
-		display: 'none'
-	}
-}
 const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 	const { userId, isLoggedIn } = useUserId()
 	const [selectedCode, setSelectedCode] = useState<number>(0)
+	const [newReviewList, setNewReviewList] = useState<CommentReviewDiff[]>([])
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
 	}
@@ -54,6 +50,25 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 		const cond2 = discussion.user.id !== userId
 		const cond3 = isLoggedIn
 		return cond1 && cond2 && cond3
+	}
+
+	const createNewReview = async () => {
+		const data = {
+			diffList: newReviewList,
+			discussionId: discussion.id
+		}
+		if (newReviewList.length == 0) {
+			alert('리뷰 내용이 없습니다.')
+			return
+		}
+		try {
+			await createReview(data)
+			alert('리뷰 작성이 완료되었습니다.')
+			setNewReviewList([])
+		} catch (e) {
+			console.error(e)
+			alert("can't create review.")
+		}
 	}
 
 	return (
@@ -117,12 +132,19 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						</div>
 					</div>
 					<div className="selected_code">
-						<MarkdownViewer
-							source={`\`\`\`${codes[selectedCode]?.language}\n ${codes[selectedCode]?.content} \n\`\`\``}
-							style={codeMarkdownViewerStyle}
+						<DiscussionCode
+							reviewee={discussion.user.id}
+							discussionCode={codes[selectedCode]}
+							newReviewList={newReviewList}
+							setNewReviewList={setNewReviewList}
 						/>
 					</div>
 				</div>
+				<CommentReviewStore
+					newReviewList={newReviewList}
+					setNewReviewList={setNewReviewList}
+					createNewReview={createNewReview}
+				/>
 			</div>
 			<div className="dd_live_review_box flex justify-center">
 				<a
