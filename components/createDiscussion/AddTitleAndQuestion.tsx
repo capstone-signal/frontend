@@ -1,16 +1,34 @@
+import { useState } from 'react'
 import QuestionContent from './QuestionContent'
 
 const AddTitleAndQuestion = ({
 	title,
 	setTitle,
-	question,
-	setQuestion
+	questions,
+	setQuestions,
+	questionTitles
 }: {
-	title: any
+	title: string
 	setTitle: any
-	question: any
-	setQuestion: any
+	questions: string[]
+	setQuestions: any
+	questionTitles: string[]
 }) => {
+	const [questionProgress, setQuestionProgress] = useState<number>(0)
+
+	const onNextBtnClick = (e: React.FormEvent) => {
+		e.preventDefault()
+		if (questionProgress < questions.length - 1) {
+			setQuestionProgress(questionProgress + 1)
+		}
+	}
+
+	const hanedleChangeQuestion = (value: string) => {
+		const newQuestions = [...questions]
+		newQuestions[questionProgress] = value
+		setQuestions(newQuestions)
+	}
+
 	return (
 		<div className="w-full">
 			<div className="title-container">
@@ -24,7 +42,14 @@ const AddTitleAndQuestion = ({
 				/>
 			</div>
 			<div className="question-container m-2 h-[30rem]">
-				<QuestionContent question={question} setQuestion={setQuestion} />
+				<QuestionContent
+					key={questionProgress}
+					question={questions[questionProgress]}
+					setQuestion={hanedleChangeQuestion}
+					title={questionTitles[questionProgress]}
+					handleProgress={onNextBtnClick}
+					isLast={questionProgress === questions.length - 1}
+				/>
 			</div>
 		</div>
 	)
