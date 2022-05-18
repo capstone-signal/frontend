@@ -1,7 +1,13 @@
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import { useEffect, useRef, useState } from 'react'
 import { WebsocketProvider } from 'y-websocket'
-import { getReviewByDiscussionId, ReviewResponse } from '../../api/Review'
+import {
+	completeLiveReview,
+	getReviewByDiscussionId,
+	participateLiveReview,
+	ReviewResponse,
+	updateLiveReviewDiff
+} from '../../api/Review'
 import {
 	getReviewReservationByDiscussionId,
 	getReviewReservationById,
@@ -18,6 +24,8 @@ import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import '@uiw/react-markdown-preview/markdown.css'
 import { useUserId } from '../../hooks/useUserId'
 import apiConfig from '../../config/apiConfig'
+import { useQuery } from 'react-query'
+import { MonacoBinding } from '../../utils/y-monaco-wrapper'
 
 type Props = {
 	reservation: ReviewReservationResponse
@@ -39,27 +47,61 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	const { userId, isLoggedIn } = useUserId()
 	const monacoRef = useRef<any>(null)
 	const editorRef = useRef<any>(null)
-	const binding = useRef<any>(null)
+	const bindingRef = useRef<MonacoBinding | null>(null)
+	const wsRef = useRef<any>(null)
+	// const { data, isLoading, isError } = useQuery(
+	// 	[`liveDiffs${review.id}`],
+	// 	() => getLiveReviewDiffs(review.id),
+	// 	{
+	// 		enabled: isLoggedIn
+	// 	}
+	// )
+
 	const handleEditorDidMount = (editor: any, monaco: any) => {
 		editorRef.current = editor
 		monacoRef.current = monaco
 		setInit(true)
 	}
 
+	const handleUpdateSelectedCode = async (idx: number) => {
+		if (!editorRef.current) return
+		const editor = editorRef.current
+		const diffCode = editor.getModel().getValue()
+		try {
+			await updateLiveReviewDiff(review.liveDiffList[selectedCode].id, {
+				codeAfter: diffCode
+			})
+			setSelectedCode(idx)
+		} catch (e) {
+			console.error(e)
+			alert('잠시 후 다시 시도해주세요.')
+		}
+	}
+
 	const completeReview = async () => {
 		if (!confirm('정말로 완료하시겠습니까?')) return
-
+		try {
+			const res = await completeLiveReview(reservation.id, {
+				changeCode: {}
+			})
+		} catch (e) {
+			console.error(e)
+			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
+		}
 		return null
 	}
 
+	const initializeSession = async (reservationId, reviewId) => {
+		//	await participateLiveReview(reservationId)
+		//	await getReviewDiffsByReviewId(reviewId)
+	}
+
 	useEffect(() => {
-		// TODO : save code to server
-		if (!init) return
-		console.log('UPDATE')
+		if (!window) return
+		initializeSession(reservation.id, review.id)
+	}, [reservation.id, review.id])
 
-		const reviewDiff = review.liveDiffList[selectedCode]
-	}, [init, selectedCode])
-
+	// timer ui
 	useEffect(() => {
 		if (!window) return
 		const interval = setInterval(() => {
@@ -81,30 +123,38 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	}, [reservation])
 
 	useEffect(() => {
+		if (!init) return
+
 		if (!window) return
 		if (!init) return
 		if (!monacoRef.current) return
 		if (!editorRef.current) return
 
 		const ydoc = new Y.Doc()
-		const provider = new WebsocketProvider(
-			apiConfig.websocketUrl,
-			`${reservation.id}?discussionCode=${selectedCode}`,
-			ydoc
-		)
-		const ytext = ydoc.getText('test')
+		const roomName = `${reservation.id}?reviewDiff=${review.liveDiffList[selectedCode].id}`
+
+		if (wsRef.current && bindingRef.current) {
+			// if ws is already connected, then disconnect
+			wsRef.current.disconnect()
+			bindingRef.current.destroy()
+		}
+		const ws = new WebsocketProvider(apiConfig.websocketUrl, roomName, ydoc)
+		wsRef.current = ws
+
+		const ytext = ydoc.getText(roomName)
 
 		const editor = editorRef.current
-
-		const MonacoBinding = import('../../utils/y-monaco-wrapper').then((m) => {
-			return new m.MonacoBinding(
+		editor.getModel().setValue('')
+		import('../../utils/y-monaco-wrapper').then((m) => {
+			const binding = new m.MonacoBinding(
 				ytext,
 				editor.getModel(),
 				new Set([editor]),
-				provider.awareness
+				ws.awareness
 			)
+			bindingRef.current = binding
 		})
-	}, [review.id, init, reservation.id, selectedCode])
+	}, [init, reservation.id, review.liveDiffList, selectedCode])
 
 	return (
 		<div className="live_review flex flex-col w-screen h-screen">
@@ -148,7 +198,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 											: 'hover:bg-neutral'
 									}`}
 									key={diff.id}
-									onClick={() => setSelectedCode(idx)}
+									onClick={() => handleUpdateSelectedCode(idx)}
 								>
 									{diff.discussionCode.filename}
 								</li>
@@ -260,9 +310,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 	}
 
 	const reviews = await getReviewByDiscussionId(7100, 0) // todo : get review by review_reservation id
+
 	return {
 		props: {
-			review: reviews.content[1],
+			review: reviews.content[0],
 			reservation: reviewReservation
 		}
 	}
