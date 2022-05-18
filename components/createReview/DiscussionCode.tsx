@@ -60,7 +60,6 @@ const DiscussionCode: React.FC<Props> = ({
 	const [offset, setOffset] = useState<number[]>([0, 0])
 	const selection = window.getSelection()
 	const dragCode = (e: any) => {
-		// offset 찾아내기
 		if (selection === null) return
 		const { anchorNode, focusNode, anchorOffset, focusOffset } = selection
 		const { NodeOffset: startOffset } = getNodeOffset(anchorNode!, anchorOffset)

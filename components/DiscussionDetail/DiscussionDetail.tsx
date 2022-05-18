@@ -10,7 +10,7 @@ import dynamic from 'next/dynamic'
 import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
 import { isLogin } from '../../api/User'
 import { useUserId } from '../../hooks/useUserId'
-import CommentReviewStore from './CommentReivewStore'
+import CommentReviewStore from '../createReview/CommentReivewStore'
 import { CommentReviewDiff, createReview } from '../../api/Review'
 
 type Props = {
@@ -26,7 +26,7 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	}
 )
 
-const DiscussionCode = dynamic(() => import('./DiscussionCode'), {
+const DiscussionCode = dynamic(() => import('../createReview/DiscussionCode'), {
 	ssr: false
 })
 
