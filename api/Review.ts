@@ -10,7 +10,7 @@ type CompleteLiveReviewRequest = {
 }
 
 type UpdateFocusedDiffRequest = {
-	code: string
+	codeAfter: string
 }
 
 export type ReviewResponse = {
@@ -83,7 +83,7 @@ export async function getThreadByReviewId(
 	return response
 }
 
-export async function particiateLiveReview(
+export async function participateLiveReview(
 	reservationId: number
 ): Promise<ReviewReservationResponse> {
 	const response = await post<ReviewReservationResponse>(
