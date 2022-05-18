@@ -19,7 +19,7 @@ const CommentReviewStore: React.FC<Props> = ({
 	return (
 		<>
 			{activate ? (
-				<div className="fixed bg-purple-500 right-[5vw] bottom-[10vh] h-[30rem] w-[20rem] rounded-2xl p-2">
+				<div className="fixed bg-purple-500 right-[5vw] bottom-[10vh] h-[30rem] w-[20rem] rounded-2xl p-2 z-10">
 					<div className="flex flex-row justify-between items-center">
 						<div className="font-bold ml-2">리뷰 스토리지</div>
 						<button
