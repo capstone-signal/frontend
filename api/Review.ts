@@ -1,6 +1,17 @@
-import { CommonResponse, get, PageResponse, post } from './common'
+import { CommonResponse, get, PageResponse, post, put } from './common'
 import { DiscussionCodeResponse } from './Discussion'
+import { ReviewReservationResponse } from './ReviewReservation'
 import { UserResponse } from './User'
+
+type CompleteLiveReviewRequest = {
+	changeCode: {
+		[key: string]: string
+	}
+}
+
+type UpdateFocusedDiffRequest = {
+	code: string
+}
 
 export type ReviewResponse = {
 	accepted: boolean
@@ -68,6 +79,34 @@ export async function getThreadByReviewId(
 ): Promise<ThreadPageResponse> {
 	const response = await get<ThreadPageResponse>(
 		`/review/${reviewId}/thread?page=${page}`
+	)
+	return response
+}
+
+export async function particiateLiveReview(
+	reservationId: number
+): Promise<ReviewReservationResponse> {
+	const response = await post<ReviewReservationResponse>(
+		`/reservation/participate/${reservationId}`,
+		{}
+	)
+	return response
+}
+
+export async function completeLiveReview(
+	reservationId: number,
+	data: CompleteLiveReviewRequest
+): Promise<any> {
+	await put<any>(`/review/complete/${reservationId}`, data)
+}
+
+export async function updateLiveReviewDiff(
+	diffId: number,
+	data: UpdateFocusedDiffRequest
+): Promise<LiveReviewDiffResponse> {
+	const response = await put<LiveReviewDiffResponse>(
+		`/review/livediff/${diffId}`,
+		data
 	)
 	return response
 }
