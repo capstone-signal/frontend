@@ -103,13 +103,15 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 	const generateQuestion = () => {
 		let question = ''
 		questions.forEach((q, index) => {
-			question += GuideLines.question[index]
-			if (index !== questions.length - 1) {
-				question += '\n'
+			if (q === '') {
+				return
 			}
+
+			question += `### ${GuideLines.question[index]}`
+			question += '\n\n'
 			question += q
-			question += '\n'
-			question += '---'
+			question += '\n\n'
+			question += '---\n\n'
 		})
 		return question
 	}
@@ -119,6 +121,7 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 			alert('태그를 선택해주세요.')
 			return
 		}
+
 		try {
 			const discussion = await createDiscussion({
 				title,
