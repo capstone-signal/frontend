@@ -15,7 +15,7 @@ const GuideLineChecker: React.FC<Props> = ({ guideLines, isSatisfieds }) => {
 			{Object.keys(guideLines).map((key, index) => (
 				<div key={index}>
 					{guideLines[key].map((guideLine, gidx) => (
-						<div key={index} className="flex mb-4">
+						<div key={gidx} className="flex mb-4">
 							{isSatisfieds[key][gidx] ? <SuccessIcon /> : <WarningIcon />}
 							<div
 								className={`text ml-4 ${

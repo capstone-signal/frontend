@@ -16,6 +16,13 @@ const AddTitleAndQuestion = ({
 }) => {
 	const [questionProgress, setQuestionProgress] = useState<number>(0)
 
+	const onBeforeBtnClick = (e: React.FormEvent) => {
+		e.preventDefault()
+		if (questionProgress > 0) {
+			setQuestionProgress(questionProgress - 1)
+		}
+	}
+
 	const onNextBtnClick = (e: React.FormEvent) => {
 		e.preventDefault()
 		if (questionProgress < questions.length - 1) {
@@ -47,8 +54,12 @@ const AddTitleAndQuestion = ({
 					question={questions[questionProgress]}
 					setQuestion={hanedleChangeQuestion}
 					title={questionTitles[questionProgress]}
-					handleProgress={onNextBtnClick}
-					isLast={questionProgress === questions.length - 1}
+					handleProgress={
+						questionProgress < questions.length - 1 ? onNextBtnClick : undefined
+					}
+					handleBeforeProgress={
+						questionProgress > 0 ? onBeforeBtnClick : undefined
+					}
 				/>
 			</div>
 		</div>
