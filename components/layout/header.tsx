@@ -17,7 +17,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
 				</Link>
 			</div>
 			<div className="navbar-end">
-				{/*{isLoggedIn && <ReviewAvailable />}*/}
+				{isLoggedIn && <ReviewAvailable />}
 				{isLoggedIn ? (
 					<div className="flex flex-row justify-center">
 						<Link href="/create/discussion" passHref>
