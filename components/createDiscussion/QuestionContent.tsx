@@ -20,17 +20,17 @@ const QuestionContent: React.FunctionComponent<Props> = ({
 		<div className="h-full">
 			<div className="text-xl mb-2 ml-2">
 				<span>{title}</span>
+				{handleProgress && (
+					<button className="btn btn-primary m-2" onClick={handleProgress}>
+						{question === '' ? '건너뛰기' : '다음'}
+					</button>
+				)}
 				{handleBeforeProgress && (
 					<button
 						className="btn btn-primary m-2"
 						onClick={handleBeforeProgress}
 					>
 						이전
-					</button>
-				)}
-				{handleProgress && (
-					<button className="btn btn-primary m-2" onClick={handleProgress}>
-						{question === '' ? '건너뛰기' : '다음'}
 					</button>
 				)}
 			</div>

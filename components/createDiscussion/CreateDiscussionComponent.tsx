@@ -116,6 +116,18 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 		return question
 	}
 
+	const computePriority = () => {
+		let priority = 0
+		priority += questions
+			.map((q) => q !== '')
+			.reduce((acc, q) => acc + (q ? 1 : 0), 0)
+		priority +=
+			codes.reduce((acc, code) => acc + code.content.length, 0) < 400 ? 1 : 0
+		priority += selectedTagIds.length > 0 ? 1 : 0
+		console.log(priority)
+		return priority
+	}
+
 	const onCreateBtnClick = async (e: React.FormEvent) => {
 		if (selectedTagIds.length === 0) {
 			alert('태그를 선택해주세요.')
@@ -133,7 +145,7 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 					times: availableTimes
 				},
 				codes,
-				usePriority: false,
+				priority: computePriority(),
 				gitRepositoryId: discussionType !== 'DIRECT' ? selectedRepo : undefined,
 				gitNodeId: discussionType !== 'DIRECT' ? selectedGitNode : undefined
 			})
