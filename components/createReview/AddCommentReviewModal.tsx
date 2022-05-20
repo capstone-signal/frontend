@@ -22,8 +22,8 @@ const AddCommentReviewModal: React.FC<Props> = ({
 }) => {
 	const [comment, setComment] = useState<string>('')
 	const { isLoggedIn, userId } = useUserId()
-	//const qualified = reviewee !== userId && isLoggedIn
-	const qualified = true
+	const qualified = reviewee !== userId && isLoggedIn
+
 	return (
 		<div className="modal-box">
 			{qualified ? (
