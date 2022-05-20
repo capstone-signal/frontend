@@ -6,6 +6,7 @@ import { useSelectionLocation } from '../../hooks/useSelectionLocation'
 import AddCommentReviewModal from './AddCommentReviewModal'
 import { CommentReviewDiff } from '../../api/Review'
 import { DiscussionCodeResponse } from '../../api/Discussion'
+import { getNodeOffset } from '../../utils/getNodeOffset'
 
 const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	() => import('@uiw/react-markdown-preview'),
@@ -56,31 +57,33 @@ const DiscussionCode: React.FC<Props> = ({
 }) => {
 	const [reviewCode, setReviewCode] = useState<string>('')
 	const [newCode, setNewCode] = useState<string>('')
-	const [offSet, setOffSet] = useState<number[]>([0, 0])
+	const [offset, setOffset] = useState<number[]>([0, 0])
 	const selection = window.getSelection()
 	const dragCode = (e: any) => {
-		if (
-			selection?.anchorNode == selection?.focusNode &&
-			selection?.anchorOffset != selection?.focusOffset
-		) {
+		if (selection === null) return
+		const { anchorNode, focusNode, anchorOffset, focusOffset } = selection
+		const { NodeOffset: startOffset } = getNodeOffset(anchorNode!, anchorOffset)
+		const { NodeOffset: EndOffset } = getNodeOffset(focusNode!, focusOffset)
+
+		if (anchorOffset != focusOffset) {
 			const clientRects = selection?.getRangeAt(0).getBoundingClientRect()
 			ClickEndHandler(clientRects)
 			const selectedCodes = selection?.toString()
 			setReviewCode(selectedCodes!)
-			setOffSet([selection!.anchorOffset, selection!.focusOffset])
+			setOffset([startOffset, EndOffset])
 		}
 	}
 	const handleReviewAdd = (newCode: string, comment: string) => {
 		const codeAfter =
-			discussionCode.content.substring(0, Math.min(offSet[0], offSet[1])) +
+			discussionCode.content.substring(0, Math.min(offset[0], offset[1])) +
 			newCode +
 			discussionCode.content.substring(
-				Math.max(offSet[0], offSet[1]),
+				Math.max(offset[0], offset[1]),
 				discussionCode.content.length
 			)
 		const newReview = {
 			codeAfter: codeAfter,
-			codeLocate: offSet,
+			codeLocate: offset,
 			comment: comment,
 			discussionCode: discussionCode
 		}

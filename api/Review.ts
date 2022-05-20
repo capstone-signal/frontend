@@ -19,7 +19,7 @@ export type ReviewPageResponse = {
 
 export type CommentReviewDiffResponse = {
 	codeAfter: string
-	codeLocate: string
+	codeLocate: number[]
 	comment: string
 	discussionCode: DiscussionCodeResponse
 } & CommonResponse
