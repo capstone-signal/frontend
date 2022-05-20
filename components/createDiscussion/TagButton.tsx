@@ -13,7 +13,9 @@ const TagButton: React.FunctionComponent<Props> = ({
 	selectedTagIds,
 	setSelectedTagIds
 }) => {
-	const [select, setSelect] = useState<boolean>(false)
+	const [select, setSelect] = useState<boolean>(
+		selectedTagIds.includes(index) ? true : false
+	)
 	const clickTag = () => {
 		if (!select) {
 			setSelectedTagIds([...selectedTagIds, index])
