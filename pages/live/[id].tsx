@@ -26,6 +26,7 @@ import { useUserId } from '../../hooks/useUserId'
 import apiConfig from '../../config/apiConfig'
 import { useQuery } from 'react-query'
 import { MonacoBinding } from '../../utils/y-monaco-wrapper'
+import { useRouter } from 'next/router'
 
 type Props = {
 	reservation: ReviewReservationResponse
@@ -40,6 +41,7 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 )
 
 const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
+	const router = useRouter()
 	const [init, setInit] = useState<boolean>(false)
 	const [isDefaultModalOpen, setDefaultModalOpen] = useState<boolean>(true)
 	const [leftTime, setLeftTime] = useState<string>('00:00')
@@ -84,6 +86,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 			const res = await completeLiveReview(reservation.id, {
 				changeCode: {}
 			})
+			router.push(`/discussion/${reservation.discussion?.id}`)
 		} catch (e) {
 			console.error(e)
 			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
@@ -104,6 +107,13 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	// timer ui
 	useEffect(() => {
 		if (!window) return
+
+		const completeHandler = async () => {
+			await updateLiveReviewDiff(review.liveDiffList[selectedCode].id, {
+				codeAfter: editorRef.current?.getModel().getValue()
+			})
+			router.push(`/discussion/${reservation.discussion?.id}`)
+		}
 		const interval = setInterval(() => {
 			const now = new Date()
 			const left =
@@ -116,25 +126,38 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 				.toString()
 				.padStart(2, '0')}`
 			setLeftTime(leftTime)
+			if (left <= 0) {
+				completeHandler()
+			}
 		}, 1000)
 		return () => {
 			clearInterval(interval)
 		}
-	}, [reservation])
+	}, [reservation, selectedCode])
+
+	// TODO periodic update diff
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const reviewDiff = review.liveDiffList[selectedCode]
+			
+		}, 1000)
+
+		return () => {
+			clearInterval(interval)
+		}
+	}, [selectedCode])
 
 	useEffect(() => {
-		if (!init) return
-
 		if (!window) return
 		if (!init) return
 		if (!monacoRef.current) return
 		if (!editorRef.current) return
-
 		const ydoc = new Y.Doc()
 		const roomName = `${reservation.id}?reviewDiff=${review.liveDiffList[selectedCode].id}`
 
 		if (wsRef.current && bindingRef.current) {
 			// if ws is already connected, then disconnect
+			console.log('connected')
 			wsRef.current.disconnect()
 			bindingRef.current.destroy()
 		}
@@ -144,7 +167,6 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		const ytext = ydoc.getText(roomName)
 
 		const editor = editorRef.current
-		editor.getModel().setValue('')
 		import('../../utils/y-monaco-wrapper').then((m) => {
 			const binding = new m.MonacoBinding(
 				ytext,
