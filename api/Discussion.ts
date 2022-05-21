@@ -33,7 +33,7 @@ type CreateDiscussionRequest = {
 	question: string
 	tagIds: number[]
 	title: string
-	usePriority: boolean
+	priority?: number
 	liveReviewRequired: boolean
 	liveReviewAvailableTimes?: {
 		times: LiveReviewAvailableTime[]
