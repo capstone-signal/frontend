@@ -17,10 +17,11 @@ const ThreadWriteForm: React.FC<Props> = ({ reviewId }) => {
 		try {
 			await createThread(reviewId, threadContent)
 			setThreadContent('')
-			alert('create thread success.')
+			alert('생성이 완료되었습니다.')
+			setLoading(false)
 		} catch (e) {
 			console.error(e)
-			alert('failed to write thread.')
+			alert('생성에 실패했습니다.')
 		}
 	}
 	return (
