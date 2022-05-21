@@ -124,7 +124,6 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 		priority +=
 			codes.reduce((acc, code) => acc + code.content.length, 0) < 400 ? 1 : 0
 		priority += selectedTagIds.length > 0 ? 1 : 0
-		console.log(priority)
 		return priority
 	}
 
