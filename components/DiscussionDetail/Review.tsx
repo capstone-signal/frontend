@@ -50,6 +50,9 @@ const ReviewDetail: React.FC<Props> = ({ review }) => {
 						<span className="text-2xl">{review.reviewer.name[0]}</span>
 					</div>
 					<span className="text ml-3">{review.reviewer.name}</span>
+					{review.accepted && (
+						<span className="badge badge-lg badge-success ml-4">채택</span>
+					)}
 				</div>
 			</div>
 			<div className="review_code_list flex flex-row">

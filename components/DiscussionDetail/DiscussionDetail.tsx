@@ -1,7 +1,9 @@
 import {
+	completeDiscussion,
 	deleteDiscussion,
 	DiscussionCodeResponse,
-	DiscussionResponse
+	DiscussionResponse,
+	DiscussionState
 } from '../../api/Discussion'
 import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import dayjs from 'dayjs'
@@ -9,7 +11,6 @@ import '@uiw/react-markdown-preview/markdown.css'
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
-import { isLogin } from '../../api/User'
 import { useUserId } from '../../hooks/useUserId'
 import CommentReviewStore from '../createReview/CommentReivewStore'
 import { CommentReviewDiff, createReview } from '../../api/Review'
@@ -17,6 +18,9 @@ import { CommentReviewDiff, createReview } from '../../api/Review'
 type Props = {
 	discussion: DiscussionResponse
 	codes: DiscussionCodeResponse[]
+	selectedReviewIds: number[]
+	isCompletePhase: boolean
+	handleClickCompletePhase: () => void
 }
 
 dayjs.locale('ko')
@@ -38,7 +42,13 @@ const questionMarkdownViewerStyle: React.CSSProperties = {
 	borderRadius: '6px'
 }
 
-const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
+const DiscussionDetail: React.FC<Props> = ({
+	discussion,
+	codes,
+	selectedReviewIds,
+	isCompletePhase,
+	handleClickCompletePhase
+}) => {
 	const { userId, isLoggedIn } = useUserId()
 	const [selectedCode, setSelectedCode] = useState<number>(0)
 	const [newReviewList, setNewReviewList] = useState<CommentReviewDiff[]>([])
@@ -86,6 +96,29 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 		}
 	}
 
+	const handleStartComplete = () => {
+		alert('채택할 리뷰를 선택해주세요.')
+		handleClickCompletePhase()
+		return
+	}
+
+	const handleClickComplete = async () => {
+		if (selectedReviewIds.length == 0) {
+			alert('채택할 리뷰를 1개 이상 선택해주세요.')
+			return
+		}
+
+		try {
+			await completeDiscussion(discussion.id) // TODO : selectedReviews 바디에 추가
+			alert('완료되었습니다.')
+			window.location.reload()
+		} catch (e) {
+			console.error(e)
+			alert('완료에 실패했습니다.')
+		}
+		return
+	}
+
 	return (
 		<div>
 			<div className="dd_header">
@@ -106,6 +139,17 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 								삭제
 							</span>
 						)}
+						{isDiscussionOwner &&
+							discussion.state === DiscussionState.REVIEWING && (
+								<span
+								className="btn btn-primary ml-2"
+								onClick={
+									isCompletePhase ? handleClickComplete : handleStartComplete
+									}
+							>
+								{isCompletePhase ? '선택 완료' : '완료'}
+								</span>
+							)}
 					</span>
 				</div>
 				<div className="tags mb-4">

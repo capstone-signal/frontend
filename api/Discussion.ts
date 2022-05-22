@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import { CommonResponse, del, get, post, put } from './common'
-=======
-import { CommonResponse, del, get, post } from './common'
->>>>>>> CAPS-195
 import { TagResponse } from './Tag'
 import { UserResponse } from './User'
 
