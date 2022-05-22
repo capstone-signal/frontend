@@ -1,4 +1,8 @@
-import { CommonResponse, get, post, put } from './common'
+<<<<<<< HEAD
+import { CommonResponse, del, get, post, put } from './common'
+=======
+import { CommonResponse, del, get, post } from './common'
+>>>>>>> CAPS-195
 import { TagResponse } from './Tag'
 import { UserResponse } from './User'
 
@@ -129,5 +133,12 @@ export async function completeDiscussion(
 	id: number
 ): Promise<DiscussionResponse> {
 	const response = await put<DiscussionResponse>(`/discussion/${id}`, {})
+	return response
+}
+
+export async function deleteDiscussion(
+	id: number
+): Promise<DiscussionResponse> {
+	const response = await del<DiscussionResponse>(`/discussion/${id}`)
 	return response
 }

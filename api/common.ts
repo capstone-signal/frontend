@@ -77,6 +77,25 @@ export function put<T>(
 			...opts.headers,
 			'Content-Type': 'application/json',
 			Accept: 'application/json',
+			cookie: typeof document !== 'undefined' ? document.cookie : '',
+		}
+	}).then((response) => {
+		if (!response.ok) {
+			throw new Error(`${response.status} ${JSON.stringify(response.body)}}`)
+		}
+		return response.json()
+	})
+}
+
+export function del<T>(url: string, opts: RequestInit = {}): Promise<T> {
+	return fetch(getApiUrl(url), {
+		...opts,
+		method: 'DELETE',
+		credentials: 'include',
+		headers: {
+			...opts.headers,
+			'Content-Type': 'application/json',
+			Accept: 'application/json',
 			cookie: typeof document !== 'undefined' ? document.cookie : ''
 		}
 	}).then((response) => {
