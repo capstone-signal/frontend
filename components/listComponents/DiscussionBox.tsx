@@ -18,26 +18,34 @@ const DiscussionBox: React.FunctionComponent<Props> = ({ discussion }) => {
 					<span className="text-sm mb-1">
 						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
 					</span>
-					{discussion.state === DiscussionState.NOT_REVIEWED && (
-						<div>Not Reviewed</div>
-					)}
-					{discussion.state === DiscussionState.REVIEWING && (
-						<div>Reviewing</div>
-					)}
-					{discussion.state === DiscussionState.COMPLETED && (
-						<div>Completed</div>
-					)}
 				</div>
 			</div>
-			<div className="flex flex-row overflow-x-auto overflow-y-hidden scroll">
-				{discussion.tags.map((tag, index) => (
-					<div
-						className="btn btn-sm btn-disabled bg-white rounded-3xl text-sm text-black mr-2 min-w-[2.5rem] border-2 border-solid border-gray-300"
-						key={index}
-					>
-						{tag.name}
-					</div>
-				))}
+			<div className="flex flex-row justify-between">
+				<div className="flex flex-row overflow-x-auto overflow-y-hidden scroll w-[80%]">
+					{discussion.tags.map((tag, index) => (
+						<div
+							className="btn btn-sm btn-disabled bg-white rounded-3xl text-sm text-black mr-2 min-w-[2.5rem] border-2 border-solid border-gray-300"
+							key={index}
+						>
+							{tag.name}
+						</div>
+					))}
+				</div>
+				{discussion.state === DiscussionState.NOT_REVIEWED && (
+					<span className="badge badge-lg bg-red-500 border-2 border-solid border-gray-500 p-3 rounded-2xl font-semibold text-white">
+						Not Reviewed
+					</span>
+				)}
+				{discussion.state === DiscussionState.REVIEWING && (
+					<span className="badge badge-lg bg-blue-400 border-2 border-solid border-gray-500 p-3 rounded-2xl font-semibold text-white">
+						Reviewing
+					</span>
+				)}
+				{discussion.state === DiscussionState.COMPLETED && (
+					<span className="badge badge-lg bg-green-500 border-2 border-solid border-gray-500 p-3 rounded-2xl font-semibold text-white">
+						Completed
+					</span>
+				)}
 			</div>
 		</div>
 	)
