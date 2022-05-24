@@ -150,7 +150,6 @@ const DiscussionDetail: React.FC<Props> = ({
 								{isCompletePhase ? '선택 완료' : '완료'}
 								</span>
 							)}
-					</span>
 				</div>
 				<div className="tags mb-4">
 					{discussion.tags?.map((tag) => (
