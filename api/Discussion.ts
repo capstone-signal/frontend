@@ -8,7 +8,7 @@ export type LiveReviewAvailableTime = {
 }
 
 export enum DiscussionState {
-	NOT_REVIED = 0,
+	NOT_REVIEWED = 0,
 	REVIEWING = 1,
 	COMPLETED = 2
 }
