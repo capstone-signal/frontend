@@ -1,4 +1,4 @@
-import { CommonResponse, get, post } from './common'
+import { CommonResponse, del, get, post } from './common'
 import { TagResponse } from './Tag'
 import { UserResponse } from './User'
 
@@ -122,5 +122,12 @@ export async function getDiscussions(data: {
 		`sort=${data.sort ? data.sort : ''}&` +
 		`onlyMine=${data.onlyMine ?? 'false'}`
 	const response = await get<DiscussionListResponse>(`/discussion/?${url}`)
+	return response
+}
+
+export async function deleteDiscussion(
+	id: number
+): Promise<DiscussionResponse> {
+	const response = await del<DiscussionResponse>(`/discussion/${id}`)
 	return response
 }

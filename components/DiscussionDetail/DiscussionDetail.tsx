@@ -1,4 +1,5 @@
 import {
+	deleteDiscussion,
 	DiscussionCodeResponse,
 	DiscussionResponse
 } from '../../api/Discussion'
@@ -41,13 +42,27 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 	const { userId, isLoggedIn } = useUserId()
 	const [selectedCode, setSelectedCode] = useState<number>(0)
 	const [newReviewList, setNewReviewList] = useState<CommentReviewDiff[]>([])
+	const isDiscussionOwner = discussion.user.id === userId
+
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
 	}
 
+	const handleClickDelete = async () => {
+		try {
+			await deleteDiscussion(discussion.id)
+			alert('삭제되었습니다.')
+			window.location.href = '/list'
+		} catch (e) {
+			console.error(e)
+			// TODO : 에러 분기
+			alert('삭제에 실패했습니다.\n리뷰가 존재하는 경우 삭제할 수 없습니다.')
+		}
+	}
+
 	const liveReviewAvailable = (discussion: DiscussionResponse) => {
 		const cond1 = discussion.liveReviewRequired
-		const cond2 = discussion.user.id !== userId
+		const cond2 = !isDiscussionOwner
 		const cond3 = isLoggedIn
 		return cond1 && cond2 && cond3
 	}
@@ -82,8 +97,15 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						</div>
 						<span className="text ml-3">{discussion.user.name}</span>
 					</div>
-					<span className="text mr-6 created_at">
-						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
+					<span className="text">
+						<span className="created_at mr-6">
+							{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
+						</span>
+						{isDiscussionOwner && (
+							<span className="btn btn-error" onClick={handleClickDelete}>
+								삭제
+							</span>
+						)}
 					</span>
 				</div>
 				<div className="tags mb-4">
