@@ -15,7 +15,7 @@ const Sidebar: FunctionComponent<SidebarProps> = () => (
 				</Link>
 			</li>
 			<li className="relative">
-				<Link href="/list?page=1">
+				<Link href={`/list?page=1&state=&tags=&keyword=&onlyMine=`}>
 					<a className="flex items-center text-sm py-4 px-6 h-12 overflow-hidden text-gray-700 text-ellipsis whitespace-nowrap rounded hover:text-gray-900 hover:bg-gray-300 transition duration-300 ease-in-out">
 						Discussions
 					</a>
