@@ -149,7 +149,7 @@ const CreateDiscussionComponent: React.FunctionComponent<Props> = () => {
 				gitNodeId: discussionType !== 'DIRECT' ? selectedGitNode : undefined
 			})
 			alert('생성이 완료되었습니다.')
-			router.push(`/discussion/${discussion.id}`)
+			window.location.href = `/discussion/${discussion.id}`
 		} catch (e) {
 			console.error(e)
 			alert("can't create discussion.")
