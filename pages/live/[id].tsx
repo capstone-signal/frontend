@@ -74,8 +74,8 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		return null
 	}
 
-	const initializeSession = async (reservationId, reviewId) => {
-		//	await participateLiveReview(reservationId)
+	const initializeSession = async (reservationId: number, reviewId: number) => {
+		await participateLiveReview(reservationId)
 		//	await getReviewDiffsByReviewId(reviewId)
 	}
 
@@ -170,10 +170,10 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 			})
 		})
 
-		ws.on('connection-error', () => {
-			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
-			window.location.href = '/'
-		})
+		// ws.on('connection-error', () => {
+		// 	alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
+		// 	window.location.href = '/'
+		// })
 
 		const editor = editorRef.current
 		import('../../utils/y-monaco-wrapper').then((m) => {
@@ -304,7 +304,7 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 		throw new Error('Invalid reservation id')
 	}
 
-	const reviewReservation = (await getReviewReservationByDiscussionId(7100))[0] //await getReviewReservationById(reservationId)
+	const reviewReservation = await getReviewReservationById(reservationId)
 	if (!reviewReservation) {
 		throw new Error('Reservation id not found')
 	}
