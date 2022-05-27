@@ -111,12 +111,17 @@ const CommentReviewStore: React.FC<Props> = ({
 					</div>
 				</div>
 			) : (
-				<button
-					className="btn fixed bg-purple-500 right-[5vw] bottom-[10vh] normal-case w-[10rem]"
-					onClick={() => setActivate(true)}
+				<div
+					className="fixed tooltip tooltip-left right-[5vw] bottom-[10vh]"
+					data-tip="리뷰하려는 코드를 드래그하세요!"
 				>
-					리뷰 스토리지 ( {newReviewList.length} )
-				</button>
+					<button
+						className="btn bg-purple-500 normal-case w-[10rem]"
+						onClick={() => setActivate(true)}
+					>
+						리뷰 스토리지 ( {newReviewList.length} )
+					</button>
+				</div>
 			)}
 		</>
 	)

@@ -34,10 +34,7 @@ const DirectCodeComponent: React.FunctionComponent<Props> = ({
 }) => {
 	const [language, setLanguage] = useState<string[]>([])
 	const handleAddFile = () => {
-		setCodes([
-			...codes,
-			{ filename: '', content: '// write codes', language: 'JavaScript' }
-		])
+		setCodes([...codes, { filename: '', content: '', language: 'JavaScript' }])
 	}
 	const handleDeleteFile = (index: number) => {
 		const newCodes = [...codes]
