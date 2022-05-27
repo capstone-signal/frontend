@@ -90,30 +90,6 @@ export function put<T>(
 	})
 }
 
-export function put<T>(
-	url: string,
-	body: any,
-	opts: RequestInit = {}
-): Promise<T> {
-	return fetch(getApiUrl(url), {
-		...opts,
-		method: 'PUT',
-		body: JSON.stringify(body),
-		credentials: 'include',
-		headers: {
-			...opts.headers,
-			'Content-Type': 'application/json',
-			Accept: 'application/json',
-			cookie: typeof document !== 'undefined' ? document.cookie : '',
-		}
-	}).then((response) => {
-		if (!response.ok) {
-			throw new Error(`${response.status} ${JSON.stringify(response.body)}}`)
-		}
-		return response.json()
-	})
-}
-
 export function del<T>(url: string, opts: RequestInit = {}): Promise<T> {
 	return fetch(getApiUrl(url), {
 		...opts,
