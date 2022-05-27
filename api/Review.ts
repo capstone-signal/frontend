@@ -1,6 +1,11 @@
-import { CommonResponse, get, PageResponse, post } from './common'
+import { CommonResponse, get, PageResponse, post, put } from './common'
 import { DiscussionCodeResponse } from './Discussion'
+import { ReviewReservationResponse } from './ReviewReservation'
 import { UserResponse } from './User'
+
+type UpdateFocusedDiffRequest = {
+	codeAfter: string
+}
 
 export type ReviewResponse = {
 	accepted: boolean
@@ -82,6 +87,40 @@ export async function getThreadByReviewId(
 		`/review/${reviewId}/thread?page=${page}`
 	)
 	return response
+}
+
+export async function participateLiveReview(
+	reservationId: number
+): Promise<ReviewReservationResponse> {
+	const response = await post<ReviewReservationResponse>(
+		`/reservation/participate/${reservationId}`,
+		{}
+	)
+	return response
+}
+
+export async function completeLiveReview(reservationId: number): Promise<any> {
+	await put<any>(`/review/complete/${reservationId}`, {})
+}
+
+export async function updateLiveReviewDiff(
+	diffId: number,
+	data: UpdateFocusedDiffRequest
+): Promise<LiveReviewDiffResponse> {
+	const response = await put<LiveReviewDiffResponse>(
+		`/review/livediff/${diffId}`,
+		data
+	)
+	return response
+}
+
+export async function getReviewDiffsByReviewId(
+	reviewId: number
+): Promise<LiveReviewDiffResponse[]> {
+	const response = await get<LiveReviewDiffResponse[]>(
+		`/review/diff?reviewId=${reviewId}&reviewType=LIVE`
+	)
+  return response
 }
 
 export async function createReview(
