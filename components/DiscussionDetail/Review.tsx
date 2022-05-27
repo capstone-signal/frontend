@@ -1,6 +1,7 @@
+/* eslint-disable prettier/prettier */
 import { DiffEditor } from '@monaco-editor/react'
 import { useEffect, useRef, useState } from 'react'
-import { ReviewResponse } from '../../api/Review'
+import { ReviewResponse, CommentReviewDiffResponse } from '../../api/Review'
 import ThreadList from './ThreadList'
 
 type Props = {
@@ -35,7 +36,14 @@ const ReviewDetail: React.FC<Props> = ({ review }) => {
 		const originalModel = monaco.editor.createModel(
 			selectedReview.discussionCode.content
 		)
-		const modifiedModel = monaco.editor.createModel(selectedReview.codeAfter)
+		const compareCode = isCommentReview(review)
+			? selectedReview.discussionCode.content.substring(
+				0, (selectedReview as CommentReviewDiffResponse).codeLocate[0]
+			) + selectedReview.codeAfter + selectedReview.discussionCode.content.substring(
+				(selectedReview as CommentReviewDiffResponse).codeLocate[1],
+				selectedReview.discussionCode.content.length
+			) : selectedReview.codeAfter
+		const modifiedModel = monaco.editor.createModel(compareCode)
 		editor.setModel({
 			original: originalModel,
 			modified: modifiedModel

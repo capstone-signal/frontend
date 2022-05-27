@@ -194,7 +194,7 @@ const DiscussionDetail: React.FC<Props> = ({
 				</div>
 				<div className="codes basis-5/6 w-3/4">
 					<div className="codes_header flex flex-row">
-						<div className="p-4 text-2xl border-2 text-xl basis-1/5 rounded-tr-2xl border-gray-600">
+						<div className="p-4 border-2 text-xl basis-1/5 rounded-tr-2xl border-gray-600">
 							Codes
 						</div>
 					</div>
@@ -207,11 +207,13 @@ const DiscussionDetail: React.FC<Props> = ({
 						/>
 					</div>
 				</div>
-				<CommentReviewStore
-					newReviewList={newReviewList}
-					setNewReviewList={setNewReviewList}
-					createNewReview={createNewReview}
-				/>
+				{!isDiscussionOwner && (
+					<CommentReviewStore
+						newReviewList={newReviewList}
+						setNewReviewList={setNewReviewList}
+						createNewReview={createNewReview}
+					/>
+				)}
 			</div>
 			<div className="dd_live_review_box flex justify-center">
 				<a

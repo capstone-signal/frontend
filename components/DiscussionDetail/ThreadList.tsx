@@ -1,7 +1,5 @@
 import { useState } from 'react'
-import { useQuery } from 'react-query'
-import { getThreadByReviewId, ReviewResponse } from '../../api/Review'
-import Spinner from '../Common/Spinner'
+import { ReviewResponse } from '../../api/Review'
 import Thread from './Thread'
 import ThreadWriteForm from './ThreadWriteForm'
 
@@ -11,14 +9,6 @@ type Props = {
 
 const ThreadList: React.FC<Props> = ({ review }) => {
 	const [isToggled, setToggled] = useState<boolean>(false)
-	// const [page, setPage] = useState<number>(0)
-	// const { data, error, isLoading } = useQuery(
-	// 	[`thread${review.id}`, review.id],
-	// 	() => getThreadByReviewId(review.id, page),
-	// 	{
-	// 		enabled: isToggled
-	// 	}
-	// )
 
 	const handleClickEnabledBtn = () => {
 		setToggled(true)

@@ -120,7 +120,7 @@ export async function getReviewDiffsByReviewId(
 	const response = await get<LiveReviewDiffResponse[]>(
 		`/review/diff?reviewId=${reviewId}&reviewType=LIVE`
 	)
-  return response
+	return response
 }
 
 export async function createReview(
