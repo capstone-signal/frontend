@@ -284,7 +284,6 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 					id="init-modal"
 					className="modal-toggle"
 					checked={isDefaultModalOpen}
-					onChange={() => {}}
 				/>
 				<div className="modal">
 					<div className="modal-box">

@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import {
 	completeDiscussion,
 	deleteDiscussion,
@@ -142,15 +143,15 @@ const DiscussionDetail: React.FC<Props> = ({
 						{isDiscussionOwner &&
 							discussion.state === DiscussionState.REVIEWING && (
 								<span
-								className="btn btn-primary ml-2"
-								onClick={
-									isCompletePhase ? handleClickComplete : handleStartComplete
+									className="btn btn-primary ml-2"
+									onClick={
+										isCompletePhase ? handleClickComplete : handleStartComplete
 									}
-							>
-								{isCompletePhase ? '선택 완료' : '완료'}
+								>
+									{isCompletePhase ? '선택 완료' : '완료'}
 								</span>
 							)}
-							</span>
+					</span>
 				</div>
 				<div className="tags mb-4">
 					{discussion.tags?.map((tag) => (
