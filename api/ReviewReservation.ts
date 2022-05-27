@@ -1,5 +1,6 @@
 import { CommonResponse, get, post } from './common'
 import { DiscussionResponse } from './Discussion'
+import { ReviewResponse } from './Review'
 import { UserResponse } from './User'
 
 export type CreateReviewReservationRequest = {
@@ -15,6 +16,7 @@ export type ReviewReservationResponse = {
 	reviewer?: UserResponse
 	id: number
 	isdone: boolean
+	review?: ReviewResponse
 	reviewStartDateTime: Date
 	revieweeParticipated: boolean
 	reviewerParticipated: boolean

@@ -69,7 +69,11 @@ const ListFilter: React.FunctionComponent<FilterProps> = ({
 					/>
 				</div>
 				<Link
-					href={`/list?page=1&state=${discussionFilter.state}&tags=${discussionFilter.tags}&keyword=${discussionFilter.keyword}&onlyMine=false`}
+					href={`/list?page=1
+					&state=${discussionFilter.state ?? ''}
+					&tags=${discussionFilter.tags ?? ''}
+					&keyword=${discussionFilter.keyword ?? ''}
+					&onlyMine=false`}
 					passHref
 				>
 					<button className="btn btn-accent">설정 완료</button>
