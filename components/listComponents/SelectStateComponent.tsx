@@ -8,6 +8,7 @@ const SelectStateComponent: React.FunctionComponent<Props> = ({
 	setSelectedState
 }) => {
 	const stateTags = [
+		{ id: '', name: 'All State' },
 		{ id: 'NOT_REVIEWED', name: 'Not reviewed' },
 		{ id: 'REVIEWING', name: 'Reviewing' },
 		{ id: 'COMPLETED', name: 'Completed' }
@@ -20,7 +21,7 @@ const SelectStateComponent: React.FunctionComponent<Props> = ({
 			{stateTags.map((state, index) => (
 				<div key={index} className="inline">
 					<div
-						className={`btn btn-small m-1 rounded-3xl h-[2.5rem] min-h-[2.5rem] ${
+						className={`btn btn-small normal-case m-1 rounded-3xl h-[2.5rem] min-h-[2.5rem] ${
 							selectedState == state.id ? `btn-success` : `btn-outline`
 						}`}
 						onClick={() => clickTag(state.id)}

@@ -108,7 +108,7 @@ export async function getDiscussionById(
 
 export async function getDiscussions(data: {
 	page?: string | string[]
-	tags?: string | string[]
+	tags?: number | number[]
 	state?: string | string[]
 	keyword?: string | string[]
 	sort?: string | string[]

@@ -9,9 +9,10 @@ const Pagination: React.FunctionComponent<Props> = ({ discussionAmount }) => {
 	const router = useRouter()
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const maxPageNumber = Math.ceil(discussionAmount! / 5)
-	const { page } = router.query
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const currentPage = parseInt(page! as string)
+	const { tags, state, keyword, sort, onlyMine } = router.query
+	const currentPage = router.query.page
+		? parseInt(router.query.page as string)
+		: 1
 	const pageArray = [
 		currentPage - 2,
 		currentPage - 1,
@@ -22,14 +23,22 @@ const Pagination: React.FunctionComponent<Props> = ({ discussionAmount }) => {
 	return (
 		<div className="flex justify-center">
 			<div>
-				{pageArray.map((page) => (
-					<Link key={page} href={`/list?page=${page}`} passHref>
+				{pageArray.map((pageNumber) => (
+					<Link
+						key={pageNumber}
+						href={`/list?page=${pageNumber}
+							&state=${state ?? ''}
+							&tags=${tags ?? ''}
+							&keyword=${keyword ?? ''}
+							&onlyMine=false`}
+						passHref
+					>
 						<div
 							className={`btn btn-sm m-1 ${
-								page < 1 || page > maxPageNumber ? `invisible` : ``
-							} ${page == currentPage ? `btn-active` : `btn-outline`}`}
+								pageNumber < 1 || pageNumber > maxPageNumber ? `invisible` : ``
+							} ${pageNumber == currentPage ? `btn-active` : `btn-outline`}`}
 						>
-							{page}
+							{pageNumber}
 						</div>
 					</Link>
 				))}

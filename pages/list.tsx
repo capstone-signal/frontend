@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Layout from '../components/layout/layout'
 import ListComponent from '../components/listComponents/ListComponent'
 
-const list: NextPage = () => {
+const listPage: NextPage = () => {
 	return (
 		<div>
 			<Head>
@@ -18,4 +18,4 @@ const list: NextPage = () => {
 	)
 }
 
-export default list
+export default listPage
