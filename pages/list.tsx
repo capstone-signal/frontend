@@ -1,18 +1,12 @@
-import type {
-	GetServerSideProps,
-	GetServerSidePropsContext,
-	NextPage
-} from 'next'
+import type { NextPage } from 'next'
 import Head from 'next/head'
-import { DiscussionListResponse, getDiscussions } from '../api/Discussion'
 import Layout from '../components/layout/layout'
 import ListComponent from '../components/listComponents/ListComponent'
 
-type Props = {
-	discussions: DiscussionListResponse
-}
+// eslint-disable-next-line @typescript-eslint/ban-types
+type Props = {}
 
-const listPage: NextPage<Props> = ({ discussions }) => {
+const listPage: NextPage<Props> = () => {
 	return (
 		<div>
 			<Head>
@@ -20,31 +14,11 @@ const listPage: NextPage<Props> = ({ discussions }) => {
 			</Head>
 			<Layout>
 				<div className="m-3 min-h-[36rem]">
-					<ListComponent discussions={discussions} />
+					<ListComponent />
 				</div>
 			</Layout>
 		</div>
 	)
 }
-export const getServerSideProps: GetServerSideProps<Props> = async (
-	context: GetServerSidePropsContext
-) => {
-	const { page, tags, state, keyword, sort, onlyMine } = context.query
-	const discussions = await getDiscussions({
-		page,
-		tags,
-		state,
-		keyword,
-		sort,
-		onlyMine
-	})
-	if (!discussions) {
-		throw new Error('Discussion not found')
-	}
-	return {
-		props: {
-			discussions: discussions
-		}
-	}
-}
+
 export default listPage

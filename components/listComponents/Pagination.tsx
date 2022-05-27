@@ -19,22 +19,23 @@ const Pagination: React.FunctionComponent<Props> = ({ discussionAmount }) => {
 		currentPage + 1,
 		currentPage + 2
 	]
-	const onLinkClick = (pageNumber: number) => {
-		window.location.href = `/list?page=${pageNumber}&state=${state}&tags=${tags}&keyword=${keyword}&onlyMine=false`
-	}
 	return (
 		<div className="flex justify-center">
 			<div>
 				{pageArray.map((pageNumber) => (
-					<div
+					<Link
 						key={pageNumber}
-						onClick={() => onLinkClick(pageNumber)}
-						className={`btn btn-sm m-1 ${
-							pageNumber < 1 || pageNumber > maxPageNumber ? `invisible` : ``
-						} ${pageNumber == currentPage ? `btn-active` : `btn-outline`}`}
+						href={`/list?page=${pageNumber}&state=${state}&tags=${tags}&keyword=${keyword}&onlyMine=false`}
+						passHref
 					>
-						{pageNumber}
-					</div>
+						<div
+							className={`btn btn-sm m-1 ${
+								pageNumber < 1 || pageNumber > maxPageNumber ? `invisible` : ``
+							} ${pageNumber == currentPage ? `btn-active` : `btn-outline`}`}
+						>
+							{pageNumber}
+						</div>
+					</Link>
 				))}
 			</div>
 		</div>
