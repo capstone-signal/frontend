@@ -3,12 +3,6 @@ import { DiscussionCodeResponse } from './Discussion'
 import { ReviewReservationResponse } from './ReviewReservation'
 import { UserResponse } from './User'
 
-type CompleteLiveReviewRequest = {
-	changeCode: {
-		[key: string]: string
-	}
-}
-
 type UpdateFocusedDiffRequest = {
 	codeAfter: string
 }
@@ -93,11 +87,8 @@ export async function participateLiveReview(
 	return response
 }
 
-export async function completeLiveReview(
-	reservationId: number,
-	data: CompleteLiveReviewRequest
-): Promise<any> {
-	await put<any>(`/review/complete/${reservationId}`, data)
+export async function completeLiveReview(reservationId: number): Promise<any> {
+	await put<any>(`/review/complete/${reservationId}`, {})
 }
 
 export async function updateLiveReviewDiff(
@@ -107,6 +98,15 @@ export async function updateLiveReviewDiff(
 	const response = await put<LiveReviewDiffResponse>(
 		`/review/livediff/${diffId}`,
 		data
+	)
+	return response
+}
+
+export async function getReviewDiffsByReviewId(
+	reviewId: number
+): Promise<LiveReviewDiffResponse[]> {
+	const response = await get<LiveReviewDiffResponse[]>(
+		`/review/diff?reviewId=${reviewId}&reviewType=LIVE`
 	)
 	return response
 }
