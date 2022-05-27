@@ -9,7 +9,7 @@ type Props = {
 
 const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 	return (
-		<>
+		<div className="min-h-[30rem]">
 			{typeof discussions != undefined ? (
 				<div>
 					{discussions?.map((discussion, index) => (
@@ -23,7 +23,7 @@ const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 			) : (
 				<Spinner />
 			)}
-		</>
+		</div>
 	)
 }
 

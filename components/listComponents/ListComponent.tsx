@@ -50,7 +50,11 @@ const ListComponent: React.FunctionComponent<Props> = () => {
 				setDiscussionFilter={setDiscussionFilter}
 			/>
 			<DiscussionList discussions={discussions?.content} />
-			<Pagination discussionAmount={discussions?.totalElements} />
+			<Pagination
+				discussionAmount={discussions?.totalElements}
+				urlFrom={'list'}
+				onlyMine={'false'}
+			/>
 		</>
 	)
 }

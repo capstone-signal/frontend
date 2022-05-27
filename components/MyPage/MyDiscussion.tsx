@@ -1,40 +1,35 @@
-import { useState } from 'react'
-import { DiscussionFilter, getDiscussions } from '../../api/Discussion'
+import { getDiscussions } from '../../api/Discussion'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
+import Pagination from '../listComponents/Pagination'
+import DiscussionList from '../listComponents/DiscussionList'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 type Props = {}
 
 const MyDiscussion: React.FunctionComponent<Props> = () => {
 	const router = useRouter()
-	const { page, tags, state, keyword, sort } = router.query
-	const [discussionFilter, setDiscussionFilter] = useState<DiscussionFilter>({
-		onlyMine: false,
-		tags: [],
-		keyword: '',
-		state: 'NOT_REVIEWED'
-	})
+	const { page, onlyMine } = router.query
 	const {
 		data: discussions,
 		isLoading,
 		error
-	} = useQuery('discussions', () =>
-		getDiscussions({
-			page: page,
-			tags: tags,
-			state: state,
-			keyword: keyword,
-			sort: sort,
-			onlyMine: 'true'
-		})
+	} = useQuery(`discussions?page=${page}&onlyMine=true`, () =>
+		getDiscussions({ page, onlyMine })
 	)
+	console.log(discussions)
 	return (
 		<>
-			<div>hello</div>
-			{discussions?.content.map((discussion, index) => (
-				<div key={index}>{discussion.title}</div>
-			))}
+			<div className="font-bold mb-4 pt-1 pl-3 pb-3 text-lg border-b-2 border-solid border-gray-400">
+				내가 작성한 Discussion
+			</div>
+			<DiscussionList discussions={discussions?.content} />
+			<Pagination
+				discussionAmount={discussions?.totalElements}
+				urlFrom={'my/discussion'}
+				onlyMine={'true'}
+			/>
 		</>
 	)
 }
