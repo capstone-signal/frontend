@@ -9,9 +9,10 @@ const Pagination: React.FunctionComponent<Props> = ({ discussionAmount }) => {
 	const router = useRouter()
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 	const maxPageNumber = Math.ceil(discussionAmount! / 5)
-	const { page, tags, state, keyword, sort, onlyMine } = router.query
-	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const currentPage = parseInt(page! as string)
+	const { tags, state, keyword, sort, onlyMine } = router.query
+	const currentPage = router.query.page
+		? parseInt(router.query.page as string)
+		: 1
 	const pageArray = [
 		currentPage - 2,
 		currentPage - 1,
@@ -25,7 +26,11 @@ const Pagination: React.FunctionComponent<Props> = ({ discussionAmount }) => {
 				{pageArray.map((pageNumber) => (
 					<Link
 						key={pageNumber}
-						href={`/list?page=${pageNumber}&state=${state}&tags=${tags}&keyword=${keyword}&onlyMine=false`}
+						href={`/list?page=${pageNumber}
+							&state=${state ?? ''}
+							&tags=${tags ?? ''}
+							&keyword=${keyword ?? ''}
+							&onlyMine=false`}
 						passHref
 					>
 						<div

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
 import { DiscussionFilter, getDiscussions } from '../../api/Discussion'
 import DiscussionList from './DiscussionList'
@@ -11,21 +11,15 @@ type Props = {}
 
 const ListComponent: React.FunctionComponent<Props> = () => {
 	const router = useRouter()
-	const { page, sort, onlyMine } = router.query
+	const { page, state, keyword, sort, onlyMine } = router.query
 	const tags = router.query.tags
 		? (router.query.tags as string).split(',').map((tag) => Number(tag))
 		: []
-	const state = router.query.state as
-		| 'NOT_REVIEWED'
-		| 'REVIEWING'
-		| 'COMPLETED'
-		| undefined
-	const keyword = router.query.keyword as string
 	const [discussionFilter, setDiscussionFilter] = useState<DiscussionFilter>({
 		onlyMine: false,
-		tags: tags,
-		keyword: keyword,
-		state: state
+		tags: [],
+		keyword: '',
+		state: undefined
 	})
 	const {
 		data: discussions,
@@ -35,6 +29,20 @@ const ListComponent: React.FunctionComponent<Props> = () => {
 		`discussions?page=${page}&state=${state}&tags=${tags}&keyword=${keyword}&onlyMine=false`,
 		() => getDiscussions({ page, tags, state, keyword, sort, onlyMine })
 	)
+	useEffect(() => {
+		setDiscussionFilter({
+			onlyMine: false,
+			tags: router.query.tags
+				? (router.query.tags as string).split(',').map((tag) => Number(tag))
+				: [],
+			keyword: router.query.keyword as string,
+			state: router.query.state as
+				| 'NOT_REVIEWED'
+				| 'REVIEWING'
+				| 'COMPLETED'
+				| undefined
+		})
+	}, [router])
 	return (
 		<>
 			<ListFilter
