@@ -1,4 +1,4 @@
-import { CommonResponse, get, post } from './common'
+import { CommonResponse, del, get, post, put } from './common'
 import { TagResponse } from './Tag'
 import { UserResponse } from './User'
 
@@ -8,7 +8,7 @@ export type LiveReviewAvailableTime = {
 }
 
 export enum DiscussionState {
-	NOT_REVIED = 0,
+	NOT_REVIEWED = 0,
 	REVIEWING = 1,
 	COMPLETED = 2
 }
@@ -33,7 +33,7 @@ type CreateDiscussionRequest = {
 	question: string
 	tagIds: number[]
 	title: string
-	usePriority: boolean
+	priority?: number
 	liveReviewRequired: boolean
 	liveReviewAvailableTimes?: {
 		times: LiveReviewAvailableTime[]
@@ -108,7 +108,7 @@ export async function getDiscussionById(
 
 export async function getDiscussions(data: {
 	page?: string | string[]
-	tags?: string | string[]
+	tags?: number | number[]
 	state?: string | string[]
 	keyword?: string | string[]
 	sort?: string | string[]
@@ -122,5 +122,19 @@ export async function getDiscussions(data: {
 		`sort=${data.sort ? data.sort : ''}&` +
 		`onlyMine=${data.onlyMine ?? 'false'}`
 	const response = await get<DiscussionListResponse>(`/discussion/?${url}`)
+	return response
+}
+
+export async function completeDiscussion(
+	id: number
+): Promise<DiscussionResponse> {
+	const response = await put<DiscussionResponse>(`/discussion/${id}`, {})
+	return response
+}
+
+export async function deleteDiscussion(
+	id: number
+): Promise<DiscussionResponse> {
+	const response = await del<DiscussionResponse>(`/discussion/${id}`)
 	return response
 }

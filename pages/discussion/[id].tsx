@@ -1,5 +1,6 @@
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import Head from 'next/head'
+import { useState } from 'react'
 import {
 	DiscussionCodeResponse,
 	DiscussionResponse,
@@ -15,6 +16,21 @@ type Props = {
 }
 
 const DiscussionDetailPage: NextPage<Props> = ({ discussion, codes }) => {
+	const [selectedReviewIds, setSelectedReviewIds] = useState<number[]>([])
+	const [isCompletePhase, setIsCompletePhase] = useState<boolean>(false)
+
+	const handleClickReview = (reviewId: number) => {
+		if (selectedReviewIds.includes(reviewId)) {
+			setSelectedReviewIds(selectedReviewIds.filter((id) => id !== reviewId))
+		} else {
+			setSelectedReviewIds([...selectedReviewIds, reviewId])
+		}
+	}
+
+	const handleClickCompletePhase = () => {
+		setIsCompletePhase(true)
+	}
+
 	return (
 		<div>
 			<Head>
@@ -22,8 +38,21 @@ const DiscussionDetailPage: NextPage<Props> = ({ discussion, codes }) => {
 			</Head>
 			<Layout>
 				<div className="m-3 min-h-[36rem]">
-					<DiscussionDetail discussion={discussion} codes={codes} />
-					<ReviewList discussion={discussion} />
+					<DiscussionDetail
+						discussion={discussion}
+						codes={codes}
+						selectedReviewIds={
+							selectedReviewIds /*TODO props로 안내려보내게 조정 */
+						}
+						isCompletePhase={isCompletePhase}
+						handleClickCompletePhase={handleClickCompletePhase}
+					/>
+					<ReviewList
+						discussion={discussion}
+						selectedReviewIds={selectedReviewIds}
+						handleClickReview={handleClickReview}
+						isCompletePhase={isCompletePhase}
+					/>
 				</div>
 			</Layout>
 		</div>

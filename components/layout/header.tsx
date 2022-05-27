@@ -8,7 +8,9 @@ interface HeaderProps {}
 
 const Header: FunctionComponent<HeaderProps> = () => {
 	const { isLoggedIn } = useUserId()
-
+	const onLinkClick = () => {
+		window.location.href = '/create/discussion'
+	}
 	return (
 		<div className="navbar bg-base-100 border-b-2 min-w-[65rem]">
 			<div className="flex-1">
@@ -20,11 +22,12 @@ const Header: FunctionComponent<HeaderProps> = () => {
 				{isLoggedIn && <ReviewAvailable />}
 				{isLoggedIn ? (
 					<div className="flex flex-row justify-center">
-						<Link href="/create/discussion" passHref>
-							<button className="btn bg-primary mr-2 normal-case">
-								Create a Discussion
-							</button>
-						</Link>
+						<button
+							className="btn bg-primary mr-2 normal-case"
+							onClick={onLinkClick}
+						>
+							Create a Discussion
+						</button>
 						<div className="dropdown dropdown-end">
 							<button className="btn btn-ghost btn-circle">
 								<div className="indicator">

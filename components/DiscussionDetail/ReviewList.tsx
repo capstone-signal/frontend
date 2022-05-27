@@ -7,6 +7,9 @@ import ReviewDetail from './Review'
 
 type Props = {
 	discussion: DiscussionResponse
+	handleClickReview: (reviewId: number) => void
+	selectedReviewIds: number[]
+	isCompletePhase: boolean
 }
 const ReviewList: React.FC<Props> = ({ discussion }) => {
 	// get reviews using page query

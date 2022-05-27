@@ -107,7 +107,7 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 							<input
 								type="radio"
 								className="radio radio-primary"
-								checked={selectedGitNode === pr.id}
+								checked={selectedGitNode === pr.id.toString()}
 								onChange={() => setSelectedGitNode(pr.id)}
 							/>
 							<a

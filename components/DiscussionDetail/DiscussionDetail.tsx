@@ -1,6 +1,9 @@
 import {
+	completeDiscussion,
+	deleteDiscussion,
 	DiscussionCodeResponse,
-	DiscussionResponse
+	DiscussionResponse,
+	DiscussionState
 } from '../../api/Discussion'
 import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import dayjs from 'dayjs'
@@ -8,12 +11,16 @@ import '@uiw/react-markdown-preview/markdown.css'
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
 import LiveReviewReservationModal from '../LiveReviewReservation/LiveReviewReservationModal'
-import { isLogin } from '../../api/User'
 import { useUserId } from '../../hooks/useUserId'
+import CommentReviewStore from '../createReview/CommentReivewStore'
+import { CommentReviewDiff, createReview } from '../../api/Review'
 
 type Props = {
 	discussion: DiscussionResponse
 	codes: DiscussionCodeResponse[]
+	selectedReviewIds: number[]
+	isCompletePhase: boolean
+	handleClickCompletePhase: () => void
 }
 
 dayjs.locale('ko')
@@ -24,6 +31,10 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 	}
 )
 
+const DiscussionCode = dynamic(() => import('../createReview/DiscussionCode'), {
+	ssr: false
+})
+
 const questionMarkdownViewerStyle: React.CSSProperties = {
 	padding: '2rem',
 	backgroundColor: 'transparent',
@@ -31,29 +42,81 @@ const questionMarkdownViewerStyle: React.CSSProperties = {
 	borderRadius: '6px'
 }
 
-const codeMarkdownViewerStyle: React.CSSProperties & Record<string, any> = {
-	padding: '2rem',
-	backgroundColor: '#000',
-	height: '32rem',
-	overflow: 'scroll',
-	scrollbarWidth: 'none',
-	msOverflowStyle: 'none',
-	'&::WebkitScrollbar': {
-		display: 'none'
-	}
-}
-const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
+const DiscussionDetail: React.FC<Props> = ({
+	discussion,
+	codes,
+	selectedReviewIds,
+	isCompletePhase,
+	handleClickCompletePhase
+}) => {
 	const { userId, isLoggedIn } = useUserId()
 	const [selectedCode, setSelectedCode] = useState<number>(0)
+	const [newReviewList, setNewReviewList] = useState<CommentReviewDiff[]>([])
+	const isDiscussionOwner = discussion.user.id === userId
+
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
 	}
 
+	const handleClickDelete = async () => {
+		try {
+			await deleteDiscussion(discussion.id)
+			alert('삭제되었습니다.')
+			window.location.href = '/list'
+		} catch (e) {
+			console.error(e)
+			// TODO : 에러 분기
+			alert('삭제에 실패했습니다.\n리뷰가 존재하는 경우 삭제할 수 없습니다.')
+		}
+	}
+
 	const liveReviewAvailable = (discussion: DiscussionResponse) => {
 		const cond1 = discussion.liveReviewRequired
-		const cond2 = discussion.user.id !== userId
+		const cond2 = !isDiscussionOwner
 		const cond3 = isLoggedIn
 		return cond1 && cond2 && cond3
+	}
+
+	const createNewReview = async () => {
+		const data = {
+			diffList: newReviewList,
+			discussionId: discussion.id
+		}
+		if (newReviewList.length == 0) {
+			alert('리뷰 내용이 없습니다.')
+			return
+		}
+		try {
+			await createReview(data)
+			alert('리뷰 작성이 완료되었습니다.')
+			setNewReviewList([])
+		} catch (e) {
+			console.error(e)
+			alert("can't create review.")
+		}
+	}
+
+	const handleStartComplete = () => {
+		alert('채택할 리뷰를 선택해주세요.')
+		handleClickCompletePhase()
+		return
+	}
+
+	const handleClickComplete = async () => {
+		if (selectedReviewIds.length == 0) {
+			alert('채택할 리뷰를 1개 이상 선택해주세요.')
+			return
+		}
+
+		try {
+			await completeDiscussion(discussion.id) // TODO : selectedReviews 바디에 추가
+			alert('완료되었습니다.')
+			window.location.reload()
+		} catch (e) {
+			console.error(e)
+			alert('완료에 실패했습니다.')
+		}
+		return
 	}
 
 	return (
@@ -67,9 +130,26 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						</div>
 						<span className="text ml-3">{discussion.user.name}</span>
 					</div>
-					<span className="text mr-6 created_at">
-						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
-					</span>
+					<span className="text">
+						<span className="created_at mr-6">
+							{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
+						</span>
+						{isDiscussionOwner && (
+							<span className="btn btn-error" onClick={handleClickDelete}>
+								삭제
+							</span>
+						)}
+						{isDiscussionOwner &&
+							discussion.state === DiscussionState.REVIEWING && (
+								<span
+								className="btn btn-primary ml-2"
+								onClick={
+									isCompletePhase ? handleClickComplete : handleStartComplete
+									}
+							>
+								{isCompletePhase ? '선택 완료' : '완료'}
+								</span>
+							)}
 				</div>
 				<div className="tags mb-4">
 					{discussion.tags?.map((tag) => (
@@ -117,12 +197,19 @@ const DiscussionDetail: React.FC<Props> = ({ discussion, codes }) => {
 						</div>
 					</div>
 					<div className="selected_code">
-						<MarkdownViewer
-							source={`\`\`\`${codes[selectedCode]?.language}\n ${codes[selectedCode]?.content} \n\`\`\``}
-							style={codeMarkdownViewerStyle}
+						<DiscussionCode
+							reviewee={discussion.user.id}
+							discussionCode={codes[selectedCode]}
+							newReviewList={newReviewList}
+							setNewReviewList={setNewReviewList}
 						/>
 					</div>
 				</div>
+				<CommentReviewStore
+					newReviewList={newReviewList}
+					setNewReviewList={setNewReviewList}
+					createNewReview={createNewReview}
+				/>
 			</div>
 			<div className="dd_live_review_box flex justify-center">
 				<a

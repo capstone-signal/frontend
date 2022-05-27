@@ -14,7 +14,9 @@ const FilterTagButton: React.FunctionComponent<Props> = ({
 	selectedFilters,
 	setSelectedFilters
 }) => {
-	const [select, setSelect] = useState<boolean>(false)
+	const [select, setSelect] = useState<boolean>(
+		selectedFilters.includes(tag.id)
+	)
 	const clickTag = () => {
 		if (!select) {
 			setSelectedFilters([...selectedFilters, tag.id])
