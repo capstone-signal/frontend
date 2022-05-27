@@ -18,7 +18,6 @@ const MyDiscussion: React.FunctionComponent<Props> = () => {
 	} = useQuery(`discussions?page=${page}&onlyMine=true`, () =>
 		getDiscussions({ page, onlyMine })
 	)
-	console.log(discussions)
 	return (
 		<>
 			<div className="font-bold mb-4 pt-1 pl-3 pb-3 text-lg border-b-2 border-solid border-gray-400">
