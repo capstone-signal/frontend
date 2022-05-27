@@ -4,6 +4,8 @@ import { WebsocketProvider } from 'y-websocket'
 import {
 	completeLiveReview,
 	getReviewByDiscussionId,
+	getReviewDiffsByReviewId,
+	LiveReviewDiffResponse,
 	participateLiveReview,
 	ReviewResponse,
 	updateLiveReviewDiff
@@ -44,7 +46,8 @@ const DIFF_UPDATE_INTERVAL = 5000
 const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	const router = useRouter()
 	const [init, setInit] = useState<boolean>(false)
-	const [diffChanged, setDiffChanged] = useState<boolean>(false)
+	const [initialDiffs, setInitialDiffs] = useState<LiveReviewDiffResponse[]>([])
+	const [isWsLoaded, setIsWsLoaded] = useState<boolean>(false)
 	const [isDefaultModalOpen, setDefaultModalOpen] = useState<boolean>(true)
 	const [leftTime, setLeftTime] = useState<string>('00:00')
 	const [selectedCode, setSelectedCode] = useState<number>(0)
@@ -63,10 +66,8 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	const completeReview = async () => {
 		if (!confirm('정말로 완료하시겠습니까?')) return
 		try {
-			const res = await completeLiveReview(reservation.id, {
-				changeCode: {}
-			})
-			router.push(`/discussion/${reservation.discussion?.id}`)
+			const res = await completeLiveReview(reservation.id)
+			window.location.href = `/discussion/${reservation.discussion?.id}`
 		} catch (e) {
 			console.error(e)
 			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
@@ -75,8 +76,15 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 	}
 
 	const initializeSession = async (reservationId: number, reviewId: number) => {
-		await participateLiveReview(reservationId)
-		//	await getReviewDiffsByReviewId(reviewId)
+		try {
+			await participateLiveReview(reservationId)
+			// const diffs = await getReviewDiffsByReviewId(reviewId)
+			// setInitialDiffs(diffs)
+		} catch (e) {
+			console.error(e)
+			alert('초기화에 실패했습니다.')
+			window.location.reload()
+		}
 	}
 
 	// initilize
@@ -122,20 +130,22 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 			if (!bindingRef.current) {
 				return
 			}
+			if (!isWsLoaded) {
+				return
+			}
 			const binding = bindingRef.current
 			const codeAfter = binding.ytext.toString()
 			const diffId = review.liveDiffList[selectedCode].id
 			// TODO: async-await
-			console.log(`update diff : ${diffId}`)
-			// updateLiveReviewDiff(diffId, {
-			// 	codeAfter
-			// })
+			updateLiveReviewDiff(diffId, {
+				codeAfter
+			})
 		}, DIFF_UPDATE_INTERVAL)
 
 		return () => {
 			clearInterval(interval)
 		}
-	}, [review.liveDiffList, selectedCode])
+	}, [isWsLoaded, review.liveDiffList, selectedCode])
 
 	// Update Websocket Binding
 	useEffect(() => {
@@ -147,8 +157,6 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		const diffId = review.liveDiffList[selectedCode].id
 		const roomName = `${reservation.id}?reviewDiff=${diffId}`
 		if (wsRef.current && bindingRef.current) {
-			// if ws is already connected, then disconnect
-			wsRef.current.disconnect()
 			bindingRef.current.destroy()
 		}
 		const ws = new WebsocketProvider(apiConfig.websocketUrl, roomName, ydoc, {
@@ -157,37 +165,40 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		wsRef.current = ws
 		const ytext = ydoc.getText(roomName)
 
-		ws.on('status', ({ status }: { status: string }) => {
-			if (status === 'connected') {
-				setDiffChanged(true)
-			}
-		})
-		// TODO : async-await
 		ws.on('connection-close', () => {
-			setDiffChanged(false)
+			setIsWsLoaded(false)
 			updateLiveReviewDiff(diffId, {
 				codeAfter: ytext.toString()
 			})
 		})
 
-		// ws.on('connection-error', () => {
-		// 	alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
-		// 	window.location.href = '/'
-		// })
-
-		const editor = editorRef.current
-		import('../../utils/y-monaco-wrapper').then((m) => {
-			const binding = new m.MonacoBinding(
-				ytext,
-				editor.getModel(),
-				new Set([editor]),
-				ws.awareness
-			)
-			binding.mux
-			bindingRef.current = binding
-			ws.connect()
+		ws.on('connection-error', (err: any) => {
+			console.error(err)
+			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
+			//window.location.href = '/'
 		})
+
+		ws.on('status', ({ status }: { status: string }) => {
+			if (status === 'connected') {
+				const editor = editorRef.current
+				import('../../utils/y-monaco-wrapper').then((m) => {
+					const binding = new m.MonacoBinding(
+						ytext,
+						editor.getModel(),
+						new Set([editor]),
+						ws.awareness
+					)
+					bindingRef.current = binding
+					setIsWsLoaded(true)
+				})
+			}
+		})
+		ws.connect()
 	}, [init, reservation.id, review.liveDiffList, selectedCode])
+
+	useEffect(() => {
+		// TODO : 보이스 연결
+	}, [])
 
 	return (
 		<div className="live_review flex flex-col w-screen h-screen">
@@ -239,7 +250,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 						})}
 					</ul>
 				</div>
-				<div className={`code w-5/6 ${diffChanged ? '' : 'hidden'}`}>
+				<div className={`code w-5/6 ${isWsLoaded ? '' : 'hidden'}`}>
 					<Editor
 						language="typescript"
 						options={{}}
