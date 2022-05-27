@@ -63,26 +63,22 @@ const DiscussionCode: React.FC<Props> = ({
 		if (selection === null) return
 		const { anchorNode, focusNode, anchorOffset, focusOffset } = selection
 		const { NodeOffset: startOffset } = getNodeOffset(anchorNode!, anchorOffset)
-		const { NodeOffset: EndOffset } = getNodeOffset(focusNode!, focusOffset)
+		const { NodeOffset: endOffset } = getNodeOffset(focusNode!, focusOffset)
 
 		if (anchorOffset != focusOffset) {
 			const clientRects = selection?.getRangeAt(0).getBoundingClientRect()
 			ClickEndHandler(clientRects)
 			const selectedCodes = selection?.toString()
 			setReviewCode(selectedCodes!)
-			setOffset([startOffset, EndOffset])
+			setOffset([
+				Math.min(startOffset, endOffset),
+				Math.max(startOffset, endOffset)
+			])
 		}
 	}
 	const handleReviewAdd = (newCode: string, comment: string) => {
-		const codeAfter =
-			discussionCode.content.substring(0, Math.min(offset[0], offset[1])) +
-			newCode +
-			discussionCode.content.substring(
-				Math.max(offset[0], offset[1]),
-				discussionCode.content.length
-			)
 		const newReview = {
-			codeAfter: codeAfter,
+			codeAfter: newCode,
 			codeLocate: offset,
 			comment: comment,
 			discussionCode: discussionCode
