@@ -1,5 +1,4 @@
 import { DiscussionResponse } from '../../api/Discussion'
-import Link from 'next/link'
 import Spinner from '../Common/Spinner'
 import DiscussionBox from './DiscussionBox'
 

@@ -102,7 +102,7 @@ const DiscussionCode: React.FC<Props> = ({
 				}}
 				className="btn modal-button hidden"
 			>
-				Add
+				리뷰 추가하기
 			</label>
 			<input type="checkbox" id="addCommentReview" className="modal-toggle" />
 			<div className="modal">

@@ -40,7 +40,7 @@ const CommentReviewStore: React.FC<Props> = ({
 									>
 										<div className="rounded-xl border-2 border-solid border-gray-300 w-[90%] pl-2 overflow-hidden whitespace-nowrap overflow-ellipsis">
 											{idx + 1}.&nbsp;{review.discussionCode.filename}:&nbsp;
-											{review.codeLocate[0]}-{review.codeLocate[1]}
+											{review.comment}
 										</div>
 										<label
 											htmlFor={`removeCheck_${idx}`}
@@ -112,7 +112,9 @@ const CommentReviewStore: React.FC<Props> = ({
 				</div>
 			) : (
 				<div
-					className="fixed tooltip tooltip-left right-[5vw] bottom-[10vh]"
+					className={`fixed tooltip tooltip-left right-[5vw] bottom-[10vh] ${
+						newReviewList.length ? `` : `tooltip-open`
+					}`}
 					data-tip="리뷰하려는 코드를 드래그하세요!"
 				>
 					<button
