@@ -22,18 +22,19 @@ export type ReviewPageResponse = {
 	content: ReviewResponse[]
 } & PageResponse
 
-export type CommentReviewDiffResponse = {
+export type ReviewDiffResponse = {
+	id: number
 	codeAfter: string
+	discussionCode: number
+}
+export type CommentReviewDiffResponse = {
 	codeLocate: number[]
 	comment: string
-	discussionCode: DiscussionCodeResponse
-} & CommonResponse
+} & CommonResponse &
+	ReviewDiffResponse
 
-export type LiveReviewDiffResponse = {
-	codeAfter: string
-	id: number
-	discussionCode: DiscussionCodeResponse
-} & CommonResponse
+
+export type LiveReviewDiffResponse = CommonResponse & ReviewDiffResponse
 
 export type ThreadResponse = {
 	id: number
