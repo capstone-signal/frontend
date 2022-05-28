@@ -49,6 +49,7 @@ const DiscussionDetailPage: NextPage<Props> = ({ discussion, codes }) => {
 					/>
 					<ReviewList
 						discussion={discussion}
+						discussionCodes={codes}
 						selectedReviewIds={selectedReviewIds}
 						handleClickReview={handleClickReview}
 						isCompletePhase={isCompletePhase}

@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react'
 import { useQuery } from 'react-query'
-import { DiscussionResponse } from '../../api/Discussion'
+import {
+	DiscussionCodeResponse,
+	DiscussionResponse
+} from '../../api/Discussion'
 import { getReviewByDiscussionId } from '../../api/Review'
 import Spinner from '../Common/Spinner'
 import ReviewDetail from './Review'
 
 type Props = {
 	discussion: DiscussionResponse
+	discussionCodes: DiscussionCodeResponse[]
 	handleClickReview: (reviewId: number) => void
 	selectedReviewIds: number[]
 	isCompletePhase: boolean
 }
-const ReviewList: React.FC<Props> = ({ discussion }) => {
+const ReviewList: React.FC<Props> = ({ discussion, discussionCodes }) => {
 	// get reviews using page query
 	const [page, setPage] = useState<number>(1)
 	const { isLoading, isError, data } = useQuery(
@@ -45,7 +49,13 @@ const ReviewList: React.FC<Props> = ({ discussion }) => {
 		<div className="flex flex-col">
 			<div className="border-t-2 my-10">
 				{data?.content.map((review) => {
-					return <ReviewDetail review={review} key={review.id} />
+					return (
+						<ReviewDetail
+							review={review}
+							key={review.id}
+							discussionCodes={discussionCodes}
+						/>
+					)
 				})}
 			</div>
 			<div className="flex justify-center">
