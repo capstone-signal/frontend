@@ -3,21 +3,17 @@ import { useEffect, useRef, useState } from 'react'
 import { WebsocketProvider } from 'y-websocket'
 import {
 	completeLiveReview,
-	getReviewByDiscussionId,
-	getReviewDiffsByReviewId,
 	LiveReviewDiffResponse,
 	participateLiveReview,
 	ReviewResponse,
 	updateLiveReviewDiff
 } from '../../api/Review'
 import {
-	getReviewReservationByDiscussionId,
 	getReviewReservationById,
 	ReviewReservationResponse
 } from '../../api/ReviewReservation'
 import * as Y from 'yjs'
 import Editor from '@monaco-editor/react'
-import * as monaco from 'monaco-editor'
 import { extractCookie } from '../../api/User'
 import jwt_decode from 'jwt-decode'
 import Avatar from '../../components/Common/Avatar'
@@ -26,13 +22,19 @@ import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import '@uiw/react-markdown-preview/markdown.css'
 import { useUserId } from '../../hooks/useUserId'
 import apiConfig from '../../config/apiConfig'
-import { useQuery } from 'react-query'
 import { MonacoBinding } from '../../utils/y-monaco-wrapper'
 import { useRouter } from 'next/router'
+import {
+	DiscussionCodeResponse,
+	DiscussionResponse,
+	getDiscussionById
+} from '../../api/Discussion'
 
 type Props = {
 	reservation: ReviewReservationResponse
 	review: ReviewResponse
+	discussion: DiscussionResponse
+	codes: DiscussionCodeResponse[]
 }
 
 const MarkdownViewer = dynamic<MarkdownPreviewProps>(
@@ -43,7 +45,12 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 )
 
 const DIFF_UPDATE_INTERVAL = 5000
-const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
+const LiveSessionPage: NextPage<Props> = ({
+	review,
+	reservation,
+	discussion,
+	codes
+}) => {
 	const router = useRouter()
 	const [init, setInit] = useState<boolean>(false)
 	const [initialDiffs, setInitialDiffs] = useState<LiveReviewDiffResponse[]>([])
@@ -67,7 +74,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		if (!confirm('정말로 완료하시겠습니까?')) return
 		try {
 			const res = await completeLiveReview(reservation.id)
-			window.location.href = `/discussion/${reservation.discussion?.id}`
+			window.location.href = `/discussion/${discussion.id}`
 		} catch (e) {
 			console.error(e)
 			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
@@ -101,7 +108,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 			await updateLiveReviewDiff(review.liveDiffList[selectedCode].id, {
 				codeAfter: editorRef.current?.getModel().getValue()
 			})
-			router.push(`/discussion/${reservation.discussion?.id}`)
+			window.location.href = `/discussion/${discussion.id}`
 		}
 		const interval = setInterval(() => {
 			const now = new Date()
@@ -244,7 +251,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 									key={diff.id}
 									onClick={() => setSelectedCode(idx)}
 								>
-									{diff.discussionCode.filename}
+									{codes.find((c) => c.id === diff.discussionCode)?.filename}
 								</li>
 							)
 						})}
@@ -353,6 +360,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 		throw new Error('User not allowed')
 	}
 
+	const discussion = await getDiscussionById(
+		reviewReservation?.discussion?.id || 0
+	) // TODO : validation discussion
+
 	const review = reviewReservation?.review
 	if (!review) {
 		throw new Error('No review')
@@ -360,7 +371,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 	return {
 		props: {
 			review,
-			reservation: reviewReservation
+			reservation: reviewReservation,
+			discussion: discussion.discussion,
+			codes: discussion.codes
 		}
 	}
 }
