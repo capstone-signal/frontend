@@ -10,7 +10,7 @@ const MyReviewPage: NextPage<Props> = () => {
 	return (
 		<div>
 			<Head>
-				<title>Create Next App</title>
+				<title>나의 Reviews</title>
 			</Head>
 			<Layout>
 				<div className="m-3 min-h-[36rem]">

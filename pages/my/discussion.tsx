@@ -10,7 +10,7 @@ const MyDiscussionPage: NextPage<Props> = () => {
 	return (
 		<div>
 			<Head>
-				<title>Create Next App</title>
+				<title>나의 Discussions</title>
 			</Head>
 			<Layout>
 				<div className="m-3 min-h-[36rem]">

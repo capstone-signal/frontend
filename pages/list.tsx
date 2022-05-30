@@ -7,7 +7,7 @@ const listPage: NextPage = () => {
 	return (
 		<div>
 			<Head>
-				<title>Create Next App</title>
+				<title>Discussion 목록 - HiDiscuss</title>
 			</Head>
 			<Layout>
 				<div className="m-3 min-h-[36rem]">
