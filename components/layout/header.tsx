@@ -34,7 +34,7 @@ const Header: FunctionComponent<HeaderProps> = () => {
 									<span className="badge badge-xs badge-primary indicator-item"></span>
 								</div>
 							</button>
-							<ul className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-36 mt-4">
+							<ul className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-48 mt-4">
 								<li>
 									<Link passHref href="/my/discussion">
 										<button>My Discussions</button>
