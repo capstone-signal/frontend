@@ -36,7 +36,7 @@ const Pagination: React.FunctionComponent<Props> = ({
 							${state ? `&state=${state}` : ''}
 							${tags ? `&tags=${tags}` : ''}
 							${keyword ? `&keyword=${keyword}` : ''}
-							&onlyMine=${onlyMine}`}
+							${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`}
 						passHref
 					>
 						<div

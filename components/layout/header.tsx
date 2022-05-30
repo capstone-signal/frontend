@@ -37,7 +37,12 @@ const Header: FunctionComponent<HeaderProps> = () => {
 							<ul className="menu dropdown-content p-2 shadow bg-base-100 rounded-box w-36 mt-4">
 								<li>
 									<Link passHref href="/my/discussion">
-										<button>MyPage</button>
+										<button>My Discussions</button>
+									</Link>
+								</li>
+								<li>
+									<Link passHref href="/my/review">
+										<button>My Reviews</button>
 									</Link>
 								</li>
 								<li>
