@@ -8,7 +8,7 @@ type Props = {
 
 const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
 	const onBoxClick = (id: number) => {
-		window.location.href = `discussion/${id}`
+		window.location.href = `/discussion/${id}`
 	}
 	return (
 		<div className="min-h-[30rem]">

@@ -15,8 +15,8 @@ const MyDiscussion: React.FunctionComponent<Props> = () => {
 		data: discussions,
 		isLoading,
 		error
-	} = useQuery(`discussions?page=${page}&onlyMine=true`, () =>
-		getDiscussions({ page, onlyMine })
+	} = useQuery(`discussions?page=${page}&onlyMine=${onlyMine}`, () =>
+		getDiscussions({ page, onlyMine: 'true' })
 	)
 	return (
 		<>
