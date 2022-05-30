@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import { useEffect, useRef, useState } from 'react'
 import { WebsocketProvider } from 'y-websocket'
@@ -133,25 +134,28 @@ const LiveSessionPage: NextPage<Props> = ({
 
 	// periodic update diff
 	useEffect(() => {
-		const interval = setInterval(() => {
-			if (!bindingRef.current) {
-				return
-			}
-			if (!isWsLoaded) {
-				return
-			}
-			const binding = bindingRef.current
-			const codeAfter = binding.ytext.toString()
-			const diffId = review.liveDiffList[selectedCode].id
-			// TODO: async-await
-			updateLiveReviewDiff(diffId, {
-				codeAfter
-			})
-		}, DIFF_UPDATE_INTERVAL)
+		// const interval = setInterval(() => {
+		// 	if (!bindingRef.current) {
+		// 		return
+		// 	}
+		// 	if (!isWsLoaded) {
+		// 		return
+		// 	}
+		// 	const binding = bindingRef.current
+		// 	const codeAfter = binding.ytext.toString()
+		// 	if (codeAfter === '') {
+		// 		// invalid code 판단
+		// 		return
+		// 	}
+		// 	const diffId = review.liveDiffList[selectedCode].id
+		// 	updateLiveReviewDiff(diffId, {
+		// 		codeAfter
+		// 	})
+		// }, DIFF_UPDATE_INTERVAL)
 
-		return () => {
-			clearInterval(interval)
-		}
+		// return () => {
+		// 	clearInterval(interval)
+		// }
 	}, [isWsLoaded, review.liveDiffList, selectedCode])
 
 	// Update Websocket Binding
@@ -172,17 +176,35 @@ const LiveSessionPage: NextPage<Props> = ({
 		wsRef.current = ws
 		const ytext = ydoc.getText(roomName)
 
-		ws.on('connection-close', () => {
+		ws.on('sync', (isSync: boolean) => {
+			console.log('sync', ytext.toString())
+		})
+
+		ws.on('connection-close', (event: CloseEvent) => {
+			const REVIEW_COMPLETE_CODE = 3999
 			setIsWsLoaded(false)
 			updateLiveReviewDiff(diffId, {
 				codeAfter: ytext.toString()
 			})
+			switch (event.code) {
+				case 1000:
+					// normal close
+					break
+				case REVIEW_COMPLETE_CODE:
+					alert('리뷰 시간이 종료되었습니다.')
+					window.location.href = `/discussion/${discussion.id}`
+					break
+				default:
+					alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.')
+					window.location.reload()
+					break
+			}
 		})
 
 		ws.on('connection-error', (err: any) => {
 			console.error(err)
 			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
-			//window.location.href = '/'
+			window.location.href = '/'
 		})
 
 		ws.on('status', ({ status }: { status: string }) => {
@@ -201,7 +223,7 @@ const LiveSessionPage: NextPage<Props> = ({
 			}
 		})
 		ws.connect()
-	}, [init, reservation.id, review.liveDiffList, selectedCode])
+	}, [discussion.id, init, reservation.id, review.liveDiffList, selectedCode])
 
 	useEffect(() => {
 		// TODO : 보이스 연결
