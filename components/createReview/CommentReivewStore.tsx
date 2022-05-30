@@ -40,7 +40,7 @@ const CommentReviewStore: React.FC<Props> = ({
 									>
 										<div className="rounded-xl border-2 border-solid border-gray-300 w-[90%] pl-2 overflow-hidden whitespace-nowrap overflow-ellipsis">
 											{idx + 1}.&nbsp;{review.discussionCode.filename}:&nbsp;
-											{review.codeLocate[0]}-{review.codeLocate[1]}
+											{review.comment}
 										</div>
 										<label
 											htmlFor={`removeCheck_${idx}`}
@@ -111,12 +111,19 @@ const CommentReviewStore: React.FC<Props> = ({
 					</div>
 				</div>
 			) : (
-				<button
-					className="btn fixed bg-purple-500 right-[5vw] bottom-[10vh] normal-case w-[10rem]"
-					onClick={() => setActivate(true)}
+				<div
+					className={`fixed tooltip tooltip-left right-[5vw] bottom-[10vh] ${
+						newReviewList.length ? `` : `tooltip-open`
+					}`}
+					data-tip="리뷰하려는 코드를 드래그하세요!"
 				>
-					리뷰 스토리지 ( {newReviewList.length} )
-				</button>
+					<button
+						className="btn bg-purple-500 normal-case w-[10rem]"
+						onClick={() => setActivate(true)}
+					>
+						리뷰 스토리지 ( {newReviewList.length} )
+					</button>
+				</div>
 			)}
 		</>
 	)

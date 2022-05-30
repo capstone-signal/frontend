@@ -1,6 +1,6 @@
-import React, { useEffect, useState, FunctionComponent } from 'react'
+import React, { FunctionComponent } from 'react'
 import Link from 'next/link'
-import { isLogin, signOut } from '../../api/User'
+import { signOut } from '../../api/User'
 import ReviewAvailable from '../LiveReviewReservation/ReviewAvailable'
 import { useUserId } from '../../hooks/useUserId'
 // eslint-disable-next-line @typescript-eslint/no-empty-interface

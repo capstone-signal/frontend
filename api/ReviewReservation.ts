@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import { CommonResponse, get, post } from './common'
 import { DiscussionResponse } from './Discussion'
 import { ReviewResponse } from './Review'
@@ -40,7 +41,7 @@ export async function createReviewReservation(
 
 export async function getMyAvailableReservations(): Promise<
 	ReviewReservationResponse[]
-	> {
+> {
 	const response = await get<ReviewReservationResponse[]>('/reservation/my')
 	return response
 }

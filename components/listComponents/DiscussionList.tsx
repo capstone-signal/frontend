@@ -1,5 +1,4 @@
 import { DiscussionResponse } from '../../api/Discussion'
-import Link from 'next/link'
 import Spinner from '../Common/Spinner'
 import DiscussionBox from './DiscussionBox'
 
@@ -8,18 +7,23 @@ type Props = {
 }
 
 const DiscussionList: React.FunctionComponent<Props> = ({ discussions }) => {
+	const onBoxClick = (id: number) => {
+		window.location.href = `discussion/${id}`
+	}
 	return (
 		<>
 			{typeof discussions != undefined ? (
-				<div>
+				<>
 					{discussions?.map((discussion, index) => (
-						<Link href={`/discussion/${discussion.id}`} key={index}>
-							<a>
-								<DiscussionBox discussion={discussion} />
-							</a>
-						</Link>
+						<div
+							className="cursor-pointer"
+							key={index}
+							onClick={() => onBoxClick(discussion.id)}
+						>
+							<DiscussionBox discussion={discussion} />
+						</div>
 					))}
-				</div>
+				</>
 			) : (
 				<Spinner />
 			)}

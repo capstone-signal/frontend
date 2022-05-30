@@ -22,18 +22,19 @@ export type ReviewPageResponse = {
 	content: ReviewResponse[]
 } & PageResponse
 
-export type CommentReviewDiffResponse = {
+export type ReviewDiffResponse = {
+	id: number
 	codeAfter: string
+	discussionCode: number
+}
+export type CommentReviewDiffResponse = {
 	codeLocate: number[]
 	comment: string
-	discussionCode: DiscussionCodeResponse
-} & CommonResponse
+} & CommonResponse &
+	ReviewDiffResponse
 
-export type LiveReviewDiffResponse = {
-	codeAfter: string
-	id: number
-	discussionCode: DiscussionCodeResponse
-} & CommonResponse
+
+export type LiveReviewDiffResponse = CommonResponse & ReviewDiffResponse
 
 export type ThreadResponse = {
 	id: number
@@ -120,7 +121,7 @@ export async function getReviewDiffsByReviewId(
 	const response = await get<LiveReviewDiffResponse[]>(
 		`/review/diff?reviewId=${reviewId}&reviewType=LIVE`
 	)
-  return response
+	return response
 }
 
 export async function createReview(

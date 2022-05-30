@@ -1,13 +1,16 @@
+/* eslint-disable prettier/prettier */
 import { DiffEditor } from '@monaco-editor/react'
 import { useEffect, useRef, useState } from 'react'
+import { DiscussionCodeResponse } from '../../api/Discussion'
 import { ReviewResponse } from '../../api/Review'
 import ThreadList from './ThreadList'
 
 type Props = {
 	review: ReviewResponse
+	discussionCodes: DiscussionCodeResponse[]
 }
 
-const ReviewDetail: React.FC<Props> = ({ review }) => {
+const ReviewDetail: React.FC<Props> = ({ review, discussionCodes }) => {
 	const [isInit, setInit] = useState<boolean>(false)
 	const [selectedDiscussionCode, setSelectedDiscussionCode] =
 		useState<number>(0)
@@ -32,15 +35,25 @@ const ReviewDetail: React.FC<Props> = ({ review }) => {
 		const selectedReview = isCommentReview(review)
 			? review.commentDiffList[selectedDiscussionCode]
 			: review.liveDiffList[selectedDiscussionCode]
-		const originalModel = monaco.editor.createModel(
-			selectedReview.discussionCode.content
-		)
-		const modifiedModel = monaco.editor.createModel(selectedReview.codeAfter)
+		const matchedDiscussionCode = discussionCodes.find((code) => code.id === selectedReview.discussionCode)
+		if (!matchedDiscussionCode) return
+
+		// TODO : Refactor -> 타입 체크
+		const originalCode = matchedDiscussionCode.content
+		const originalModel = monaco.editor.createModel(originalCode)
+		let modifiedCode = ''
+		if(isCommentReview(review)) {
+			const codeLocate = review.commentDiffList[selectedDiscussionCode].codeLocate
+			modifiedCode = originalCode.substring(0, codeLocate[0]) + selectedReview.codeAfter + originalCode.substring(codeLocate[1])
+		} else {
+			modifiedCode = selectedReview.codeAfter
+		}
+		const modifiedModel = monaco.editor.createModel(modifiedCode)
 		editor.setModel({
 			original: originalModel,
 			modified: modifiedModel
 		})
-	}, [review, review.commentDiffList, selectedDiscussionCode, isInit])
+	}, [review, review.commentDiffList, selectedDiscussionCode, isInit, discussionCodes])
 
 	return (
 		<div className="flex-col min-h-[36rem] border-b-2 border-gray-600">
@@ -73,7 +86,7 @@ const ReviewDetail: React.FC<Props> = ({ review }) => {
 										}`}
 										onClick={() => handleClickDiscussionCode(idx)}
 									>
-										{commentDiff.discussionCode.filename}
+										{discussionCodes.find((code) => code.id === commentDiff.discussionCode)?.filename}
 									</div>
 								)
 							}
