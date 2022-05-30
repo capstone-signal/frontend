@@ -1,23 +1,20 @@
+/* eslint-disable indent */
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import { useEffect, useRef, useState } from 'react'
 import { WebsocketProvider } from 'y-websocket'
 import {
 	completeLiveReview,
-	getReviewByDiscussionId,
-	getReviewDiffsByReviewId,
 	LiveReviewDiffResponse,
 	participateLiveReview,
 	ReviewResponse,
 	updateLiveReviewDiff
 } from '../../api/Review'
 import {
-	getReviewReservationByDiscussionId,
 	getReviewReservationById,
 	ReviewReservationResponse
 } from '../../api/ReviewReservation'
 import * as Y from 'yjs'
 import Editor from '@monaco-editor/react'
-import * as monaco from 'monaco-editor'
 import { extractCookie } from '../../api/User'
 import jwt_decode from 'jwt-decode'
 import Avatar from '../../components/Common/Avatar'
@@ -26,13 +23,19 @@ import { MarkdownPreviewProps } from '@uiw/react-markdown-preview'
 import '@uiw/react-markdown-preview/markdown.css'
 import { useUserId } from '../../hooks/useUserId'
 import apiConfig from '../../config/apiConfig'
-import { useQuery } from 'react-query'
 import { MonacoBinding } from '../../utils/y-monaco-wrapper'
 import { useRouter } from 'next/router'
+import {
+	DiscussionCodeResponse,
+	DiscussionResponse,
+	getDiscussionById
+} from '../../api/Discussion'
 
 type Props = {
 	reservation: ReviewReservationResponse
 	review: ReviewResponse
+	discussion: DiscussionResponse
+	codes: DiscussionCodeResponse[]
 }
 
 const MarkdownViewer = dynamic<MarkdownPreviewProps>(
@@ -43,7 +46,12 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 )
 
 const DIFF_UPDATE_INTERVAL = 5000
-const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
+const LiveSessionPage: NextPage<Props> = ({
+	review,
+	reservation,
+	discussion,
+	codes
+}) => {
 	const router = useRouter()
 	const [init, setInit] = useState<boolean>(false)
 	const [initialDiffs, setInitialDiffs] = useState<LiveReviewDiffResponse[]>([])
@@ -67,7 +75,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		if (!confirm('정말로 완료하시겠습니까?')) return
 		try {
 			const res = await completeLiveReview(reservation.id)
-			window.location.href = `/discussion/${reservation.discussion?.id}`
+			window.location.href = `/discussion/${discussion.id}`
 		} catch (e) {
 			console.error(e)
 			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
@@ -101,7 +109,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 			await updateLiveReviewDiff(review.liveDiffList[selectedCode].id, {
 				codeAfter: editorRef.current?.getModel().getValue()
 			})
-			router.push(`/discussion/${reservation.discussion?.id}`)
+			window.location.href = `/discussion/${discussion.id}`
 		}
 		const interval = setInterval(() => {
 			const now = new Date()
@@ -126,25 +134,28 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 
 	// periodic update diff
 	useEffect(() => {
-		const interval = setInterval(() => {
-			if (!bindingRef.current) {
-				return
-			}
-			if (!isWsLoaded) {
-				return
-			}
-			const binding = bindingRef.current
-			const codeAfter = binding.ytext.toString()
-			const diffId = review.liveDiffList[selectedCode].id
-			// TODO: async-await
-			updateLiveReviewDiff(diffId, {
-				codeAfter
-			})
-		}, DIFF_UPDATE_INTERVAL)
+		// const interval = setInterval(() => {
+		// 	if (!bindingRef.current) {
+		// 		return
+		// 	}
+		// 	if (!isWsLoaded) {
+		// 		return
+		// 	}
+		// 	const binding = bindingRef.current
+		// 	const codeAfter = binding.ytext.toString()
+		// 	if (codeAfter === '') {
+		// 		// invalid code 판단
+		// 		return
+		// 	}
+		// 	const diffId = review.liveDiffList[selectedCode].id
+		// 	updateLiveReviewDiff(diffId, {
+		// 		codeAfter
+		// 	})
+		// }, DIFF_UPDATE_INTERVAL)
 
-		return () => {
-			clearInterval(interval)
-		}
+		// return () => {
+		// 	clearInterval(interval)
+		// }
 	}, [isWsLoaded, review.liveDiffList, selectedCode])
 
 	// Update Websocket Binding
@@ -165,17 +176,35 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 		wsRef.current = ws
 		const ytext = ydoc.getText(roomName)
 
-		ws.on('connection-close', () => {
+		ws.on('sync', (isSync: boolean) => {
+			console.log('sync', ytext.toString())
+		})
+
+		ws.on('connection-close', (event: CloseEvent) => {
+			const REVIEW_COMPLETE_CODE = 3999
 			setIsWsLoaded(false)
 			updateLiveReviewDiff(diffId, {
 				codeAfter: ytext.toString()
 			})
+			switch (event.code) {
+				case 1000:
+					// normal close
+					break
+				case REVIEW_COMPLETE_CODE:
+					alert('리뷰 시간이 종료되었습니다.')
+					window.location.href = `/discussion/${discussion.id}`
+					break
+				default:
+					alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.')
+					window.location.reload()
+					break
+			}
 		})
 
 		ws.on('connection-error', (err: any) => {
 			console.error(err)
 			alert('오류가 발생했습니다. 잠시 후 다시 시도해주세요.') // TODO
-			//window.location.href = '/'
+			window.location.href = '/'
 		})
 
 		ws.on('status', ({ status }: { status: string }) => {
@@ -194,7 +223,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 			}
 		})
 		ws.connect()
-	}, [init, reservation.id, review.liveDiffList, selectedCode])
+	}, [discussion.id, init, reservation.id, review.liveDiffList, selectedCode])
 
 	useEffect(() => {
 		// TODO : 보이스 연결
@@ -244,7 +273,7 @@ const LiveSessionPage: NextPage<Props> = ({ review, reservation }) => {
 									key={diff.id}
 									onClick={() => setSelectedCode(idx)}
 								>
-									{diff.discussionCode.filename}
+									{codes.find((c) => c.id === diff.discussionCode)?.filename}
 								</li>
 							)
 						})}
@@ -353,6 +382,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 		throw new Error('User not allowed')
 	}
 
+	const discussion = await getDiscussionById(
+		reviewReservation?.discussion?.id || 0
+	) // TODO : validation discussion
+
 	const review = reviewReservation?.review
 	if (!review) {
 		throw new Error('No review')
@@ -360,7 +393,9 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 	return {
 		props: {
 			review,
-			reservation: reviewReservation
+			reservation: reviewReservation,
+			discussion: discussion.discussion,
+			codes: discussion.codes
 		}
 	}
 }
