@@ -73,7 +73,7 @@ const ReviewDetail: React.FC<Props> = ({ review, discussionCodes }) => {
 					<div className="p-4 border-2 rounded-tl-2xl border-gray-600">
 						목록
 					</div>
-					<div className="discussion_codes" className="menu menu-compact max-h-[32rem] overflow-y-scroll">
+					<div className=" discussion_codes menu menu-compact max-h-[32rem] overflow-y-scroll">
 						{[...review.commentDiffList, ...review.liveDiffList].map(
 							(commentDiff, idx) => {
 								return (
