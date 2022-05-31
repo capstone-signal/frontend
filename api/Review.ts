@@ -16,6 +16,7 @@ export type ReviewResponse = {
 	reviewType: 'COMMENT' | 'LIVE'
 	reviewer: UserResponse
 	threadList?: ThreadResponse[]
+	isdone: boolean
 } & CommonResponse
 
 export type ReviewPageResponse = {
