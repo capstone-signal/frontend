@@ -125,6 +125,18 @@ export async function getDiscussions(data: {
 	return response
 }
 
+export async function getMyReview(data: {
+	page?: string | string[]
+	sort?: string | string[]
+}): Promise<DiscussionListResponse> {
+	const url =
+		`page=${data.page ? data.page : ''}&` + `sort=${data.sort ? data.sort : ''}`
+	const response = await get<DiscussionListResponse>(
+		`/discussion/myReview/?${url}`
+	)
+	return response
+}
+
 export async function completeDiscussion(
 	id: number
 ): Promise<DiscussionResponse> {
