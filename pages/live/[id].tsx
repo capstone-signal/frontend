@@ -152,7 +152,6 @@ const LiveSessionPage: NextPage<Props> = ({
 		// 		codeAfter
 		// 	})
 		// }, DIFF_UPDATE_INTERVAL)
-
 		// return () => {
 		// 	clearInterval(interval)
 		// }
@@ -175,10 +174,6 @@ const LiveSessionPage: NextPage<Props> = ({
 		})
 		wsRef.current = ws
 		const ytext = ydoc.getText(roomName)
-
-		ws.on('sync', (isSync: boolean) => {
-			console.log('sync', ytext.toString())
-		})
 
 		ws.on('connection-close', (event: CloseEvent) => {
 			const REVIEW_COMPLETE_CODE = 3999
@@ -222,8 +217,27 @@ const LiveSessionPage: NextPage<Props> = ({
 				})
 			}
 		})
+
+		const selectedDiscussionCode = codes.find(
+			(code) => code.id === review.liveDiffList[selectedCode].discussionCode
+		)
+		if (selectedDiscussionCode) {
+			const monaco = monacoRef.current
+			const editor = editorRef.current
+			monaco.editor.setModelLanguage(
+				editor.getModel(),
+				selectedDiscussionCode.language.toLowerCase()
+			)
+		}
 		ws.connect()
-	}, [discussion.id, init, reservation.id, review.liveDiffList, selectedCode])
+	}, [
+		codes,
+		discussion.id,
+		init,
+		reservation.id,
+		review.liveDiffList,
+		selectedCode
+	])
 
 	useEffect(() => {
 		// TODO : 보이스 연결
@@ -294,8 +308,8 @@ const LiveSessionPage: NextPage<Props> = ({
 						source={reservation.discussion?.question ?? ''}
 						style={{
 							padding: '2rem',
-							backgroundColor: '#000',
 							border: '1px solid #eaeaea',
+							backgroundColor: 'transparent',
 							borderRadius: '6px'
 						}}
 					/>
@@ -348,10 +362,6 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 		throw new Error('Reservation id not found')
 	}
 
-	if (reviewReservation.isdone) {
-		throw new Error('Review is done')
-	}
-
 	const now = new Date()
 	const reviewStartTime = new Date(reviewReservation.reviewStartDateTime)
 	if (now < reviewStartTime) {
@@ -390,6 +400,10 @@ export const getServerSideProps: GetServerSideProps<Props> = async (
 	if (!review) {
 		throw new Error('No review')
 	}
+	if (review.isdone) {
+		throw new Error('Review has ended')
+	}
+
 	return {
 		props: {
 			review,

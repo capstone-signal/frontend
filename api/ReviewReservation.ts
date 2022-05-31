@@ -16,7 +16,6 @@ export type ReviewReservationResponse = {
 	discussion?: DiscussionResponse
 	reviewer?: UserResponse
 	id: number
-	isdone: boolean
 	review?: ReviewResponse
 	reviewStartDateTime: Date
 	revieweeParticipated: boolean
