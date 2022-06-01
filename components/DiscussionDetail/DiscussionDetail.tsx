@@ -54,6 +54,7 @@ const DiscussionDetail: React.FC<Props> = ({
 	const [selectedCode, setSelectedCode] = useState<number>(0)
 	const [newReviewList, setNewReviewList] = useState<CommentReviewDiff[]>([])
 	const isDiscussionOwner = discussion.user.id === userId
+	const reviewAvailable = discussion.state !== DiscussionState.COMPLETED
 
 	const handleClickCode = (index: number) => {
 		setSelectedCode(index)
@@ -75,7 +76,8 @@ const DiscussionDetail: React.FC<Props> = ({
 		const cond1 = discussion.liveReviewRequired
 		const cond2 = !isDiscussionOwner
 		const cond3 = isLoggedIn
-		return cond1 && cond2 && cond3
+		const cond4 = discussion.state !== DiscussionState.COMPLETED
+		return cond1 && cond2 && cond3 && cond4
 	}
 
 	const createNewReview = async () => {
@@ -98,7 +100,7 @@ const DiscussionDetail: React.FC<Props> = ({
 	}
 
 	const handleStartComplete = () => {
-		alert('채택할 리뷰를 선택해주세요.')
+		alert('채택할 리뷰를 모두 선택 후 완료 버튼을 눌러주세요.')
 		handleClickCompletePhase()
 		return
 	}
@@ -110,7 +112,7 @@ const DiscussionDetail: React.FC<Props> = ({
 		}
 
 		try {
-			await completeDiscussion(discussion.id) // TODO : selectedReviews 바디에 추가
+			await completeDiscussion(discussion.id, selectedReviewIds) // TODO : selectedReviews 바디에 추가
 			alert('완료되었습니다.')
 			window.location.reload()
 		} catch (e) {
@@ -200,6 +202,7 @@ const DiscussionDetail: React.FC<Props> = ({
 					</div>
 					<div className="selected_code">
 						<DiscussionCode
+							reviewAvailable={isDiscussionOwner ? false : reviewAvailable}
 							reviewee={discussion.user.id}
 							discussionCode={codes[selectedCode]}
 							newReviewList={newReviewList}
@@ -207,7 +210,7 @@ const DiscussionDetail: React.FC<Props> = ({
 						/>
 					</div>
 				</div>
-				{!isDiscussionOwner && (
+				{!isDiscussionOwner && reviewAvailable && (
 					<CommentReviewStore
 						newReviewList={newReviewList}
 						setNewReviewList={setNewReviewList}

@@ -15,7 +15,13 @@ type Props = {
 	selectedReviewIds: number[]
 	isCompletePhase: boolean
 }
-const ReviewList: React.FC<Props> = ({ discussion, discussionCodes }) => {
+const ReviewList: React.FC<Props> = ({
+	discussion,
+	discussionCodes,
+	isCompletePhase,
+	selectedReviewIds,
+	handleClickReview
+}) => {
 	// get reviews using page query
 	const [page, setPage] = useState<number>(1)
 	const { isLoading, isError, data } = useQuery(
@@ -54,6 +60,9 @@ const ReviewList: React.FC<Props> = ({ discussion, discussionCodes }) => {
 							review={review}
 							key={review.id}
 							discussionCodes={discussionCodes}
+							isCompletePhase={isCompletePhase}
+							isChecked={selectedReviewIds.includes(review.id)}
+							handleClickAcceptReview={() => handleClickReview(review.id)}
 						/>
 					)
 				})}

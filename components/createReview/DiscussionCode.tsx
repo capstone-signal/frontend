@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { useState } from 'react'
 import dynamic from 'next/dynamic'
@@ -16,6 +17,7 @@ const MarkdownViewer = dynamic<MarkdownPreviewProps>(
 )
 
 interface Props {
+	reviewAvailable: boolean
 	reviewee: number
 	discussionCode: DiscussionCodeResponse
 	newReviewList: CommentReviewDiff[]
@@ -50,6 +52,7 @@ function ButtonClear() {
 }
 
 const DiscussionCode: React.FC<Props> = ({
+	reviewAvailable,
 	reviewee,
 	discussionCode,
 	newReviewList,
@@ -87,7 +90,11 @@ const DiscussionCode: React.FC<Props> = ({
 	}
 	return (
 		<>
-			<div id="code-block" onMouseUp={dragCode} onMouseDown={ButtonClear}>
+			<div
+				id="code-block"
+				onMouseUp={reviewAvailable ? dragCode : () => {}}
+				onMouseDown={reviewAvailable ? ButtonClear : () => {}}
+			>
 				<MarkdownViewer
 					source={`\`\`\`${discussionCode.language}\n${discussionCode.content}\n\`\`\``}
 					style={codeMarkdownViewerStyle}
