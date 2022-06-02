@@ -138,9 +138,12 @@ export async function getMyReview(data: {
 }
 
 export async function completeDiscussion(
-	id: number
+	id: number,
+	acceptedReviewIds: number[]
 ): Promise<DiscussionResponse> {
-	const response = await put<DiscussionResponse>(`/discussion/${id}`, {})
+	const response = await put<DiscussionResponse>(`/discussion/${id}/complete`, {
+		reviewIds: acceptedReviewIds
+	})
 	return response
 }
 

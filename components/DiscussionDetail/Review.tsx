@@ -8,9 +8,12 @@ import ThreadList from './ThreadList'
 type Props = {
 	review: ReviewResponse
 	discussionCodes: DiscussionCodeResponse[]
+	isCompletePhase: boolean
+	isChecked?: boolean
+	handleClickAcceptReview?: () => void
 }
 
-const ReviewDetail: React.FC<Props> = ({ review, discussionCodes }) => {
+const ReviewDetail: React.FC<Props> = ({ review, discussionCodes, isCompletePhase, isChecked, handleClickAcceptReview }) => {
 	const [isInit, setInit] = useState<boolean>(false)
 	const [selectedDiscussionCode, setSelectedDiscussionCode] =
 		useState<number>(0)
@@ -66,6 +69,9 @@ const ReviewDetail: React.FC<Props> = ({ review, discussionCodes }) => {
 					{review.accepted && (
 						<span className="badge badge-lg badge-success ml-4">채택</span>
 					)}
+					{isCompletePhase && <div className="ml-6">
+						<input type="checkbox" className="checkbox checkbox-secondary" checked={isChecked} onChange={handleClickAcceptReview} />
+					</div>}
 				</div>
 			</div>
 			<div className="review_code_list flex flex-row">
