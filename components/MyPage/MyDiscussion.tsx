@@ -1,7 +1,7 @@
 import { getDiscussions } from '../../api/Discussion'
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
+import Spinner from '../Common/Spinner'
 import Pagination from '../listComponents/Pagination'
 import DiscussionList from '../listComponents/DiscussionList'
 
@@ -14,7 +14,7 @@ const MyDiscussion: React.FunctionComponent<Props> = () => {
 	const {
 		data: discussions,
 		isLoading,
-		error
+		isError
 	} = useQuery(`discussions?page=${page}&onlyMine=${onlyMine}`, () =>
 		getDiscussions({ page, onlyMine: 'true' })
 	)
@@ -23,7 +23,11 @@ const MyDiscussion: React.FunctionComponent<Props> = () => {
 			<div className="font-bold mb-4 pt-1 pl-3 pb-3 text-lg border-b-2 border-solid border-gray-400">
 				내가 작성한 Discussion
 			</div>
-			<DiscussionList discussions={discussions?.content} />
+			{isLoading || isError ? (
+				<Spinner />
+			) : (
+				<DiscussionList discussions={discussions?.content} />
+			)}
 			<Pagination
 				discussionAmount={discussions?.totalElements}
 				urlFrom={'my/discussion'}
