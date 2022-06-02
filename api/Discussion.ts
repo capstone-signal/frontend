@@ -74,7 +74,7 @@ export type DiscussionFilter = {
 	onlyMine: boolean
 	page?: number
 	sort?: 'createdAt' | 'priority'
-	state?: 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED'
+	state?: '' | 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED'
 	tags: number[]
 }
 

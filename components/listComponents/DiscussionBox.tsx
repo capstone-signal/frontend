@@ -7,6 +7,15 @@ type Props = {
 }
 
 const DiscussionBox: React.FunctionComponent<Props> = ({ discussion }) => {
+	const pointLevel = [
+		'bg-white',
+		'bg-red-300',
+		'bg-orange-300',
+		'bg-yellow-300',
+		'bg-green-300',
+		'bg-blue-300',
+		'bg-purple-300'
+	]
 	return (
 		<div className="w-full bg-red-200 rounded-xl min-h-[7rem] p-3 mb-4 flex flex-col justify-between overflow-y-visible">
 			<div className="flex flex-row justify-between">
@@ -18,6 +27,14 @@ const DiscussionBox: React.FunctionComponent<Props> = ({ discussion }) => {
 					<span className="text-sm mb-1">
 						{dayjs(discussion.createdAt).format('YYYY/MM/DD hh:mm A')}
 					</span>
+					<div
+						className={`badge badge-lg mb-1 border-1 border-solid text-black border-black ${
+							pointLevel[discussion.priority]
+						}`}
+					>
+						<span className="font-bold">{discussion.priority}</span>
+						<span>&nbsp;가이드라인</span>
+					</div>
 				</div>
 			</div>
 			<div className="flex flex-row justify-between">

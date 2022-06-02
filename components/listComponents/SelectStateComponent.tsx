@@ -1,6 +1,8 @@
 type Props = {
-	selectedState: 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED' | undefined
-	setSelectedState: (value: 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED') => void
+	selectedState: '' | 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED'
+	setSelectedState: (
+		value: '' | 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED'
+	) => void
 }
 
 const SelectStateComponent: React.FunctionComponent<Props> = ({

@@ -26,27 +26,21 @@ const Pagination: React.FunctionComponent<Props> = ({
 		currentPage + 1,
 		currentPage + 2
 	]
+	const URLexceptPage = `${state ? `&state=${state}` : ''}
+		${tags ? `&tags=${tags}` : ''}
+		${keyword ? `&keyword=${keyword}` : ''}
+		${sort ? `&sort=${sort}` : ''}
+		${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`
 	return (
 		<div className="flex justify-center">
 			<div>
-				<Link
-					href={`/${urlFrom}?page=1
-						${state ? `&state=${state}` : ''}
-						${tags ? `&tags=${tags}` : ''}
-						${keyword ? `&keyword=${keyword}` : ''}
-						${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`}
-					passHref
-				>
+				<Link href={`/${urlFrom}?page=1${URLexceptPage}`} passHref>
 					<div className={`btn btn-sm m-1 btn-outline`}>&laquo;</div>
 				</Link>
 				{pageArray.map((pageNumber) => (
 					<Link
 						key={pageNumber}
-						href={`/${urlFrom}?page=${pageNumber}
-							${state ? `&state=${state}` : ''}
-							${tags ? `&tags=${tags}` : ''}
-							${keyword ? `&keyword=${keyword}` : ''}
-							${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`}
+						href={`/${urlFrom}?page=${pageNumber}${URLexceptPage}`}
 						passHref
 					>
 						<div
@@ -59,11 +53,7 @@ const Pagination: React.FunctionComponent<Props> = ({
 					</Link>
 				))}
 				<Link
-					href={`/${urlFrom}?page=${maxPageNumber}
-						${state ? `&state=${state}` : ''}
-						${tags ? `&tags=${tags}` : ''}
-						${keyword ? `&keyword=${keyword}` : ''}
-						${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`}
+					href={`/${urlFrom}?page=${maxPageNumber}${URLexceptPage}`}
 					passHref
 				>
 					<div className={`btn btn-sm m-1 btn-outline`}>&raquo;</div>
