@@ -29,6 +29,16 @@ const Pagination: React.FunctionComponent<Props> = ({
 	return (
 		<div className="flex justify-center">
 			<div>
+				<Link
+					href={`/${urlFrom}?page=1
+						${state ? `&state=${state}` : ''}
+						${tags ? `&tags=${tags}` : ''}
+						${keyword ? `&keyword=${keyword}` : ''}
+						${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`}
+					passHref
+				>
+					<div className={`btn btn-sm m-1 btn-outline`}>&laquo;</div>
+				</Link>
 				{pageArray.map((pageNumber) => (
 					<Link
 						key={pageNumber}
@@ -48,6 +58,16 @@ const Pagination: React.FunctionComponent<Props> = ({
 						</div>
 					</Link>
 				))}
+				<Link
+					href={`/${urlFrom}?page=${maxPageNumber}
+						${state ? `&state=${state}` : ''}
+						${tags ? `&tags=${tags}` : ''}
+						${keyword ? `&keyword=${keyword}` : ''}
+						${onlyMine != '' ? `&onlyMine=${onlyMine}` : ''}`}
+					passHref
+				>
+					<div className={`btn btn-sm m-1 btn-outline`}>&raquo;</div>
+				</Link>
 			</div>
 		</div>
 	)
