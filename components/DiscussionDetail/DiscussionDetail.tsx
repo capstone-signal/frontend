@@ -156,6 +156,9 @@ const DiscussionDetail: React.FC<Props> = ({
 					</span>
 				</div>
 				<div className="tags mb-4">
+					<div className="badge badge-info badge-lg mx-1">
+						{discussion.priority} 가이드라인
+					</div>
 					{discussion.tags?.map((tag) => (
 						<div className="badge badge-info badge-lg mx-1" key={tag.id}>
 							{tag.name}

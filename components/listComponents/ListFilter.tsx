@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useQuery } from 'react-query'
 import { getTags } from '../../api/Tag'
 import Spinner from '../Common/Spinner'
@@ -15,11 +17,12 @@ const ListFilter: React.FunctionComponent<FilterProps> = ({
 	discussionFilter,
 	setDiscussionFilter
 }) => {
+	const router = useRouter()
 	const handleSelectedTags = (newTags: number[]) => {
 		setDiscussionFilter({ ...discussionFilter, tags: newTags })
 	}
 	const handleSelectedState = (
-		newState: 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED'
+		newState: '' | 'NOT_REVIEWED' | 'REVIEWING' | 'COMPLETED'
 	) => {
 		setDiscussionFilter({ ...discussionFilter, state: newState })
 	}
@@ -37,7 +40,6 @@ const ListFilter: React.FunctionComponent<FilterProps> = ({
 					<Spinner />
 				) : (
 					<SelectFilterComponent
-						// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 						tags={languageTags!}
 						letterCase={'uppercase'}
 						selectedFilters={discussionFilter.tags}
@@ -48,7 +50,7 @@ const ListFilter: React.FunctionComponent<FilterProps> = ({
 			<div className="flex flex-row mb-2">
 				<div className="text-xl text-center w-[6.5rem] mt-2">States</div>
 				<SelectStateComponent
-					selectedState={discussionFilter.state}
+					selectedState={discussionFilter.state!}
 					setSelectedState={handleSelectedState}
 				/>
 			</div>
@@ -73,6 +75,7 @@ const ListFilter: React.FunctionComponent<FilterProps> = ({
 					&state=${discussionFilter.state ?? ''}
 					&tags=${discussionFilter.tags ?? ''}
 					&keyword=${discussionFilter.keyword ?? ''}
+					&sort=${router.query.sort ?? ''}
 					&onlyMine=false`}
 					passHref
 				>

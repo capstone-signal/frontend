@@ -330,7 +330,7 @@ const LiveSessionPage: NextPage<Props> = ({
 				/>
 				<div className="modal">
 					<div className="modal-box">
-						<div className="content">비속어 ㄴㄴ</div>
+						<div className="content">라이브 리뷰 세션에 입장하였습니다.</div>
 						<div className="modal-action">
 							<label
 								htmlFor="init-modal"

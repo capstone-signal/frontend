@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TagResponse } from '../../api/Tag'
 
 type Props = {
@@ -25,6 +25,9 @@ const FilterTagButton: React.FunctionComponent<Props> = ({
 		}
 		setSelect(!select)
 	}
+	useEffect(() => {
+		setSelect(selectedFilters.includes(tag.id))
+	}, [selectedFilters, tag.id])
 	return (
 		<div
 			className={`btn btn-small m-1 rounded-3xl h-[2.5rem] min-h-[2.5rem] ${letterCase} ${
