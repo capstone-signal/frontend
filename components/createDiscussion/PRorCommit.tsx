@@ -48,8 +48,10 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 					<select
 						className="select select-primary w-full max-w-xs mb-6 mr-6"
 						onChange={(e) => setSelectedRepo(parseInt(e.target.value))}
+						key={selectedRepo}
+						defaultValue={selectedRepo == -1 ? 'default' : selectedRepo}
 					>
-						<option disabled selected>
+						<option disabled selected value="default">
 							Repository 선택하기
 						</option>
 						{repos?.map((repository, idx) => (
@@ -101,6 +103,9 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 							</a>
 						</div>
 					))}
+				{discussionType === 'COMMIT' && commits?.length == 0 && (
+					<span>Commit이 존재하지 않습니다.</span>
+				)}
 				{discussionType === 'PR' &&
 					prs?.map((pr, idx) => (
 						<div key={idx} className="flex p-4 text-lg items-center">
@@ -108,7 +113,7 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 								type="radio"
 								className="radio radio-primary"
 								checked={selectedGitNode === pr.id.toString()}
-								onChange={() => setSelectedGitNode(pr.id)}
+								onChange={() => setSelectedGitNode(pr.id.toString())}
 							/>
 							<a
 								href={pr.url}
@@ -120,6 +125,9 @@ const PRorCommit: React.FunctionComponent<Props> = ({
 							</a>
 						</div>
 					))}
+				{discussionType === 'PR' && prs?.length == 0 && (
+					<span className="ml-4">Pull Request가 존재하지 않습니다.</span>
+				)}
 			</div>
 		</div>
 	)
