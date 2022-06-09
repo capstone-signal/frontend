@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 /* eslint-disable indent */
 import { GetServerSideProps, GetServerSidePropsContext, NextPage } from 'next'
 import { useEffect, useRef, useState } from 'react'
@@ -30,6 +31,7 @@ import {
 	DiscussionResponse,
 	getDiscussionById
 } from '../../api/Discussion'
+const io = require('socket.io-client')
 
 type Props = {
 	reservation: ReviewReservationResponse
@@ -229,6 +231,7 @@ const LiveSessionPage: NextPage<Props> = ({
 				selectedDiscussionCode.language.toLowerCase()
 			)
 		}
+
 		ws.connect()
 	}, [
 		codes,
@@ -240,7 +243,53 @@ const LiveSessionPage: NextPage<Props> = ({
 	])
 
 	useEffect(() => {
-		// TODO : 보이스 연결
+		if (!window) return
+		const ws = new WebSocket('ws://localhost:3002')
+
+		navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+			const mediaRecorder = new MediaRecorder(stream)
+			mediaRecorder.start()
+
+			let audioChunks = [] as any[]
+
+			mediaRecorder.addEventListener('dataavailable', (event) => {
+				audioChunks.push(event.data)
+			})
+
+			mediaRecorder.addEventListener('stop', () => {
+				const audioBlob = new Blob(audioChunks)
+				audioChunks = []
+
+				const fileReader = new FileReader()
+				fileReader.readAsDataURL(audioBlob)
+				fileReader.onload = () => {
+					const base64String = fileReader.result as any
+					const sendData = {
+						event: 'voice',
+						data: base64String
+					}
+					ws.send(JSON.stringify(sendData))
+				}
+				mediaRecorder.start()
+
+				setTimeout(() => {
+					mediaRecorder.stop()
+				}, 1000)
+			})
+			setTimeout(() => {
+				mediaRecorder.stop()
+			}, 1000)
+		})
+
+		ws.onmessage = (e) => {
+			const datas = JSON.parse(e.data)
+			const audio = new Audio(datas.datas)
+			switch (datas.event) {
+				case 'send':
+					audio.play()
+					break
+			}
+		}
 	}, [])
 
 	return (
