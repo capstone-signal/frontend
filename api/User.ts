@@ -1,4 +1,4 @@
-import { CommonResponse } from './common'
+import { CommonResponse, get } from './common'
 import jwt_decode from 'jwt-decode'
 
 export type UserResponse = {
@@ -7,6 +7,11 @@ export type UserResponse = {
 	email: string
 	name: string
 	point: number
+}
+
+export type UserRankingResponse = {
+	point: number
+	username: string
 }
 
 export function extractCookie(cookies: string, key: string) {
@@ -39,4 +44,9 @@ export function signOut() {
 	document.cookie = 'accessToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;'
 	document.cookie = 'refreshToken' + '=; expires=Thu, 01 Jan 1999 00:00:10 GMT;'
 	window.location.reload()
+}
+
+export async function getUserRanking(): Promise<UserRankingResponse[]> {
+	const response = await get<UserRankingResponse[]>('/user/ranking')
+	return response
 }
